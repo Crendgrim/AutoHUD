@@ -1,6 +1,12 @@
 {
+  "text.autoconfig.autohud.category.default": "Auto HUD",
+  "text.autoconfig.autohud.category.components": "Components",
+  "text.autoconfig.autohud.category.dynamicCrosshair": "Dynamic Crosshair",
+
+  "text.autoconfig.autohud.option.dynamicOnLoad": "Enable dynamic HUD on game load",
   "text.autoconfig.autohud.option.ticksRevealed": "Time revealed (ticks)",
   "text.autoconfig.autohud.option.animationSpeed": "Animation speed",
+
   "text.autoconfig.autohud.option.onHealthChange": "Reveal health when",
   "text.autoconfig.autohud.option.onHungerChange": "Reveal hunger when",
   "text.autoconfig.autohud.option.onAirChange": "Reveal air when",
@@ -17,8 +23,20 @@
   "text.autoconfig.autohud.option.hideTurtleHelmetWaterBreathing": "Hide water breathing for turtle helmet",
   "text.autoconfig.autohud.option.hideTurtleHelmetWaterBreathing.@Tooltip": "Always hide the status effect symbol when wearing a turtle master helmet",
   "text.autoconfig.autohud.option.hideScoreboard": "Hide scoreboard on the right edge",
+
   "text.autoconfig.autohud.option.dynamicCrosshair": "Dynamically hide the crosshair",
   "text.autoconfig.autohud.option.dynamicCrosshair.@Tooltip": "Hides the crosshair unless holding a tool, weapon, or targeting an entity",
+  "text.autoconfig.autohud.option.dynamicCrosshairEnableWithHud": "Dynamic crosshair when showing whole HUD",
+  "text.autoconfig.autohud.option.dynamicCrosshairEnableWithHud.@Tooltip": "Toggling this off disables the dynamic crosshair when using the Toggle HUD keybind to disable the mod",
+  "text.autoconfig.autohud.option.dynamicCrosshairOnBlock": "Show when looking at a block",
+  "text.autoconfig.autohud.option.dynamicCrosshairOnInteractableBlock": "Show when looking at an interactable block",
+  "text.autoconfig.autohud.option.dynamicCrosshairOnEntity": "Show when looking at an entity",
+  "text.autoconfig.autohud.option.dynamicCrosshairHoldingTool": "Show when holding a tool",
+  "text.autoconfig.autohud.option.dynamicCrosshairHoldingRangedWeapon": "Show when holding a ranged weapon",
+  "text.autoconfig.autohud.option.dynamicCrosshairHoldingBlock": "Show when holding a block",
+  "text.autoconfig.autohud.option.dynamicCrosshairHoldingUsableItem": "Show when holding a usable item",
+  "text.autoconfig.autohud.option.dynamicCrosshairHoldingThrowable": "Show when holding a throwable item",
+
   "key.category.autohud": "Auto HUD",
   "key.autohud.toggle-hud": "Toggle dynamic HUD"
 }

@@ -19,6 +19,9 @@ public class AutoHud implements ClientModInitializer {
     public void onInitializeClient() {
         ConfigHandler.init();
         config = ConfigHandler.getConfig();
+        if (config.dynamicOnLoad()) {
+            Hud.enableDynamic();
+        }
 
         HudRenderCallback.EVENT.register((matrixStack, tickDelta) -> Hud.render(tickDelta));
 

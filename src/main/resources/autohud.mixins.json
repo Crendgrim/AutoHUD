@@ -6,6 +6,9 @@
   "mixins": [
   ],
   "client": [
+    "IBucketItemMixin",
+    "IBlockItemMixin",
+    "IItemMixin",
     "ClientPlayerEntityMixin",
     "ClientPlayerInteractionManagerMixin",
     "InGameHudMixin"

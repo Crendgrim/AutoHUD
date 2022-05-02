@@ -3,10 +3,11 @@ package mod.crend.autohud.mixin;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
-import mod.crend.autohud.component.Hud;
+import mod.crend.autohud.component.Crosshair;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.ScoreboardObjective;
@@ -121,7 +122,7 @@ public class InGameHudMixin {
     // Crosshair
     @Inject (method = "renderCrosshair", at = @At(value = "HEAD"), cancellable = true)
     private void preCrosshair(final MatrixStack matrixStack, final CallbackInfo ci) {
-        if (!Hud.shouldShowCrosshair()) ci.cancel();
+        if (!Crosshair.shouldShowCrosshair()) ci.cancel();
     }
 
     // Scoreboard
@@ -145,7 +146,7 @@ public class InGameHudMixin {
     }
     @Redirect(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target="Lnet/minecraft/entity/effect/StatusEffectInstance;shouldShowIcon()Z"))
     private boolean shouldShowIconProxy(StatusEffectInstance instance) {
-        if (AutoHud.config.hideTurtleHelmetWaterBreathing() && instance.getTranslationKey().equals("effect.minecraft.water_breathing") && instance.getDuration() == 200) {
+        if (AutoHud.config.hideTurtleHelmetWaterBreathing() && instance.getEffectType() == StatusEffects.WATER_BREATHING && instance.getDuration() == 200) {
             return false;
         }
         return instance.shouldShowIcon();

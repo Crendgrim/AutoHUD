@@ -1,6 +1,8 @@
 package mod.crend.autohud.component;
 
 import mod.crend.autohud.AutoHud;
+import mod.crend.autohud.config.RevealPolicy;
+import net.minecraft.block.ComposterBlock;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
@@ -27,8 +29,28 @@ public class State {
         air = new StatState(Component.Air, player.getAir(), player.getMaxAir());
     }
 
+    private void disableIf(boolean condition, Component component) {
+        if (condition) component.enable();
+        else {
+            component.reveal();
+            component.disable();
+        }
+    }
+    public void tick() {
+        disableIf(AutoHud.config.hideHotbar(), Component.Hotbar);
+        disableIf(AutoHud.config.hideHotbar(), Component.Tooltip);
+        disableIf(AutoHud.config.onHealthChange() != RevealPolicy.Always, Component.Health);
+        disableIf(AutoHud.config.onHungerChange() != RevealPolicy.Always, Component.Hunger);
+        disableIf(AutoHud.config.onArmorChange() != RevealPolicy.Always, Component.Armor);
+        disableIf(AutoHud.config.onAirChange() != RevealPolicy.Always, Component.Air);
+        disableIf(AutoHud.config.hideMount() && AutoHud.config.onMountHealthChange() != RevealPolicy.Always, Component.MountHealth);
+        disableIf(AutoHud.config.hideMount() && AutoHud.config.revealOnMountJump(), Component.MountJumpBar);
+        disableIf(AutoHud.config.hideExperience(), Component.ExperienceBar);
+        disableIf(AutoHud.config.hideStatusEffects(), Component.StatusEffects);
+        disableIf(AutoHud.config.hideScoreboard(), Component.Scoreboard);
+    }
     public void render(ClientPlayerEntity player, float tickDelta) {
-        if (!AutoHud.config.hideHotbar() || (AutoHud.config.revealOnItemChange() && previousStack != player.getMainHandStack())) {
+        if (AutoHud.config.hideHotbar() && (AutoHud.config.revealOnItemChange() && previousStack != player.getMainHandStack())) {
             Component.Hotbar.reveal();
             Component.Tooltip.reveal();
             previousStack = player.getMainHandStack();
@@ -42,23 +64,16 @@ public class State {
         air.changeConditional(player.getAir(), tickDelta, AutoHud.config.onAirChange());
 
         // These get updated in ClientPlayerEntityMixin
-        if (!AutoHud.config.hideMount()) {
-            Component.MountHealth.reveal();
-            Component.MountJumpBar.reveal();
-        }
         Component.MountHealth.render(tickDelta);
         Component.MountJumpBar.render(tickDelta);
 
-        if (!AutoHud.config.hideExperience() || (AutoHud.config.revealOnExperienceChange() && previousExperience != player.totalExperience)) {
+        if (AutoHud.config.hideExperience() && (AutoHud.config.revealOnExperienceChange() && previousExperience != player.totalExperience)) {
             Component.ExperienceBar.reveal();
             previousExperience = player.totalExperience;
         }
         Component.ExperienceBar.render(tickDelta);
 
-        if (!AutoHud.config.hideStatusEffects()) {
-            Component.StatusEffects.reveal();
-            previousStatusEffects = player.getStatusEffects().size();
-        } else if (AutoHud.config.revealOnStatusEffectsChange()) {
+        if (AutoHud.config.hideStatusEffects() && AutoHud.config.revealOnStatusEffectsChange()) {
             if (previousStatusEffects != player.getStatusEffects().size()) {
                 Component.StatusEffects.reveal();
                 previousStatusEffects = player.getStatusEffects().size();
@@ -76,9 +91,6 @@ public class State {
         }
         Component.StatusEffects.render(tickDelta);
 
-        if (!AutoHud.config.hideScoreboard()) {
-            Component.Scoreboard.reveal();
-        }
         Component.Scoreboard.render(tickDelta);
     }
 }

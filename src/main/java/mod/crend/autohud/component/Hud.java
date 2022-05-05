@@ -27,6 +27,18 @@ public class Hud {
         else enableDynamic();
     }
 
+    public static void tick() {
+        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        if (player != null) {
+            if (state == null) {
+                state = new State(player);
+            }
+            state.tick();
+        } else {
+            state = null;
+        }
+    }
+
     public static void render(float tickDelta) {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player != null) {

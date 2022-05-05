@@ -11,9 +11,16 @@ public class Config implements ConfigData {
     boolean dynamicOnLoad = true;
     int ticksRevealed = 100;
     double animationSpeed = 2.0;
+    @ConfigEntry.Gui.Tooltip(count = 3)
+    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+    RevealType revealType = RevealType.INDIVIDUAL;
+    @ConfigEntry.Gui.Tooltip
+    boolean hideTurtleHelmetWaterBreathing = true;
     public boolean dynamicOnLoad() { return dynamicOnLoad; }
     public int timeRevealed() { return ticksRevealed; }
     public double animationSpeed() { return animationSpeed; }
+    public RevealType revealType() { return revealType; }
+    public boolean hideTurtleHelmetWaterBreathing() { return hideTurtleHelmetWaterBreathing; }
 
     /* COMPONENTS */
     @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
@@ -62,12 +69,8 @@ public class Config implements ConfigData {
     boolean hideStatusEffects = false;
     @ConfigEntry.Category("components")
     boolean revealOnStatusEffectsChange = true;
-    @ConfigEntry.Category("components")
-    @ConfigEntry.Gui.Tooltip
-    boolean hideTurtleHelmetWaterBreathing = true;
     public boolean hideStatusEffects() { return hideStatusEffects; }
     public boolean revealOnStatusEffectsChange() { return revealOnStatusEffectsChange; }
-    public boolean hideTurtleHelmetWaterBreathing() { return hideTurtleHelmetWaterBreathing; }
 
     @ConfigEntry.Category("components")
     boolean hideScoreboard = true;
@@ -83,6 +86,7 @@ public class Config implements ConfigData {
     @ConfigEntry.Category("dynamicCrosshair")
     @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
     CrosshairSettings crosshairSettings = new CrosshairSettings();
+
     static class CrosshairSettings {
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         InteractableCrosshairPolicy onBlock = InteractableCrosshairPolicy.IfTargeting;
@@ -125,7 +129,7 @@ public class Config implements ConfigData {
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         Crosshair onEntity = Crosshair.DIAGONAL_CROSS;
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        Crosshair holdingTool = Crosshair.CROSS;
+        Crosshair holdingTool = Crosshair.SQUARE;
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         Crosshair holdingRangedWeapon = Crosshair.CIRCLE;
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)

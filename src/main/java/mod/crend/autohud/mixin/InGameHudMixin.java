@@ -2,10 +2,7 @@ package mod.crend.autohud.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import mod.crend.autohud.AutoHud;
-import mod.crend.autohud.component.Component;
-import mod.crend.autohud.component.Crosshair;
-import mod.crend.autohud.component.CrosshairHandler;
-import mod.crend.autohud.component.CrosshairModifier;
+import mod.crend.autohud.component.*;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -169,7 +166,8 @@ public class InGameHudMixin {
     }
 
     @Inject(method = "tick()V", at = @At(value = "TAIL"))
-    private void tickCrosshair(CallbackInfo ci) {
+    private void tickAutoHud(CallbackInfo ci) {
+        Hud.tick();
         CrosshairHandler.tick();
     }
 

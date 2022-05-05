@@ -114,8 +114,8 @@ public class CrosshairHandler {
                 return modifierUse != ModifierUse.NONE;
             }
         } else if (!handItemStack.isEmpty()) {
-            if (checkTool(player, handItem, hitResult)) {
-                activeCrosshair = AutoHud.config.getCrosshairHoldingTool();
+            if (canUseItem(player, handItemStack, hitResult, handItem)) {
+                modifierUse = ModifierUse.USE_ITEM;
                 return true;
             } else if (checkRangedWeapon(hitResult, handItem)) {
                 activeCrosshair = AutoHud.config.getCrosshairHoldingRangedWeapon();
@@ -123,11 +123,18 @@ public class CrosshairHandler {
             } else if (checkThrowable(hitResult, handItem)) {
                 activeCrosshair = AutoHud.config.getCrosshairHoldingThrowable();
                 return true;
-            } else if (canUseItem(player, handItemStack, hitResult, handItem)) {
-                modifierUse = ModifierUse.USE_ITEM;
+            } else if (checkTool(player, handItem, hitResult)) {
+                activeCrosshair = AutoHud.config.getCrosshairHoldingTool();
                 return true;
             } else if (checkBlock(player, handItemStack, hitResult, handItem)) {
                 activeCrosshair = AutoHud.config.getCrosshairHoldingBlock();
+                return true;
+            }
+        } else {
+            BlockPos blockPos = ((BlockHitResult) hitResult).getBlockPos();
+            BlockState blockState = MinecraftClient.getInstance().world.getBlockState(blockPos);
+            if (blockState.isOf(Blocks.LECTERN) && blockState.get(LecternBlock.HAS_BOOK)) {
+                modifierUse = ModifierUse.USE_ITEM;
                 return true;
             }
         }
@@ -364,7 +371,9 @@ public class CrosshairHandler {
                     }
                 }
                 else if (block instanceof LecternBlock) {
-                    if (handItem.equals(Items.WRITTEN_BOOK) || handItem.equals(Items.WRITABLE_BOOK) || blockState.get(LecternBlock.HAS_BOOK))
+                    if (handItem.equals(Items.WRITTEN_BOOK)
+                            || handItem.equals(Items.WRITABLE_BOOK)
+                            || (!player.shouldCancelInteraction() && blockState.get(LecternBlock.HAS_BOOK)))
                         return true;
                 }
                 else if (block instanceof CampfireBlock && !player.shouldCancelInteraction()) {
@@ -559,7 +568,7 @@ public class CrosshairHandler {
         return ModifierUse.NONE;
     }
 
-    // FIXME
+    // TODO
     // silk touch awareness
     private static boolean checkShowCrosshair() {
         activeCrosshair = Crosshair.DEFAULT;

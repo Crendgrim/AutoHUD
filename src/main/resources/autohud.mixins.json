@@ -6,9 +6,14 @@
   "mixins": [
   ],
   "client": [
-    "IBucketItemMixin",
+    "IAbstractBlockMixin",
+    "IAxeItemMixin",
     "IBlockItemMixin",
+    "IFurnaceMinecartEntityMixin",
+    "IHoeItemMixin",
     "IItemMixin",
+    "IParrotEntityMixin",
+    "IShovelItemMixin",
     "ClientPlayerEntityMixin",
     "ClientPlayerInteractionManagerMixin",
     "InGameHudMixin"

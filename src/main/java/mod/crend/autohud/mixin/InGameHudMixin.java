@@ -4,6 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Crosshair;
+import mod.crend.autohud.component.CrosshairHandler;
+import mod.crend.autohud.component.CrosshairModifier;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -122,7 +124,21 @@ public class InGameHudMixin {
     // Crosshair
     @Inject (method = "renderCrosshair", at = @At(value = "HEAD"), cancellable = true)
     private void preCrosshair(final MatrixStack matrixStack, final CallbackInfo ci) {
-        if (!Crosshair.shouldShowCrosshair()) ci.cancel();
+        if (!CrosshairHandler.shouldShowCrosshair()) ci.cancel();
+    }
+    @Redirect(method = "renderCrosshair", at=@At(value="INVOKE", target="Lnet/minecraft/client/gui/hud/InGameHud;drawTexture(Lnet/minecraft/client/util/math/MatrixStack;IIIIII)V", ordinal=0))
+    private void drawCrosshair(InGameHud instance, MatrixStack matrixStack, int x, int y, int u, int v, int width, int height) {
+        if (AutoHud.config.dynamicCrosshairStyle()) {
+            Crosshair crosshair = CrosshairHandler.getActiveCrosshair();
+            RenderSystem.setShaderTexture(0, CrosshairHandler.crosshairTexture);
+            instance.drawTexture(matrixStack, x, y, crosshair.getX(), crosshair.getY(), 15, 15);
+            for (CrosshairModifier modifier : CrosshairHandler.getActiveCrosshairModifiers()) {
+                instance.drawTexture(matrixStack, x, y, modifier.getX(), modifier.getY(), 15, 15);
+            }
+            RenderSystem.setShaderTexture(0, InGameHud.GUI_ICONS_TEXTURE);
+        } else {
+            instance.drawTexture(matrixStack, x, y, u, v, width, height);
+        }
     }
 
     // Scoreboard
@@ -150,6 +166,11 @@ public class InGameHudMixin {
             return false;
         }
         return instance.shouldShowIcon();
+    }
+
+    @Inject(method = "tick()V", at = @At(value = "TAIL"))
+    private void tickCrosshair(CallbackInfo ci) {
+        CrosshairHandler.tick();
     }
 
 }

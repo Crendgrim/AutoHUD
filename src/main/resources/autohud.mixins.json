@@ -16,7 +16,8 @@
     "IShovelItemMixin",
     "ClientPlayerEntityMixin",
     "ClientPlayerInteractionManagerMixin",
-    "InGameHudMixin"
+    "InGameHudMixin",
+    "StatusEffectTimerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

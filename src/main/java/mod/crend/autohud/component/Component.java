@@ -2,12 +2,14 @@ package mod.crend.autohud.component;
 
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.config.RevealType;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.StatusEffectSpriteManager;
+import net.minecraft.entity.effect.StatusEffect;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Component {
-
     public static Component Hotbar = new Component("Hotbar", ScrollDirection.DOWN);
     public static Component Tooltip = new Component("Tooltip", ScrollDirection.DOWN);
     public static Component ExperienceBar = new Component("ExperienceBar", ScrollDirection.DOWN);
@@ -18,8 +20,8 @@ public class Component {
     public static Component MountHealth = new Component("MountHealth", ScrollDirection.DOWN);
     public static Component MountJumpBar = new Component("MountJumpBar", ScrollDirection.DOWN);
     public static Component Scoreboard = new Component("Scoreboard", ScrollDirection.RIGHT);
-    public static Component StatusEffects = new Component("StatusEffects", ScrollDirection.UP);
 
+    private static final Map<StatusEffect, Component> statusEffectComponents = new HashMap<>();
     private static final List<Component> components = Arrays.asList(
             Hotbar,
             Tooltip,
@@ -30,15 +32,16 @@ public class Component {
             Air,
             MountHealth,
             MountJumpBar,
-            Scoreboard,
-            StatusEffects
+            Scoreboard
     );
 
     public static void revealAll() {
         components.forEach(Component::reveal);
+        statusEffectComponents.values().forEach(Component::reveal);
     }
     public static void hideAll() {
         components.forEach(Component::hide);
+        statusEffectComponents.values().forEach(Component::hide);
     }
 
     Component(String name, ScrollDirection direction) {
@@ -54,8 +57,31 @@ public class Component {
         };
     }
 
-    private final ScrollDirection direction;
+    public static void register(StatusEffect effect) {
+        if (!statusEffectComponents.containsKey(effect)) {
+            Component c = new Component(effect.getTranslationKey(), ScrollDirection.UP);
+            c.delta = c.bound;
+            statusEffectComponents.put(effect, c);
+        }
+    }
+    public static Component get(StatusEffect effect) {
+        register(effect);
+        return statusEffectComponents.get(effect);
+    }
+    public static Collection<Component> getStatusEffectComponents() {
+        return statusEffectComponents.values();
+    }
+    public static Component findBySprite(Sprite sprite) {
+        StatusEffectSpriteManager statusEffectSpriteManager = MinecraftClient.getInstance().getStatusEffectSpriteManager();
+        for (StatusEffect effect : statusEffectComponents.keySet()) {
+            if (statusEffectSpriteManager.getSprite(effect) == sprite) {
+                return statusEffectComponents.get(effect);
+            }
+        }
+        return null;
+    }
 
+    private final ScrollDirection direction;
     private final int bound;
     private double delta = 0;
     private double speed = 0;
@@ -63,6 +89,7 @@ public class Component {
     private final String name;
     private boolean active = true;
     private float visibleTime = 1;
+
 
     public void enable() {
         active = true;
@@ -88,6 +115,13 @@ public class Component {
     public boolean isHidden() {
         return !fullyRevealed();
     }
+    public void revealFromHidden() {
+        delta = bound;
+        revealThisOnly();
+    }
+    public void revealThisOnly() {
+        visibleTime = AutoHud.config.timeRevealed();
+    }
     public void reveal() {
         reveal(AutoHud.config.timeRevealed());
     }
@@ -107,7 +141,7 @@ public class Component {
     private boolean fullyRevealed() {
         return delta == 0;
     }
-    private boolean fullyHidden() {
+    public boolean fullyHidden() {
         return delta == bound;
     }
     public void keepRevealed() {

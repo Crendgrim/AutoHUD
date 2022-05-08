@@ -2,10 +2,13 @@ package mod.crend.autohud.component;
 
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.config.RevealPolicy;
-import net.minecraft.block.ComposterBlock;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.ItemStack;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class State {
 
@@ -16,13 +19,12 @@ public class State {
     private StatState food;
     private StatState armor;
     private StatState air;
-    private int previousStatusEffects;
-    private boolean hadTurtleHelmet = false;
+    private Map<StatusEffect, StatusEffectInstance> previousStatusEffects;
 
     public State(ClientPlayerEntity player) {
         previousStack = player.getMainHandStack();
         previousExperience = player.totalExperience;
-        previousStatusEffects = player.getStatusEffects().size();
+        previousStatusEffects = new HashMap<>();
         health = new StatState(Component.Health, (int) player.getHealth(), (int) player.getMaxHealth());
         food = new StatState(Component.Hunger, player.getHungerManager().getFoodLevel(), 20);
         armor = new StatState(Component.Armor, player.getArmor(), 20);
@@ -46,8 +48,13 @@ public class State {
         disableIf(AutoHud.config.hideMount() && AutoHud.config.onMountHealthChange() != RevealPolicy.Always, Component.MountHealth);
         disableIf(AutoHud.config.hideMount() && AutoHud.config.revealOnMountJump(), Component.MountJumpBar);
         disableIf(AutoHud.config.hideExperience(), Component.ExperienceBar);
-        disableIf(AutoHud.config.hideStatusEffects(), Component.StatusEffects);
         disableIf(AutoHud.config.hideScoreboard(), Component.Scoreboard);
+        if (AutoHud.config.hideStatusEffects()) {
+            Component.getStatusEffectComponents().forEach(Component::enable);
+        } else {
+            Component.getStatusEffectComponents().forEach(Component::revealThisOnly);
+            Component.getStatusEffectComponents().forEach(Component::disable);
+        }
     }
     public void render(ClientPlayerEntity player, float tickDelta) {
         if (AutoHud.config.hideHotbar() && (AutoHud.config.revealOnItemChange() && previousStack != player.getMainHandStack())) {
@@ -73,23 +80,25 @@ public class State {
         }
         Component.ExperienceBar.render(tickDelta);
 
-        if (AutoHud.config.hideStatusEffects() && AutoHud.config.revealOnStatusEffectsChange()) {
-            if (previousStatusEffects != player.getStatusEffects().size()) {
-                Component.StatusEffects.reveal();
-                previousStatusEffects = player.getStatusEffects().size();
-            } else if (player.hasStatusEffect(StatusEffects.WATER_BREATHING)) {
-                if (player.getStatusEffect(StatusEffects.WATER_BREATHING).getDuration() == 200) {
-                    hadTurtleHelmet = true;
-                } else if (hadTurtleHelmet) {
-                    // A turtle helmet was in effect last tick.
-                    // Thus, this tick we have gained a status effect if we auto hide status effects.
-                    Component.StatusEffects.reveal();
-                    previousStatusEffects = player.getStatusEffects().size();
-                    hadTurtleHelmet = false;
+        if (AutoHud.config.hideStatusEffects() && AutoHud.config.revealActiveStatusEffects()) {
+            Map<StatusEffect, StatusEffectInstance> newStatusEffects = new HashMap<>();
+            Map<StatusEffect, StatusEffectInstance> effects = player.getActiveStatusEffects();
+            for (StatusEffect effect : effects.keySet()) {
+                StatusEffectInstance effectInstance = effects.get(effect);
+                if (effectInstance.shouldShowIcon()) {
+                    if (effectInstance.getDuration() < 5) {
+                        Component.get(effect).hide();
+                    } else if (!previousStatusEffects.containsKey(effect)) {
+                        Component.get(effect).revealFromHidden();
+                    } else if (!AutoHud.config.hidePersistentStatusEffects() || !previousStatusEffects.get(effect).equals(effectInstance)) {
+                        Component.get(effect).revealThisOnly();
+                    }
+                    newStatusEffects.put(effect, new StatusEffectInstance(effectInstance));
                 }
             }
+            previousStatusEffects = newStatusEffects;
         }
-        Component.StatusEffects.render(tickDelta);
+        Component.getStatusEffectComponents().forEach(c -> c.render(tickDelta));
 
         Component.Scoreboard.render(tickDelta);
     }

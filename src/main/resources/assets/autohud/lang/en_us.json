@@ -11,8 +11,7 @@
   "text.autoconfig.autohud.option.revealType.@Tooltip[0]": "Individual: move all items individually",
   "text.autoconfig.autohud.option.revealType.@Tooltip[1]": "Hide Combined: hide revealed items together",
   "text.autoconfig.autohud.option.revealType.@Tooltip[2]": "Combined: move all items together",
-  "text.autoconfig.autohud.option.hideTurtleHelmetWaterBreathing": "Hide water breathing for turtle helmet",
-  "text.autoconfig.autohud.option.hideTurtleHelmetWaterBreathing.@Tooltip": "Always hide the status effect symbol when wearing a turtle master helmet",
+  "text.autoconfig.autohud.option.statusEffectTimer": "Show remaining time of status effects on their icon",
 
   "text.autoconfig.autohud.option.onHealthChange": "Reveal health when",
   "text.autoconfig.autohud.option.onHungerChange": "Reveal hunger when",
@@ -26,7 +25,9 @@
   "text.autoconfig.autohud.option.hideHotbar": "Hide hotbar",
   "text.autoconfig.autohud.option.revealOnItemChange": "Reveal hotbar on item change",
   "text.autoconfig.autohud.option.hideStatusEffects": "Hide status effects",
-  "text.autoconfig.autohud.option.revealOnStatusEffectsChange": "Reveal status effects on change",
+  "text.autoconfig.autohud.option.revealActiveStatusEffects": "Reveal status effects that are currently active",
+  "text.autoconfig.autohud.option.hidePersistentStatusEffects": "Hide persistent status effects",
+  "text.autoconfig.autohud.option.hidePersistentStatusEffects.@Tooltip": "Always hide the status effect symbol for unchanging status effects, such as when wearing a turtle master helmet",
   "text.autoconfig.autohud.option.hideScoreboard": "Hide scoreboard on the right edge",
 
   "text.autoconfig.autohud.option.dynamicCrosshair": "Dynamically hide the crosshair",

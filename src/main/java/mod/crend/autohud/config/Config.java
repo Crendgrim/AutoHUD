@@ -14,13 +14,12 @@ public class Config implements ConfigData {
     @ConfigEntry.Gui.Tooltip(count = 3)
     @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
     RevealType revealType = RevealType.INDIVIDUAL;
-    @ConfigEntry.Gui.Tooltip
-    boolean hideTurtleHelmetWaterBreathing = true;
+    boolean statusEffectTimer = true;
     public boolean dynamicOnLoad() { return dynamicOnLoad; }
     public int timeRevealed() { return ticksRevealed; }
     public double animationSpeed() { return animationSpeed; }
     public RevealType revealType() { return revealType; }
-    public boolean hideTurtleHelmetWaterBreathing() { return hideTurtleHelmetWaterBreathing; }
+    public boolean statusEffectTimer() { return statusEffectTimer; }
 
     /* COMPONENTS */
     @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
@@ -66,11 +65,15 @@ public class Config implements ConfigData {
     public boolean revealOnItemChange() { return revealOnItemChange; }
 
     @ConfigEntry.Category("components")
-    boolean hideStatusEffects = false;
+    boolean hideStatusEffects = true;
     @ConfigEntry.Category("components")
-    boolean revealOnStatusEffectsChange = true;
+    boolean revealActiveStatusEffects = true;
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Category("components")
+    boolean hidePersistentStatusEffects = true;
     public boolean hideStatusEffects() { return hideStatusEffects; }
-    public boolean revealOnStatusEffectsChange() { return revealOnStatusEffectsChange; }
+    public boolean revealActiveStatusEffects() { return revealActiveStatusEffects; }
+    public boolean hidePersistentStatusEffects() { return hidePersistentStatusEffects; }
 
     @ConfigEntry.Category("components")
     boolean hideScoreboard = true;

@@ -1,7 +1,6 @@
 package mod.crend.autohud.component;
 
 import mod.crend.autohud.AutoHud;
-import mod.crend.autohud.config.RevealPolicy;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -31,75 +30,62 @@ public class State {
         air = new StatState(Component.Air, player.getAir(), player.getMaxAir());
     }
 
-    private void disableIf(boolean condition, Component component) {
-        if (condition) component.enable();
+    private void disableIf(Component component, boolean enabled, boolean triggered) {
+        if (enabled) {
+            component.enable();
+            if (triggered) {
+                component.revealCombined();
+            }
+        }
         else {
-            component.reveal();
+            component.revealCombined();
             component.disable();
         }
     }
-    public void tick() {
-        disableIf(AutoHud.config.hideHotbar(), Component.Hotbar);
-        disableIf(AutoHud.config.hideHotbar(), Component.Tooltip);
-        disableIf(AutoHud.config.onHealthChange() != RevealPolicy.Always, Component.Health);
-        disableIf(AutoHud.config.onHungerChange() != RevealPolicy.Always, Component.Hunger);
-        disableIf(AutoHud.config.onArmorChange() != RevealPolicy.Always, Component.Armor);
-        disableIf(AutoHud.config.onAirChange() != RevealPolicy.Always, Component.Air);
-        disableIf(AutoHud.config.hideMount() && AutoHud.config.onMountHealthChange() != RevealPolicy.Always, Component.MountHealth);
-        disableIf(AutoHud.config.hideMount() && AutoHud.config.revealOnMountJump(), Component.MountJumpBar);
-        disableIf(AutoHud.config.hideExperience(), Component.ExperienceBar);
-        disableIf(AutoHud.config.hideScoreboard(), Component.Scoreboard);
+    public void tick(ClientPlayerEntity player) {
+        if (player == null) return;
+
+        disableIf(Component.Hotbar, AutoHud.config.hideHotbar(), AutoHud.config.revealOnItemChange() && previousStack != player.getMainHandStack());
+        disableIf(Component.Tooltip, AutoHud.config.hideHotbar(), AutoHud.config.revealOnItemChange() && previousStack != player.getMainHandStack());
+        previousStack = player.getMainHandStack();
+
+        health.changeConditional((int) player.getHealth(), AutoHud.config.onHealthChange());
+        food.changeConditional(player.getHungerManager().getFoodLevel(), AutoHud.config.onHungerChange());
+        armor.changeConditional(player.getArmor(), AutoHud.config.onArmorChange());
+        air.changeConditional(player.getAir(), AutoHud.config.onAirChange());
+
+        disableIf(Component.ExperienceBar, AutoHud.config.hideExperience(), AutoHud.config.revealOnExperienceChange() && previousExperience != player.totalExperience);
+        previousExperience = player.totalExperience;
+
+        disableIf(Component.Scoreboard, AutoHud.config.hideScoreboard(), false);
+
         if (AutoHud.config.hideStatusEffects()) {
             Component.getStatusEffectComponents().forEach(Component::enable);
+            if (AutoHud.config.revealActiveStatusEffects()) {
+                Map<StatusEffect, StatusEffectInstance> newStatusEffects = new HashMap<>();
+                Map<StatusEffect, StatusEffectInstance> effects = player.getActiveStatusEffects();
+                for (StatusEffect effect : effects.keySet()) {
+                    StatusEffectInstance effectInstance = effects.get(effect);
+                    if (effectInstance.shouldShowIcon()) {
+                        if (effectInstance.getDuration() < 5) {
+                            Component.get(effect).hide();
+                        } else if (!previousStatusEffects.containsKey(effect)) {
+                            Component.get(effect).revealFromHidden();
+                        } else if (!AutoHud.config.hidePersistentStatusEffects() || !previousStatusEffects.get(effect).equals(effectInstance)) {
+                            Component.get(effect).reveal();
+                        }
+                        newStatusEffects.put(effect, new StatusEffectInstance(effectInstance));
+                    }
+                }
+                previousStatusEffects = newStatusEffects;
+            }
         } else {
-            Component.getStatusEffectComponents().forEach(Component::revealThisOnly);
+            Component.getStatusEffectComponents().forEach(Component::reveal);
             Component.getStatusEffectComponents().forEach(Component::disable);
         }
     }
-    public void render(ClientPlayerEntity player, float tickDelta) {
-        if (AutoHud.config.hideHotbar() && (AutoHud.config.revealOnItemChange() && previousStack != player.getMainHandStack())) {
-            Component.Hotbar.reveal();
-            Component.Tooltip.reveal();
-            previousStack = player.getMainHandStack();
-        }
-        Component.Hotbar.render(tickDelta);
-        Component.Tooltip.render(tickDelta);
-
-        health.changeConditional((int) player.getHealth(), tickDelta, AutoHud.config.onHealthChange());
-        food.changeConditional(player.getHungerManager().getFoodLevel(), tickDelta, AutoHud.config.onHungerChange());
-        armor.changeConditional(player.getArmor(), tickDelta, AutoHud.config.onArmorChange());
-        air.changeConditional(player.getAir(), tickDelta, AutoHud.config.onAirChange());
-
-        // These get updated in ClientPlayerEntityMixin
-        Component.MountHealth.render(tickDelta);
-        Component.MountJumpBar.render(tickDelta);
-
-        if (AutoHud.config.hideExperience() && (AutoHud.config.revealOnExperienceChange() && previousExperience != player.totalExperience)) {
-            Component.ExperienceBar.reveal();
-            previousExperience = player.totalExperience;
-        }
-        Component.ExperienceBar.render(tickDelta);
-
-        if (AutoHud.config.hideStatusEffects() && AutoHud.config.revealActiveStatusEffects()) {
-            Map<StatusEffect, StatusEffectInstance> newStatusEffects = new HashMap<>();
-            Map<StatusEffect, StatusEffectInstance> effects = player.getActiveStatusEffects();
-            for (StatusEffect effect : effects.keySet()) {
-                StatusEffectInstance effectInstance = effects.get(effect);
-                if (effectInstance.shouldShowIcon()) {
-                    if (effectInstance.getDuration() < 5) {
-                        Component.get(effect).hide();
-                    } else if (!previousStatusEffects.containsKey(effect)) {
-                        Component.get(effect).revealFromHidden();
-                    } else if (!AutoHud.config.hidePersistentStatusEffects() || !previousStatusEffects.get(effect).equals(effectInstance)) {
-                        Component.get(effect).revealThisOnly();
-                    }
-                    newStatusEffects.put(effect, new StatusEffectInstance(effectInstance));
-                }
-            }
-            previousStatusEffects = newStatusEffects;
-        }
+    public void render(float tickDelta) {
+        Component.getComponents().forEach(c -> c.render(tickDelta));
         Component.getStatusEffectComponents().forEach(c -> c.render(tickDelta));
-
-        Component.Scoreboard.render(tickDelta);
     }
 }

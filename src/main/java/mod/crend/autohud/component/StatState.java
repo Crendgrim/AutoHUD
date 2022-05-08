@@ -13,7 +13,7 @@ public class StatState {
         this.max = max;
     }
 
-    public void changeConditional(int newValue, float tickDelta, RevealPolicy revealPolicy) {
+    public void changeConditional(int newValue, RevealPolicy revealPolicy) {
         boolean doReveal = switch (revealPolicy) {
             case NotFull -> (newValue < max);
             case Low -> (newValue <= max / 3);
@@ -23,10 +23,14 @@ public class StatState {
             case Disabled -> !Hud.isDynamic();
             case Always -> true;
         };
-        if (doReveal) {
-            component.reveal();
+        if (revealPolicy == RevealPolicy.Always) {
+            component.disable();
+        } else {
+            component.enable();
         }
-        component.render(tickDelta);
+        if (doReveal) {
+            component.revealCombined();
+        }
         current = newValue;
     }
 }

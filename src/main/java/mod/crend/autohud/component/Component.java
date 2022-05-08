@@ -36,8 +36,8 @@ public class Component {
     );
 
     public static void revealAll() {
-        components.forEach(Component::reveal);
-        statusEffectComponents.values().forEach(Component::reveal);
+        components.forEach(Component::revealCombined);
+        statusEffectComponents.values().forEach(Component::revealCombined);
     }
     public static void hideAll() {
         components.forEach(Component::hide);
@@ -67,6 +67,9 @@ public class Component {
     public static Component get(StatusEffect effect) {
         register(effect);
         return statusEffectComponents.get(effect);
+    }
+    public static Collection<Component> getComponents() {
+        return components;
     }
     public static Collection<Component> getStatusEffectComponents() {
         return statusEffectComponents.values();
@@ -117,22 +120,23 @@ public class Component {
     }
     public void revealFromHidden() {
         delta = bound;
-        revealThisOnly();
-    }
-    public void revealThisOnly() {
-        visibleTime = AutoHud.config.timeRevealed();
+        reveal();
     }
     public void reveal() {
-        reveal(AutoHud.config.timeRevealed());
+        visibleTime = AutoHud.config.timeRevealed();
     }
-    public void reveal(int time) {
+    public void revealCombined() {
+        visibleTime = AutoHud.config.timeRevealed();
         if (active && AutoHud.config.revealType() == RevealType.COMBINED) {
-            components.forEach(c -> c.visibleTime = Math.max(c.visibleTime, time));
+            components.forEach(c -> c.visibleTime = Math.max(c.visibleTime, visibleTime));
         }
         else if (active && AutoHud.config.revealType() == RevealType.HIDE_COMBINED) {
-            components.forEach(c -> c.keepRevealed(time));
+            components.forEach(c -> c.keepRevealed(visibleTime));
         }
-        visibleTime = time;
+    }
+    public void revealNow() {
+        visibleTime = AutoHud.config.timeRevealed();
+        delta = 0;
     }
     public void hide() {
         if (!active) return;
@@ -144,10 +148,7 @@ public class Component {
     public boolean fullyHidden() {
         return delta == bound;
     }
-    public void keepRevealed() {
-        keepRevealed(AutoHud.config.timeRevealed());
-    }
-    public void keepRevealed(int time) {
+    private void keepRevealed(float time) {
         if (active && visibleTime > 0 && visibleTime < time) {
             visibleTime = time;
         }

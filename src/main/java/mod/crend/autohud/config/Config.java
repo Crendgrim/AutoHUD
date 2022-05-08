@@ -47,13 +47,10 @@ public class Config implements ConfigData {
     public boolean revealOnExperienceChange() { return revealOnExperienceChange; }
 
     @ConfigEntry.Category("components")
-    boolean hideMount = true;
-    @ConfigEntry.Category("components")
     boolean revealOnMountJump = true;
     @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
     @ConfigEntry.Category("components")
     RevealPolicy onMountHealthChange = RevealPolicy.Changing;
-    public boolean hideMount() { return hideMount; }
     public boolean revealOnMountJump() { return revealOnMountJump; }
     public RevealPolicy onMountHealthChange() { return onMountHealthChange; }
 

@@ -34,7 +34,7 @@ public class Hud {
             if (state == null) {
                 state = new State(player);
             }
-            state.tick();
+            state.tick(player);
         } else {
             state = null;
         }
@@ -46,7 +46,7 @@ public class Hud {
             if (state == null) {
                 state = new State(player);
             }
-            state.render(player, tickDelta);
+            state.render(tickDelta);
         } else {
             state = null;
         }

@@ -21,7 +21,7 @@ public class ClientPlayerEntityMixin {
     @Shadow public Input input;
     @Inject( method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getVehicle()Lnet/minecraft/entity/Entity;") )
     private void jumpBarChanged(CallbackInfo ci){
-        if (this.input.jumping && AutoHud.config.revealOnMountJump()) Component.MountJumpBar.reveal(10);
+        if (this.input.jumping && AutoHud.config.revealOnMountJump()) Component.MountJumpBar.revealNow();
     }
 
     // Mount health
@@ -34,7 +34,7 @@ public class ClientPlayerEntityMixin {
             if (mountHealth == null) {
                 mountHealth = new StatState(Component.MountHealth, (int) vehicle.getHealth(), (int) vehicle.getMaxHealth());
             }
-            mountHealth.changeConditional((int) vehicle.getHealth(), 0, AutoHud.config.onMountHealthChange());
+            mountHealth.changeConditional((int) vehicle.getHealth(), AutoHud.config.onMountHealthChange());
         } else {
             mountHealth = null;
         }

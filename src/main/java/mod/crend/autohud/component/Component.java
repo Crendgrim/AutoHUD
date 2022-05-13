@@ -1,6 +1,7 @@
 package mod.crend.autohud.component;
 
 import mod.crend.autohud.AutoHud;
+import mod.crend.autohud.config.Config;
 import mod.crend.autohud.config.RevealType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.Sprite;
@@ -10,16 +11,16 @@ import net.minecraft.entity.effect.StatusEffect;
 import java.util.*;
 
 public class Component {
-    public static Component Hotbar = new Component("Hotbar", ScrollDirection.DOWN);
-    public static Component Tooltip = new Component("Tooltip", ScrollDirection.DOWN);
-    public static Component ExperienceBar = new Component("ExperienceBar", ScrollDirection.DOWN);
-    public static Component Armor = new Component("Armor", ScrollDirection.DOWN);
-    public static Component Health = new Component("Health", ScrollDirection.DOWN);
-    public static Component Hunger = new Component("Hunger", ScrollDirection.DOWN);
-    public static Component Air = new Component("Air", ScrollDirection.DOWN);
-    public static Component MountHealth = new Component("MountHealth", ScrollDirection.DOWN);
-    public static Component MountJumpBar = new Component("MountJumpBar", ScrollDirection.DOWN);
-    public static Component Scoreboard = new Component("Scoreboard", ScrollDirection.RIGHT);
+    public static Component Hotbar = new Component("Hotbar", AutoHud.config.hotbar());
+    public static Component Tooltip = new Component("Tooltip", AutoHud.config.hotbar());
+    public static Component ExperienceBar = new Component("ExperienceBar", AutoHud.config.experience());
+    public static Component Armor = new Component("Armor", AutoHud.config.armor());
+    public static Component Health = new Component("Health", AutoHud.config.health());
+    public static Component Hunger = new Component("Hunger", AutoHud.config.hunger());
+    public static Component Air = new Component("Air", AutoHud.config.air());
+    public static Component MountHealth = new Component("MountHealth", AutoHud.config.mountHealth());
+    public static Component MountJumpBar = new Component("MountJumpBar", AutoHud.config.mountJumpBar());
+    public static Component Scoreboard = new Component("Scoreboard", AutoHud.config.scoreboard());
 
     private static final Map<StatusEffect, Component> statusEffectComponents = new HashMap<>();
     private static final List<Component> components = Arrays.asList(
@@ -44,23 +45,15 @@ public class Component {
         statusEffectComponents.values().forEach(Component::hide);
     }
 
-    Component(String name, ScrollDirection direction) {
-        this(name, direction, AutoHud.config.animationSpeed());
-    }
-    Component(String name, ScrollDirection direction, double speedMultiplier) {
+    Component(String name, Config.IComponent config) {
         this.name = name;
-        this.speedMultiplier = speedMultiplier;
-        this.direction = direction;
-        this.bound = switch(direction) {
-            case UP, DOWN -> 60;
-            case RIGHT -> 100;
-        };
+        this.config = config;
     }
 
     public static void register(StatusEffect effect) {
         if (!statusEffectComponents.containsKey(effect)) {
-            Component c = new Component(effect.getTranslationKey(), ScrollDirection.UP);
-            c.delta = c.bound;
+            Component c = new Component(effect.getTranslationKey(), AutoHud.config.statusEffects());
+            c.delta = c.config.values.distance();
             statusEffectComponents.put(effect, c);
         }
     }
@@ -84,34 +77,24 @@ public class Component {
         return null;
     }
 
-    private final ScrollDirection direction;
-    private final int bound;
+    private final Config.IComponent config;
     private double delta = 0;
     private double speed = 0;
-    private final double speedMultiplier;
     private final String name;
-    private boolean active = true;
     private float visibleTime = 1;
 
-
-    public void enable() {
-        active = true;
-    }
-    public void disable() {
-        active = false;
-    }
-
     public double getDeltaX() {
-        return switch (direction) {
+        return switch (config.values.direction()) {
             case UP, DOWN -> 0;
+            case LEFT -> -delta;
             case RIGHT -> delta;
         };
     }
     public double getDeltaY() {
-        return switch (direction) {
+        return switch (config.values.direction()) {
             case UP -> -delta;
             case DOWN -> delta;
-            case RIGHT -> 0;
+            case LEFT, RIGHT -> 0;
         };
     }
 
@@ -119,7 +102,7 @@ public class Component {
         return !fullyRevealed();
     }
     public void revealFromHidden() {
-        delta = bound;
+        delta = config.values.distance();
         reveal();
     }
     public void reveal() {
@@ -127,10 +110,10 @@ public class Component {
     }
     public void revealCombined() {
         visibleTime = AutoHud.config.timeRevealed();
-        if (active && AutoHud.config.revealType() == RevealType.COMBINED) {
+        if (config.active() && AutoHud.config.revealType() == RevealType.COMBINED) {
             components.forEach(c -> c.visibleTime = Math.max(c.visibleTime, visibleTime));
         }
-        else if (active && AutoHud.config.revealType() == RevealType.HIDE_COMBINED) {
+        else if (config.active() && AutoHud.config.revealType() == RevealType.HIDE_COMBINED) {
             components.forEach(c -> c.keepRevealed(visibleTime));
         }
     }
@@ -139,24 +122,24 @@ public class Component {
         delta = 0;
     }
     public void hide() {
-        if (!active) return;
+        if (!config.active()) return;
         visibleTime = 0;
     }
     private boolean fullyRevealed() {
         return delta == 0;
     }
     public boolean fullyHidden() {
-        return delta == bound;
+        return delta == config.values.distance();
     }
     private void keepRevealed(float time) {
-        if (active && visibleTime > 0 && visibleTime < time) {
+        if (config.active() && visibleTime > 0 && visibleTime < time) {
             visibleTime = time;
         }
     }
 
     private void speedDelta(float tickDelta) {
-        if (delta > bound / 2.0) speed -= speedMultiplier * tickDelta;
-        else speed += speedMultiplier * tickDelta;
+        if (delta > config.values.distance() / 2.0) speed -= AutoHud.config.animationSpeed() * config.values.speedMultiplier() * tickDelta;
+        else speed += AutoHud.config.animationSpeed() * config.values.speedMultiplier() * tickDelta;
         speed = Math.max(0.75, speed);
     }
     private void moveIn(float tickDelta) {
@@ -166,7 +149,12 @@ public class Component {
     }
     private void moveOut(float tickDelta) {
         speedDelta(tickDelta);
-        delta = Math.min(bound, delta + speed * tickDelta);
+        delta = Math.min(config.values.distance(), delta + speed * tickDelta);
+    }
+    public void revealIf(boolean trigger) {
+        if (!config.active() || config.onChange() && trigger) {
+            revealCombined();
+        }
     }
     public void render(float tickDelta) {
         if (visibleTime == 0) {
@@ -180,7 +168,7 @@ public class Component {
         } else {
             moveIn(tickDelta);
         }
-        if (active && Hud.isDynamic()) {
+        if (config.active() && Hud.isDynamic()) {
             visibleTime = Math.max(0, visibleTime - tickDelta);
         }
     }

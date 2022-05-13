@@ -30,38 +30,25 @@ public class State {
         air = new StatState(Component.Air, player.getAir(), player.getMaxAir());
     }
 
-    private void disableIf(Component component, boolean enabled, boolean triggered) {
-        if (enabled) {
-            component.enable();
-            if (triggered) {
-                component.revealCombined();
-            }
-        }
-        else {
-            component.revealCombined();
-            component.disable();
-        }
-    }
     public void tick(ClientPlayerEntity player) {
         if (player == null) return;
 
-        disableIf(Component.Hotbar, AutoHud.config.hideHotbar(), AutoHud.config.revealOnItemChange() && previousStack != player.getMainHandStack());
-        disableIf(Component.Tooltip, AutoHud.config.hideHotbar(), AutoHud.config.revealOnItemChange() && previousStack != player.getMainHandStack());
+        Component.Hotbar.revealIf(previousStack != player.getMainHandStack());
+        Component.Tooltip.revealIf(previousStack != player.getMainHandStack());
         previousStack = player.getMainHandStack();
 
-        health.changeConditional((int) player.getHealth(), AutoHud.config.onHealthChange());
-        food.changeConditional(player.getHungerManager().getFoodLevel(), AutoHud.config.onHungerChange());
-        armor.changeConditional(player.getArmor(), AutoHud.config.onArmorChange());
-        air.changeConditional(player.getAir(), AutoHud.config.onAirChange());
+        health.changeConditional((int) player.getHealth(), AutoHud.config.health().policy());
+        food.changeConditional(player.getHungerManager().getFoodLevel(), AutoHud.config.hunger().policy());
+        armor.changeConditional(player.getArmor(), AutoHud.config.armor().policy());
+        air.changeConditional(player.getAir(), AutoHud.config.air().policy());
 
-        disableIf(Component.ExperienceBar, AutoHud.config.hideExperience(), AutoHud.config.revealOnExperienceChange() && previousExperience != player.totalExperience);
+        Component.ExperienceBar.revealIf(previousExperience != player.totalExperience);
         previousExperience = player.totalExperience;
 
-        disableIf(Component.Scoreboard, AutoHud.config.hideScoreboard(), false);
+        Component.Scoreboard.revealIf(false);
 
-        if (AutoHud.config.hideStatusEffects()) {
-            Component.getStatusEffectComponents().forEach(Component::enable);
-            if (AutoHud.config.revealActiveStatusEffects()) {
+        if (AutoHud.config.statusEffects().active()) {
+            if (AutoHud.config.statusEffects().onChange()) {
                 Map<StatusEffect, StatusEffectInstance> newStatusEffects = new HashMap<>();
                 Map<StatusEffect, StatusEffectInstance> effects = player.getActiveStatusEffects();
                 for (StatusEffect effect : effects.keySet()) {
@@ -81,7 +68,6 @@ public class State {
             }
         } else {
             Component.getStatusEffectComponents().forEach(Component::reveal);
-            Component.getStatusEffectComponents().forEach(Component::disable);
         }
     }
     public void render(float tickDelta) {

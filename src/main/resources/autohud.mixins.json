@@ -3,20 +3,18 @@
   "minVersion": "0.8",
   "package": "mod.crend.autohud.mixin",
   "compatibilityLevel": "JAVA_17",
-  "mixins": [
-  ],
   "client": [
+    "ClientPlayerEntityMixin",
+    "ClientPlayerInteractionManagerMixin",
     "IAbstractBlockMixin",
     "IAxeItemMixin",
     "IBlockItemMixin",
     "IFurnaceMinecartEntityMixin",
     "IHoeItemMixin",
     "IItemMixin",
+    "InGameHudMixin",
     "IParrotEntityMixin",
     "IShovelItemMixin",
-    "ClientPlayerEntityMixin",
-    "ClientPlayerInteractionManagerMixin",
-    "InGameHudMixin",
     "StatusEffectTimerMixin"
   ],
   "injectors": {

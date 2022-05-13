@@ -4,6 +4,7 @@ import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import mod.crend.autohud.component.Crosshair;
 import mod.crend.autohud.component.CrosshairModifier;
+import mod.crend.autohud.component.ScrollDirection;
 
 @me.shedaniel.autoconfig.annotation.Config(name = "autohud")
 public class Config implements ConfigData {
@@ -22,59 +23,147 @@ public class Config implements ConfigData {
     public boolean statusEffectTimer() { return statusEffectTimer; }
 
     /* COMPONENTS */
-    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-    @ConfigEntry.Category("components")
-    RevealPolicy onHealthChange = RevealPolicy.Changing;
-    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-    @ConfigEntry.Category("components")
-    RevealPolicy onHungerChange = RevealPolicy.Low;
-    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-    @ConfigEntry.Category("components")
-    RevealPolicy onAirChange = RevealPolicy.NotFull;
-    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-    @ConfigEntry.Category("components")
-    RevealPolicy onArmorChange = RevealPolicy.Changing;
-    public RevealPolicy onHealthChange() { return onHealthChange; }
-    public RevealPolicy onHungerChange() { return onHungerChange; }
-    public RevealPolicy onAirChange() { return onAirChange; }
-    public RevealPolicy onArmorChange() { return onArmorChange; }
+    public static class AdvancedComponent {
+        private AdvancedComponent() { }
 
-    @ConfigEntry.Category("components")
-    boolean hideExperience = true;
-    @ConfigEntry.Category("components")
-    boolean revealOnExperienceChange = true;
-    public boolean hideExperience() { return hideExperience; }
-    public boolean revealOnExperienceChange() { return revealOnExperienceChange; }
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        ScrollDirection direction = ScrollDirection.DOWN;
+        double speedMultiplier = 1.0;
+        int distance = 60;
 
-    @ConfigEntry.Category("components")
-    boolean revealOnMountJump = true;
-    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-    @ConfigEntry.Category("components")
-    RevealPolicy onMountHealthChange = RevealPolicy.Changing;
-    public boolean revealOnMountJump() { return revealOnMountJump; }
-    public RevealPolicy onMountHealthChange() { return onMountHealthChange; }
+        public ScrollDirection direction() { return direction; }
+        public double speedMultiplier() { return speedMultiplier; }
+        public int distance() { return distance; }
+    }
+    public static abstract class IComponent {
+        @ConfigEntry.Gui.Excluded
+        public AdvancedComponent values = null;
+        public abstract boolean active();
+        public boolean onChange() { return false; };
+    }
+    public static class SimpleComponent extends IComponent {
+        private SimpleComponent() { }
+        boolean active = true;
 
-    @ConfigEntry.Category("components")
-    boolean hideHotbar = true;
-    @ConfigEntry.Category("components")
-    boolean revealOnItemChange = true;
-    public boolean hideHotbar() { return hideHotbar; }
-    public boolean revealOnItemChange() { return revealOnItemChange; }
+        @Override
+        public boolean active() {
+            return active;
+        }
+    }
+    public static class PolicyComponent extends IComponent {
+        private PolicyComponent() { }
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        RevealPolicy policy = RevealPolicy.Changing;
 
+        @Override
+        public boolean active() {
+            return policy != RevealPolicy.Disabled;
+        }
+
+        @Override
+        public boolean onChange() {
+            return policy != RevealPolicy.Always;
+        }
+
+        public RevealPolicy policy() {
+            return policy;
+        }
+    }
+    public static class BooleanComponent extends IComponent {
+        private BooleanComponent() { }
+
+        boolean active = true;
+        boolean onChange = true;
+
+        @Override
+        public boolean active() {
+            return active;
+        }
+
+        @Override
+        public boolean onChange() {
+            return onChange;
+        }
+    }
+
+    @ConfigEntry.Gui.TransitiveObject
     @ConfigEntry.Category("components")
-    boolean hideStatusEffects = true;
+    PolicyComponent health = new PolicyComponent();
+    @ConfigEntry.Gui.TransitiveObject
     @ConfigEntry.Category("components")
-    boolean revealActiveStatusEffects = true;
+    PolicyComponent hunger = new PolicyComponent();
+    @ConfigEntry.Gui.TransitiveObject
+    @ConfigEntry.Category("components")
+    PolicyComponent air = new PolicyComponent();
+    @ConfigEntry.Gui.TransitiveObject
+    @ConfigEntry.Category("components")
+    PolicyComponent armor = new PolicyComponent();
+    @ConfigEntry.Gui.TransitiveObject
+    @ConfigEntry.Category("components")
+    BooleanComponent experience = new BooleanComponent();
+    @ConfigEntry.Gui.TransitiveObject
+    @ConfigEntry.Category("components")
+    BooleanComponent mountJumpBar = new BooleanComponent();
+    @ConfigEntry.Gui.TransitiveObject
+    @ConfigEntry.Category("components")
+    PolicyComponent mountHealth = new PolicyComponent();
+    @ConfigEntry.Gui.TransitiveObject
+    @ConfigEntry.Category("components")
+    BooleanComponent hotbar = new BooleanComponent();
+    @ConfigEntry.Gui.TransitiveObject
+    @ConfigEntry.Category("components")
+    BooleanComponent statusEffects = new BooleanComponent();
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("components")
     boolean hidePersistentStatusEffects = true;
-    public boolean hideStatusEffects() { return hideStatusEffects; }
-    public boolean revealActiveStatusEffects() { return revealActiveStatusEffects; }
+    @ConfigEntry.Gui.TransitiveObject
+    @ConfigEntry.Category("components")
+    SimpleComponent scoreboard = new SimpleComponent();
+
+    public PolicyComponent health() { return health; }
+    public PolicyComponent armor() { return armor; }
+    public PolicyComponent hunger() { return hunger; }
+    public PolicyComponent air() { return air; }
+    public BooleanComponent experience() { return experience; }
+    public BooleanComponent mountJumpBar() { return mountJumpBar; }
+    public PolicyComponent mountHealth() { return mountHealth; }
+    public BooleanComponent hotbar() { return hotbar; }
+    public BooleanComponent statusEffects() { return statusEffects; }
     public boolean hidePersistentStatusEffects() { return hidePersistentStatusEffects; }
+    public SimpleComponent scoreboard() { return scoreboard; }
+
 
     @ConfigEntry.Category("components")
-    boolean hideScoreboard = true;
-    public boolean hideScoreboard() { return hideScoreboard; }
+    @ConfigEntry.Gui.CollapsibleObject()
+    AdvancedComponents advanced = new AdvancedComponents();
+
+    public static class AdvancedComponents {
+        @ConfigEntry.Gui.TransitiveObject
+        AdvancedComponent hotbar = new AdvancedComponent();
+        @ConfigEntry.Gui.TransitiveObject
+        AdvancedComponent health = new AdvancedComponent();
+        @ConfigEntry.Gui.TransitiveObject
+        AdvancedComponent armor = new AdvancedComponent();
+        @ConfigEntry.Gui.TransitiveObject
+        AdvancedComponent hunger = new AdvancedComponent();
+        @ConfigEntry.Gui.TransitiveObject
+        AdvancedComponent air = new AdvancedComponent();
+        @ConfigEntry.Gui.TransitiveObject
+        AdvancedComponent experience = new AdvancedComponent();
+        @ConfigEntry.Gui.TransitiveObject
+        AdvancedComponent mountJumpBar = new AdvancedComponent();
+        @ConfigEntry.Gui.TransitiveObject
+        AdvancedComponent mountHealth = new AdvancedComponent();
+        @ConfigEntry.Gui.TransitiveObject
+        AdvancedComponent statusEffects = new AdvancedComponent();
+        @ConfigEntry.Gui.TransitiveObject
+        AdvancedComponent scoreboard = new AdvancedComponent();
+        private AdvancedComponents() {
+            statusEffects.direction = ScrollDirection.UP;
+            scoreboard.direction = ScrollDirection.RIGHT;
+            scoreboard.distance = 100;
+        }
+    }
 
     /* DYNAMIC CROSSHAIR */
     @ConfigEntry.Category("dynamicCrosshair")
@@ -160,12 +249,33 @@ public class Config implements ConfigData {
     public CrosshairModifier crosshairModIncorrectTool() { return crosshairModifiers.modIncorrectTool; }
     public CrosshairModifier crosshairModUsableItem() { return crosshairModifiers.modUsableItem; }
 
+    /* DEFAULT OVERRIDES */
+    private Config() {
+        hunger.policy = RevealPolicy.Low;
+        air.policy = RevealPolicy.NotFull;
+        bindValues();
+    }
+
     /* OPTIONS END */
+    private void bindValues() {
+        health.values = advanced.health;
+        armor.values = advanced.armor;
+        hunger.values = advanced.hunger;
+        air.values = advanced.air;
+        hotbar.values = advanced.hotbar;
+        experience.values = advanced.experience;
+        mountJumpBar.values = advanced.mountJumpBar;
+        mountHealth.values = advanced.mountHealth;
+        statusEffects.values = advanced.statusEffects;
+        scoreboard.values = advanced.scoreboard;
+    }
+
     @Override
     public void validatePostLoad() throws ValidationException {
         ConfigData.super.validatePostLoad();
         if (ticksRevealed < 20) ticksRevealed = 20;
         animationSpeed = Math.min(10.0, Math.max(0.1, animationSpeed));
+        bindValues();
     }
 
 }

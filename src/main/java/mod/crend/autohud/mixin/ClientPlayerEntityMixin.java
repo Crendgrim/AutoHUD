@@ -21,7 +21,7 @@ public class ClientPlayerEntityMixin {
     @Shadow public Input input;
     @Inject( method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getVehicle()Lnet/minecraft/entity/Entity;") )
     private void jumpBarChanged(CallbackInfo ci){
-        if (this.input.jumping && AutoHud.config.revealOnMountJump()) Component.MountJumpBar.revealNow();
+        if (this.input.jumping && AutoHud.config.mountJumpBar().onChange()) Component.MountJumpBar.revealNow();
     }
 
     // Mount health
@@ -30,11 +30,11 @@ public class ClientPlayerEntityMixin {
     @Inject( method = "tickRiding", at = @At(value = "RETURN") )
     private void mountHealthChange(CallbackInfo ci){
         ClientPlayerEntity thisPlayer = (ClientPlayerEntity) (Object) this;
-        if (AutoHud.config.onMountHealthChange() != RevealPolicy.Disabled && thisPlayer.getVehicle() instanceof LivingEntity vehicle) {
+        if (AutoHud.config.mountHealth().policy() != RevealPolicy.Disabled && thisPlayer.getVehicle() instanceof LivingEntity vehicle) {
             if (mountHealth == null) {
                 mountHealth = new StatState(Component.MountHealth, (int) vehicle.getHealth(), (int) vehicle.getMaxHealth());
             }
-            mountHealth.changeConditional((int) vehicle.getHealth(), AutoHud.config.onMountHealthChange());
+            mountHealth.changeConditional((int) vehicle.getHealth(), AutoHud.config.mountHealth().policy());
         } else {
             mountHealth = null;
         }

@@ -7,7 +7,6 @@ import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.StatusEffectSpriteManager;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -168,9 +167,9 @@ public class InGameHudMixin {
     }
 
     // Status Effects
-    @Inject(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderColor(FFFF)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void preEffect(MatrixStack matrices, CallbackInfo ci, Collection collection, int i, int j, StatusEffectSpriteManager statusEffectSpriteManager, List list, Iterator var7, StatusEffectInstance statusEffectInstance, StatusEffect statusEffect) {
-        preInject(matrices, Component.get(statusEffect));
+    @Inject(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;getEffectType()Lnet/minecraft/entity/effect/StatusEffect;", ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT)
+    private void preEffect(MatrixStack matrices, CallbackInfo ci, Collection<StatusEffectInstance> collection, int i, int j, StatusEffectSpriteManager statusEffectSpriteManager, List<Runnable> list, Iterator<StatusEffectInstance> var7, StatusEffectInstance statusEffectInstance) {
+        preInject(matrices, Component.get(statusEffectInstance.getEffectType()));
     }
     @Inject(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/StatusEffectSpriteManager;getSprite(Lnet/minecraft/entity/effect/StatusEffect;)Lnet/minecraft/client/texture/Sprite;"))
     private void postEffect(MatrixStack matrices, CallbackInfo ci) {

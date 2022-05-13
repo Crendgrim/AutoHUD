@@ -41,14 +41,8 @@ public class Hud {
     }
 
     public static void render(float tickDelta) {
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        if (player != null) {
-            if (state == null) {
-                state = new State(player);
-            }
+        if (state != null) {
             state.render(tickDelta);
-        } else {
-            state = null;
         }
     }
 

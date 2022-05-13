@@ -66,45 +66,6 @@ public class CrosshairHandler {
         return (policy == BlockCrosshairPolicy.Always || (policy != BlockCrosshairPolicy.Disabled && hitResult.getType() == HitResult.Type.BLOCK));
     }
 
-    /*
-     * Interaction priority
-     *
-     * - interact with blocks
-     *   - ignores interact when crouching
-     * - main hand interaction
-     * - offhand interaction depending on main hand
-     *   - if empty
-     *   - if tool and tool does not have right click (on target)
-     *   - if usable item and that does not have right click (on target)
-     */
-
-    /*
-     * RMB behaviour
-     *
-     * [not crouch]: interact with block
-     * mainhand:
-     *   - food if not full
-     *   - drink always
-     *   - tool if action possible
-     *   - usable item if possible
-     *   - block if placable (test for torch / offhand in enclosed spaces!)
-     * offhand:
-     *   - if mainhand didn't take an action, same way
-     */
-    /*
-     * LMB
-     * - can/not break
-     * - interact
-     */
-    /*
-     * With tool at crafting table:
-     *   - can/not break
-     *   - interact
-     * With food at crafting table:
-     *   - interact
-     *
-     */
-
     // Return true if main hand item is usable
     private static boolean checkHand(ClientPlayerEntity player, ItemStack handItemStack, HitResult hitResult) {
         Item handItem = handItemStack.getItem();
@@ -150,6 +111,9 @@ public class CrosshairHandler {
             if (handItem instanceof BlockItem) {
                 if (AutoHud.config.dynamicCrosshairHoldingBlock() == BlockCrosshairPolicy.IfInteractable) {
                     IBlockItemMixin blockItem = (IBlockItemMixin) handItem;
+                    Block block = MinecraftClient.getInstance().world.getBlockState(((BlockHitResult) hitResult).getBlockPos()).getBlock();
+                    // Special case: cake eats input
+                    if (block instanceof CakeBlock && !player.shouldCancelInteraction() && player.getHungerManager().isNotFull()) return false;
                     ItemPlacementContext itemPlacementContext = new ItemPlacementContext(player, player.getActiveHand(), handItemStack, (BlockHitResult) hitResult);
                     BlockState blockState = blockItem.invokeGetPlacementState(itemPlacementContext);
                     if (blockState != null && blockItem.invokeCanPlace(itemPlacementContext, blockState)) return true;
@@ -405,7 +369,6 @@ public class CrosshairHandler {
                     ||  block instanceof CartographyTableBlock
                     ||  block instanceof LoomBlock
                     ||  block instanceof BedBlock
-                    ||  block instanceof CakeBlock
                     || (block instanceof TrapdoorBlock && ((IAbstractBlockMixin) block).getMaterial() != Material.METAL)
                     || (block instanceof DoorBlock && ((IAbstractBlockMixin) block).getMaterial() != Material.METAL)
                     ||  block instanceof FenceGateBlock
@@ -417,6 +380,13 @@ public class CrosshairHandler {
                     ||  block instanceof CraftingTableBlock
                     || (block instanceof ComposterBlock && ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE.containsKey(mainHandStack.getItem()))) {
                 return true;
+            }
+            // Special case: Cake gets eaten (modified), so "use" makes more sense to me
+            if (block instanceof CakeBlock) {
+                if (player.getHungerManager().isNotFull() && (!player.shouldCancelInteraction() || (player.getMainHandStack().isEmpty() && player.getOffHandStack().isEmpty()))) {
+                    modifierUse = ModifierUse.USE_ITEM;
+                    return false;
+                }
             }
             // Special case: Redstone ore: can be placed against, but still activates
             if (block instanceof RedstoneOreBlock) {

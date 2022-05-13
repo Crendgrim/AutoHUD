@@ -23,11 +23,6 @@ public class StatState {
             case Disabled -> !Hud.isDynamic();
             case Always -> true;
         };
-        if (revealPolicy == RevealPolicy.Always) {
-            component.disable();
-        } else {
-            component.enable();
-        }
         if (doReveal) {
             component.revealCombined();
         }

@@ -11,19 +11,19 @@ import net.minecraft.entity.effect.StatusEffect;
 import java.util.*;
 
 public class Component {
-    public static Component Hotbar = new Component("Hotbar", AutoHud.config.hotbar());
-    public static Component Tooltip = new Component("Tooltip", AutoHud.config.hotbar());
-    public static Component ExperienceBar = new Component("ExperienceBar", AutoHud.config.experience());
     public static Component Armor = new Component("Armor", AutoHud.config.armor());
-    public static Component Health = new Component("Health", AutoHud.config.health());
-    public static Component Hunger = new Component("Hunger", AutoHud.config.hunger());
+    public static Component Health = new Component("Health", AutoHud.config.health(), List.of(Armor));
     public static Component Air = new Component("Air", AutoHud.config.air());
-    public static Component MountHealth = new Component("MountHealth", AutoHud.config.mountHealth());
+    public static Component Hunger = new Component("Hunger", AutoHud.config.hunger(), List.of(Air));
+    public static Component MountHealth = new Component("MountHealth", AutoHud.config.mountHealth(), List.of(Air));
     public static Component MountJumpBar = new Component("MountJumpBar", AutoHud.config.mountJumpBar());
+    public static Component ExperienceBar = new Component("ExperienceBar", AutoHud.config.experience(), List.of(Health, Armor, Hunger, MountHealth, Air));
+    public static Component Hotbar = new Component("Hotbar", AutoHud.config.hotbar(), List.of(Health, Armor, Hunger, MountHealth, Air, ExperienceBar));
+    public static Component Tooltip = new Component("Tooltip", AutoHud.config.hotbar());
     public static Component Scoreboard = new Component("Scoreboard", AutoHud.config.scoreboard());
 
     private static final Map<StatusEffect, Component> statusEffectComponents = new HashMap<>();
-    private static final List<Component> components = Arrays.asList(
+    private static final List<Component> components = List.of(
             Hotbar,
             Tooltip,
             ExperienceBar,
@@ -46,8 +46,12 @@ public class Component {
     }
 
     Component(String name, Config.IComponent config) {
+        this(name, config, new ArrayList<>());
+    }
+    Component(String name, Config.IComponent config, final List<Component> stackComponents) {
         this.name = name;
         this.config = config;
+        this.stackComponents = stackComponents;
     }
 
     public static void register(StatusEffect effect) {
@@ -78,6 +82,7 @@ public class Component {
     }
 
     private final Config.IComponent config;
+    private final List<Component> stackComponents;
     private double delta = 0;
     private double speed = 0;
     private final String name;
@@ -112,9 +117,10 @@ public class Component {
         visibleTime = AutoHud.config.timeRevealed();
         if (config.active() && AutoHud.config.revealType() == RevealType.COMBINED) {
             components.forEach(c -> c.visibleTime = Math.max(c.visibleTime, visibleTime));
-        }
-        else if (config.active() && AutoHud.config.revealType() == RevealType.HIDE_COMBINED) {
+        } else if (config.active() && AutoHud.config.revealType() == RevealType.HIDE_COMBINED) {
             components.forEach(c -> c.keepRevealed(visibleTime));
+        } else if (config.active() && AutoHud.config.revealType() == RevealType.STACKED) {
+            stackComponents.forEach(c -> c.keepRevealed(visibleTime));
         }
     }
     public void revealNow() {

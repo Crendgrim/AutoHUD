@@ -14,7 +14,7 @@ public class Config implements ConfigData {
     double animationSpeed = 1.0;
     @ConfigEntry.Gui.Tooltip(count = 3)
     @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-    RevealType revealType = RevealType.INDIVIDUAL;
+    RevealType revealType = RevealType.STACKED;
     boolean statusEffectTimer = true;
     public boolean dynamicOnLoad() { return dynamicOnLoad; }
     public int timeRevealed() { return ticksRevealed; }

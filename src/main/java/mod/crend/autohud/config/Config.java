@@ -10,8 +10,8 @@ import mod.crend.autohud.component.ScrollDirection;
 public class Config implements ConfigData {
     /* MAIN OPTIONS */
     boolean dynamicOnLoad = true;
-    int ticksRevealed = 100;
-    double animationSpeed = 2.0;
+    int ticksRevealed = 200;
+    double animationSpeed = 1.0;
     @ConfigEntry.Gui.Tooltip(count = 3)
     @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
     RevealType revealType = RevealType.INDIVIDUAL;

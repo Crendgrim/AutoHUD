@@ -360,7 +360,12 @@ public class CrosshairHandler {
             BlockState blockState = MinecraftClient.getInstance().world.getBlockState(((BlockHitResult) hitResult).getBlockPos());
             Block block = blockState.getBlock();
             if (block instanceof BlockWithEntity) {
-                if (!(block instanceof BeehiveBlock || block instanceof AbstractSignBlock || block instanceof LecternBlock || block instanceof CampfireBlock)) {
+                if (!(     block instanceof BeehiveBlock
+                        || block instanceof AbstractSignBlock
+                        || block instanceof LecternBlock
+                        || block instanceof CampfireBlock
+                        || block instanceof BannerBlock
+                )) {
                     return true;
                 }
             }

@@ -6,15 +6,7 @@
   "client": [
     "ClientPlayerEntityMixin",
     "ClientPlayerInteractionManagerMixin",
-    "IAbstractBlockMixin",
-    "IAxeItemMixin",
-    "IBlockItemMixin",
-    "IFurnaceMinecartEntityMixin",
-    "IHoeItemMixin",
-    "IItemMixin",
     "InGameHudMixin",
-    "IParrotEntityMixin",
-    "IShovelItemMixin",
     "StatusEffectTimerMixin"
   ],
   "injectors": {

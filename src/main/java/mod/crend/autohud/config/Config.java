@@ -37,7 +37,7 @@ public class Config implements ConfigData {
         @ConfigEntry.Gui.Excluded
         public AdvancedComponent values = null;
         public abstract boolean active();
-        public boolean onChange() { return false; };
+        public boolean onChange() { return false; }
     }
     public static class SimpleComponent extends IComponent {
         private SimpleComponent() { }
@@ -108,6 +108,15 @@ public class Config implements ConfigData {
     @ConfigEntry.Gui.TransitiveObject
     @ConfigEntry.Category("components")
     BooleanComponent hotbar = new BooleanComponent();
+    @ConfigEntry.Category("components")
+    boolean hotbarOnSlotChange = true;
+    @ConfigEntry.Category("components")
+    boolean hotbarOnLowDurability = true;
+    @ConfigEntry.Category("components")
+    @ConfigEntry.BoundedDiscrete(max=100)
+    int hotbarDurabilityPercentage = 10;
+    @ConfigEntry.Category("components")
+    int hotbarDurabilityTotal = 20;
     @ConfigEntry.Gui.TransitiveObject
     @ConfigEntry.Category("components")
     BooleanComponent statusEffects = new BooleanComponent();
@@ -126,6 +135,10 @@ public class Config implements ConfigData {
     public BooleanComponent mountJumpBar() { return mountJumpBar; }
     public PolicyComponent mountHealth() { return mountHealth; }
     public BooleanComponent hotbar() { return hotbar; }
+    public boolean isHotbarOnSlotChange() { return hotbarOnSlotChange; }
+    public boolean isHotbarOnLowDurability() { return hotbarOnLowDurability; }
+    public int getHotbarDurabilityPercentage() { return hotbarDurabilityPercentage; }
+    public int getHotbarDurabilityTotal() { return hotbarDurabilityTotal; }
     public BooleanComponent statusEffects() { return statusEffects; }
     public boolean hidePersistentStatusEffects() { return hidePersistentStatusEffects; }
     public SimpleComponent scoreboard() { return scoreboard; }

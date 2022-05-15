@@ -30,11 +30,27 @@ public class State {
         air = new StatState(Component.Air, player.getAir(), player.getMaxAir());
     }
 
+    private boolean revealHotbarOnDurability(ItemStack itemStack) {
+        if (itemStack.isDamageable()
+            && itemStack.getDamage() >= (100 - AutoHud.config.getHotbarDurabilityPercentage()) / 100.0 * itemStack.getMaxDamage()
+            && (itemStack.getMaxDamage() - itemStack.getDamage()) < AutoHud.config.getHotbarDurabilityTotal()
+        ) {
+            Component.Hotbar.revealCombined();
+            Component.Tooltip.revealCombined();
+            return true;
+        }
+        return false;
+    }
     public void tick(ClientPlayerEntity player) {
         if (player == null) return;
 
         Component.Hotbar.revealIf(previousStack != player.getMainHandStack());
         Component.Tooltip.revealIf(previousStack != player.getMainHandStack());
+        if (AutoHud.config.isHotbarOnLowDurability()) {
+            if (!revealHotbarOnDurability(player.getMainHandStack())) {
+                revealHotbarOnDurability(player.getOffHandStack());
+            }
+        }
         previousStack = player.getMainHandStack();
 
         health.changeConditional((int) player.getHealth(), AutoHud.config.health().policy());

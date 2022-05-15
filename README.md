@@ -7,6 +7,8 @@ It is inspired by similar mods ("immersive hud") for other games.
 I personally really like the clean view of no visible HUD, but get frustrated by the
 limitations of using F1 mode.
 
+This is an opinionated rewrite of [Head-down Display](https://github.com/jadc/headdowndisplay/) that never got updated.
+
 ## Features
 * Toggle the whole HUD with a key binding.
 * Have parts of the HUD that haven't changed hide away.

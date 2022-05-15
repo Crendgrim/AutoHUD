@@ -1,0 +1,48 @@
+# Auto HUD 
+
+Auto HUD is a Minecraft mod for the Fabric launcher which hides parts of the user
+interface (HUD) that are currently not interesting.
+
+It is inspired by similar mods ("immersive hud") for other games.
+I personally really like the clean view of no visible HUD, but get frustrated by the
+limitations of using F1 mode.
+
+## Features
+* Toggle the whole HUD with a key binding.
+* Have parts of the HUD that haven't changed hide away.
+* Hide persistent, unchanging status effects, such as water breathing from the turtle helmet.
+* Show remaining time of status effects.
+* Highly configurable.
+
+### Visual differences to F1 mode
+* Player hand / equipped items remain visible
+* Player names remain visible
+* The vignette remains active
+* Incoming chat messages still pop up
+* Crosshair remains visible (see my other mod Dynamic Crosshair for that)
+* Configurable what elements are hidden
+
+## Dependencies
+This mod has been written for Fabric for Minecraft 1.18.2.
+* requires [Fabric API](https://modrinth.com/mod/fabric-api)
+* requires [ClothConfig](https://modrinth.com/mod/cloth-config)
+* not required: [Mod Menu](https://modrinth.com/mod/modmenu) for ingame configuration screen
+
+## Mod Compatibility
+This mod includes a modified version of magicus' [Status Effect Timers](https://modrinth.com/mod/statuseffecttimer),
+because I could not figure out how to dynamically insert my modifications into it.
+Since this mod allows for status effect icons to be hidden individually,
+the non-modified version will draw the timers in the wrong place.
+
+Known to be compatible:
+* Dynamic Crosshair augments this mod by allowing to hide/change the crosshair based on context.
+* [Raised](https://modrinth.com/mod/raised) works perfectly.
+* [HUDTweaks](https://modrinth.com/mod/hudtweaks) mostly works.
+  Vertical status effects bar does not work with the timer overlay.
+  Animation direction and offset may have to be tweaked in AutoHud's settings manually.
+* [AppleSkin](https://modrinth.com/mod/appleskin) appears to work fine.
+
+Known to be incompatible:
+* OptiFabric crashes due to mixin conflicts.
+* Any other mod that draws status effect timers should have that functionality disabled.
+* HUD elements created by other mods will most likely not be moved.

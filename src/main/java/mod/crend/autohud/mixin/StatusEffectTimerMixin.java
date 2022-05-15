@@ -24,6 +24,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Collection;
 
+/*
+ * This file is originally part of the StatusEffectTimer mod:
+ *   https://github.com/magicus/statuseffecttimer
+ *
+ * It is included here in order to be modified properly.
+ * Changes:
+ *  - Skip timers for hidden effects by redirecting StatusEffectInstance.shouldShowIcon()
+ *  - Insert matrix push/pop for moving each timer text with its icon
+ */
+
 // Set priority to 500, to load before default at 1000. This is to better cooperate with HUDTweaks.
 @Environment(EnvType.CLIENT)
 @Mixin(value = InGameHud.class, priority = 500)

@@ -106,13 +106,34 @@ public class Component {
     public boolean isHidden() {
         return !fullyRevealed();
     }
+
+    /**
+     * Set the current state to hidden and begin reveal process.
+     *
+     * This differs from regular reveal() in that it forces the
+     * reveal animation to play out.
+     */
     public void revealFromHidden() {
         delta = config.values.distance();
         reveal();
     }
+
+    /**
+     * Reveal the component. If not revealed yet, starts an animation.
+     */
     public void reveal() {
         visibleTime = AutoHud.config.timeRevealed();
     }
+
+    /**
+     * Reveal the component, and, depending on config, also all
+     * others that should be revealed:
+     * - COMBINED: force all components to be revealed
+     * - HIDE_COMBINED: force all already revealed components to stay revealed
+     * - STACKED: force all currently revealed components whose animation path
+     *            intersects this component to stay revealed. This ensures that
+     *            e.g. the health bar does not move through the item hotbar.
+     */
     public void revealCombined() {
         visibleTime = AutoHud.config.timeRevealed();
         if (config.active() && AutoHud.config.revealType() == RevealType.COMBINED) {
@@ -123,10 +144,18 @@ public class Component {
             stackComponents.forEach(c -> c.keepRevealed(visibleTime));
         }
     }
+
+    /**
+     * Force the component to be revealed now, without an animation.
+     */
     public void revealNow() {
         visibleTime = AutoHud.config.timeRevealed();
         delta = 0;
     }
+
+    /**
+     * Hides the component. If not hidden yet, starts an animation.
+     */
     public void hide() {
         if (!config.active()) return;
         visibleTime = 0;
@@ -137,12 +166,18 @@ public class Component {
     public boolean fullyHidden() {
         return delta == config.values.distance();
     }
+
+    // This method is used to ensure that linked components start their hide animation at the same time
     private void keepRevealed(float time) {
         if (config.active() && visibleTime > 0 && visibleTime < time) {
             visibleTime = time;
         }
     }
 
+    /* Maths to ensure a more visually interesting speed curve for the animation.
+     * Speeds up until half way, then slows down.
+     * This causes the animation to feel smoother.
+     */
     private void speedDelta(float tickDelta) {
         if (delta > config.values.distance() / 2.0) speed -= AutoHud.config.animationSpeed() * config.values.speedMultiplier() * tickDelta;
         else speed += AutoHud.config.animationSpeed() * config.values.speedMultiplier() * tickDelta;
@@ -163,18 +198,19 @@ public class Component {
         }
     }
     public void render(float tickDelta) {
-        if (visibleTime == 0) {
-            if (fullyHidden()) {
+        if (visibleTime == 0) { // hide component
+            if (fullyHidden()) { // component is fully hidden, keep it in place
                 speed = 0;
-            } else {
+            } else { // component is not yet fully hidden, animate
                 moveOut(tickDelta);
             }
-        } else if (fullyRevealed()) {
+        } else if (fullyRevealed()) { // show component, fully revealed, keep it in place
             speed = 0;
-        } else {
+        } else { // show component, not yet fully revealed, animate
             moveIn(tickDelta);
         }
         if (config.active() && Hud.isDynamic()) {
+            // this is where the component gets "ticked" to ensure smooth start to hide animation
             visibleTime = Math.max(0, visibleTime - tickDelta);
         }
     }

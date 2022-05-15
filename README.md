@@ -22,6 +22,13 @@ limitations of using F1 mode.
 * Crosshair remains visible (see my other mod Dynamic Crosshair for that)
 * Configurable what elements are hidden
 
+## Screenshots
+All HUD elements are hidden except for the currently active status effect:
+![Example for hiding HUD](screenshot1.png)
+
+Possible look with shaders installed:
+![Example with shaders](screenshot2.png)
+
 ## Dependencies
 This mod has been written for Fabric for Minecraft 1.18.2.
 * requires [Fabric API](https://modrinth.com/mod/fabric-api)

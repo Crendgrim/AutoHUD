@@ -31,8 +31,11 @@ All HUD elements are hidden except for the currently active status effect:
 Possible look with shaders installed:
 ![Example with shaders](screenshot2.png)
 
-## Dependencies
+## Installation
 This mod has been written for Fabric for Minecraft 1.18.2.
+
+Get packaged versions from [Modrinth](https://modrinth.com/mod/autohud) or [Curseforge](https://www.curseforge.com/minecraft/mc-mods/auto-hud)!
+
 * requires [Fabric API](https://modrinth.com/mod/fabric-api)
 * requires [ClothConfig](https://modrinth.com/mod/cloth-config)
 * not required: [Mod Menu](https://modrinth.com/mod/modmenu) for ingame configuration screen
@@ -44,7 +47,7 @@ Since this mod allows for status effect icons to be hidden individually,
 the non-modified version will draw the timers in the wrong place.
 
 Known to be compatible:
-* Dynamic Crosshair augments this mod by allowing to hide/change the crosshair based on context.
+* [Dynamic Crosshair](https://modrinth.com/mod/dynamiccrosshair) augments this mod by allowing to hide/change the crosshair based on context.
 * [Raised](https://modrinth.com/mod/raised) works perfectly.
 * [HUDTweaks](https://modrinth.com/mod/hudtweaks) mostly works.
   Vertical status effects bar does not work with the timer overlay.

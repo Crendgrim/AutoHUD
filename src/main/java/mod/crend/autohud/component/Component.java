@@ -209,7 +209,7 @@ public class Component {
         } else { // show component, not yet fully revealed, animate
             moveIn(tickDelta);
         }
-        if (config.active() && Hud.isDynamic()) {
+        if (config.active() && Hud.actDynamic()) {
             // this is where the component gets "ticked" to ensure smooth start to hide animation
             visibleTime = Math.max(0, visibleTime - tickDelta);
         }

@@ -65,5 +65,6 @@
   "text.autoconfig.autohud.option.advanced.scoreboard.distance": "Scoreboard: Distance",
 
   "key.category.autohud": "Auto HUD",
-  "key.autohud.toggle-hud": "Toggle dynamic HUD"
+  "key.autohud.toggle-hud": "Toggle dynamic HUD",
+  "key.autohud.peek-hud": "Toggle HUD while held"
 }

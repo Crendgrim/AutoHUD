@@ -20,7 +20,7 @@ public class StatState {
             case Increasing -> (newValue > current);
             case Decreasing -> (newValue < current);
             case Changing -> (newValue != current);
-            case Disabled -> !Hud.isDynamic();
+            case Disabled -> !Hud.actDynamic();
             case Always -> true;
         };
         if (doReveal) {

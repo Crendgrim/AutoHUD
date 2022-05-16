@@ -31,11 +31,18 @@ public class AutoHud implements ClientModInitializer {
                         GLFW.GLFW_KEY_G,
                         "key.category.autohud"
                 ));
+        KeyBinding peekHudKeyBinding = KeyBindingHelper.registerKeyBinding(
+                new KeyBinding("key.autohud.peek-hud",
+                        InputUtil.Type.KEYSYM,
+                        GLFW.GLFW_KEY_R,
+                        "key.category.autohud"
+                ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (toggleHudKeyBinding.wasPressed()) {
                 Hud.toggleHud();
             }
+            Hud.peekHud(peekHudKeyBinding.isPressed());
         });
     }
 }

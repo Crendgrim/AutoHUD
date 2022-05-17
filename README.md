@@ -54,6 +54,7 @@ Known to be compatible:
   Animation direction and offset may have to be tweaked in AutoHud's settings manually.
 * [AppleSkin](https://modrinth.com/mod/appleskin) appears to work fine.
 * [DetailArmorBar](https://modrinth.com/mod/detail-armor-bar) is supported.
+* [BerdinskiyBears Armor Hud](https://www.curseforge.com/minecraft/mc-mods/berdinskiybears-armor-hud) is supported in "hotbar" configuration
 
 Known to be incompatible:
 * OptiFabric crashes due to mixin conflicts.

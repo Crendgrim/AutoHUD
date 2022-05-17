@@ -14,7 +14,9 @@ public class AutoHudMixinPlugin implements IMixinConfigPlugin {
 
     private static final Map<String, Supplier<Boolean>> ACTIVE_PLUGINS = Map.of(
             "mod.crend.autohud.mixin.mod.detailab.ArmorBarRendererMixin",
-                () -> FabricLoader.getInstance().isModLoaded("detailab")
+                () -> FabricLoader.getInstance().isModLoaded("detailab"),
+            "mod.crend.autohud.mixin.mod.armorhud.ArmorHudMixin",
+                () -> FabricLoader.getInstance().isModLoaded("armor_hud")
     );
 
     @Override

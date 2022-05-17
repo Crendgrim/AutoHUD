@@ -8,7 +8,8 @@
     "ClientPlayerInteractionManagerMixin",
     "InGameHudMixin",
     "StatusEffectTimerMixin",
-    "mod.detailab.ArmorBarRendererMixin"
+    "mod.detailab.ArmorBarRendererMixin",
+    "mod.armorhud.ArmorHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1

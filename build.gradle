@@ -16,6 +16,12 @@ repositories {
 	maven { url "https://jitpack.io" }
 	maven { url "https://maven.shedaniel.me/" }
 	maven { url "https://maven.terraformersmc.com/" }
+	maven {
+		url "https://cursemaven.com"
+		content {
+			includeGroup "curse.maven"
+		}
+	}
 }
 
 dependencies {
@@ -32,6 +38,7 @@ dependencies {
 	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
 	modCompileOnly ("com.github.RedLime:DetailArmorBar:2.6.1") {transitive = false}
+	modCompileOnly("curse.maven:berdinskiybears-armor-hud-420155:3671102") {transitive = false}
 }
 
 processResources {

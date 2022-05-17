@@ -7,9 +7,11 @@
     "ClientPlayerEntityMixin",
     "ClientPlayerInteractionManagerMixin",
     "InGameHudMixin",
-    "StatusEffectTimerMixin"
+    "StatusEffectTimerMixin",
+    "mod.detailab.ArmorBarRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "plugin": "mod.crend.autohud.AutoHudMixinPlugin"
 }

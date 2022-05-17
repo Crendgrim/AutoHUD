@@ -53,6 +53,7 @@ Known to be compatible:
   Vertical status effects bar does not work with the timer overlay.
   Animation direction and offset may have to be tweaked in AutoHud's settings manually.
 * [AppleSkin](https://modrinth.com/mod/appleskin) appears to work fine.
+* [DetailArmorBar](https://modrinth.com/mod/detail-armor-bar) is supported.
 
 Known to be incompatible:
 * OptiFabric crashes due to mixin conflicts.

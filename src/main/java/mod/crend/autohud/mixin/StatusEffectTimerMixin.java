@@ -70,11 +70,7 @@ public abstract class StatusEffectTimerMixin extends DrawableHelper {
                         y += 26;
                     }
 
-                    matrices.push();
-                    Component component = Component.get(statusEffect);
-                    if (component.isHidden()) {
-                        matrices.translate(component.getDeltaX(), component.getDeltaY(), 0);
-                    }
+                    Hud.preInject(matrices, Component.get(statusEffect));
 
                     String duration = getDurationAsString(statusEffectInstance);
                     int durationLength = client.textRenderer.getWidth(duration);
@@ -87,7 +83,7 @@ public abstract class StatusEffectTimerMixin extends DrawableHelper {
                         int amplifierLength = client.textRenderer.getWidth(amplifierString);
                         drawStringWithShadow(matrices, client.textRenderer, amplifierString, x + 22 - amplifierLength, y + 3, 0x99FFFFFF);
                     }
-                    matrices.pop();
+                    Hud.postInject(matrices);
                 }
             }
         }

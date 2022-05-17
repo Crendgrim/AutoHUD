@@ -2,6 +2,7 @@ package mod.crend.autohud.component;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.effect.StatusEffectInstance;
 
 public class Hud {
@@ -65,5 +66,16 @@ public class Hud {
             return (!component.fullyHidden());
         }
         return false;
+    }
+
+    public static void preInject(MatrixStack matrixStack, Component component) {
+        matrixStack.push();
+        if (component.isHidden()) {
+            matrixStack.translate(component.getDeltaX(), component.getDeltaY(), 0);
+        }
+    }
+
+    public static void postInject(MatrixStack matrixStack) {
+        matrixStack.pop();
     }
 }

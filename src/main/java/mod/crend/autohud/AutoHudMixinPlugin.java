@@ -13,7 +13,8 @@ public class AutoHudMixinPlugin implements IMixinConfigPlugin {
     private static final List<String> MOD_COMPAT = List.of(
             "armor_hud",
             "dehydration",
-            "detailab"
+            "detailab",
+            "inventoryprofilesnext"
     );
 
     @Override

@@ -11,7 +11,8 @@
     "mod.armor_hud.ArmorHudMixin",
     "mod.dehydration.DehydrationMixin$EarlyMixin",
     "mod.dehydration.DehydrationMixin$LateMixin",
-    "mod.detailab.ArmorBarRendererMixin"
+    "mod.detailab.ArmorBarRendererMixin",
+    "mod.inventoryprofilesnext.LockSlotsHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

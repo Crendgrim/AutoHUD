@@ -14,6 +14,10 @@ public class State {
     private Map<StatusEffect, StatusEffectInstance> previousStatusEffects;
 
     public State(ClientPlayerEntity player) {
+        initStates(player);
+        previousStatusEffects = new HashMap<>();
+    }
+   public void initStates(ClientPlayerEntity player) {
         Component.Hotbar.state = new ValueComponentState<>(Component.Hotbar, player::getMainHandStack);
         Component.Tooltip.state = new ValueComponentState<>(Component.Tooltip, player::getMainHandStack);
         Component.Health.state = new PolicyComponentState(Component.Health, () -> (int) player.getHealth(), () -> (int) player.getMaxHealth());
@@ -23,7 +27,7 @@ public class State {
         Component.ExperienceBar.state = new ValueComponentState<>(Component.ExperienceBar, () -> player.totalExperience);
         Component.Scoreboard.state = new ComponentState(Component.Scoreboard);
 
-        previousStatusEffects = new HashMap<>();
+        AutoHud.apis.forEach(api -> api.initState(player));
     }
 
     private boolean revealHotbarOnDurability(ItemStack itemStack) {
@@ -71,6 +75,8 @@ public class State {
         } else {
             Component.getStatusEffectComponents().forEach(Component::reveal);
         }
+
+        AutoHud.apis.forEach(api -> api.tickState(player));
     }
     public void render(float tickDelta) {
         Component.getComponents().forEach(c -> c.render(tickDelta));

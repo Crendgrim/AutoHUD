@@ -35,7 +35,7 @@ public class Config implements ConfigData {
     }
     public static abstract class IComponent {
         @ConfigEntry.Gui.Excluded
-        public AdvancedComponent values = null;
+        public AdvancedComponent values = new AdvancedComponent();
         public abstract boolean active();
         public boolean onChange() { return false; }
     }
@@ -83,6 +83,13 @@ public class Config implements ConfigData {
             return onChange;
         }
     }
+    @ConfigEntry.Gui.Excluded
+    public static final IComponent None = new IComponent() {
+        @Override
+        public boolean active() {
+            return true;
+        }
+    };
 
     @ConfigEntry.Gui.TransitiveObject
     @ConfigEntry.Category("components")

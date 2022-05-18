@@ -6,22 +6,22 @@ import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
 
 public class AutoHudMixinPlugin implements IMixinConfigPlugin {
 
-    private static final Map<String, Supplier<Boolean>> ACTIVE_PLUGINS = Map.of(
-            "mod.crend.autohud.mixin.mod.detailab.ArmorBarRendererMixin",
-                () -> FabricLoader.getInstance().isModLoaded("detailab"),
-            "mod.crend.autohud.mixin.mod.armorhud.ArmorHudMixin",
-                () -> FabricLoader.getInstance().isModLoaded("armor_hud")
+    private static final List<String> MOD_COMPAT = List.of(
+            "armor_hud",
+            "dehydration",
+            "detailab"
     );
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        return ACTIVE_PLUGINS.getOrDefault(mixinClassName, () -> true).get();
+        for (String modid : MOD_COMPAT) {
+            if (mixinClassName.contains(modid)) return FabricLoader.getInstance().isModLoaded(modid);
+        }
+        return true;
     }
 
     @Override

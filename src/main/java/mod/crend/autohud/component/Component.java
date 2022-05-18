@@ -53,13 +53,19 @@ public class Component {
         });
     }
 
-    Component(String name, Config.IComponent config) {
-        this(name, config, new ArrayList<>());
+    public Component(String name, Config.IComponent config) {
+        this(name, config, List.of());
     }
-    Component(String name, Config.IComponent config, final List<Component> stackComponents) {
+    public Component(String name, Config.IComponent config, final List<Component> stackComponents) {
         this.name = name;
         this.config = config;
         this.stackComponents = new ArrayList<>(stackComponents);
+    }
+    public Component(String name) {
+        this(name, List.of());
+    }
+    public Component(String name, final List<Component> stackComponents) {
+        this(name, Config.None, stackComponents);
     }
 
     public static void register(StatusEffect effect) {

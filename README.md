@@ -60,3 +60,4 @@ Known to be incompatible:
 * OptiFabric crashes due to mixin conflicts.
 * Any other mod that draws status effect timers should have that functionality disabled.
 * HUD elements created by other mods will most likely not be moved.
+* Bedrockify overwrites the status effect modifications. To get them working, disable the `screenSafeArea` mixin.

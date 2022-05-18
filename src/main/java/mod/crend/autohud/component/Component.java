@@ -17,13 +17,13 @@ public class Component {
     public static Component Hunger = new Component("Hunger", AutoHud.config.hunger(), List.of(Air));
     public static Component MountHealth = new Component("MountHealth", AutoHud.config.mountHealth(), List.of(Air));
     public static Component MountJumpBar = new Component("MountJumpBar", AutoHud.config.mountJumpBar());
-    public static Component ExperienceBar = new Component("ExperienceBar", AutoHud.config.experience(), List.of(Health, Armor, Hunger, MountHealth, Air));
-    public static Component Hotbar = new Component("Hotbar", AutoHud.config.hotbar(), List.of(Health, Armor, Hunger, MountHealth, Air, ExperienceBar));
+    public static Component ExperienceBar = new Component("ExperienceBar", AutoHud.config.experience(), List.of(Health, Hunger, MountHealth));
+    public static Component Hotbar = new Component("Hotbar", AutoHud.config.hotbar(), List.of(ExperienceBar));
     public static Component Tooltip = new Component("Tooltip", AutoHud.config.hotbar());
     public static Component Scoreboard = new Component("Scoreboard", AutoHud.config.scoreboard());
 
     private static final Map<StatusEffect, Component> statusEffectComponents = new HashMap<>();
-    private static final List<Component> components = List.of(
+    private static final List<Component> components = new ArrayList<>(List.of(
             Hotbar,
             Tooltip,
             ExperienceBar,
@@ -34,7 +34,10 @@ public class Component {
             MountHealth,
             MountJumpBar,
             Scoreboard
-    );
+    ));
+    public static void registerComponent(Component component) {
+        components.add(component);
+    }
 
     public static void revealAll() {
         components.forEach(Component::revealCombined);
@@ -44,6 +47,11 @@ public class Component {
         components.forEach(Component::hide);
         statusEffectComponents.values().forEach(Component::hide);
     }
+    public static void tickAll() {
+        components.forEach(c -> {
+            if (c.state != null) c.state.tick();
+        });
+    }
 
     Component(String name, Config.IComponent config) {
         this(name, config, new ArrayList<>());
@@ -51,7 +59,7 @@ public class Component {
     Component(String name, Config.IComponent config, final List<Component> stackComponents) {
         this.name = name;
         this.config = config;
-        this.stackComponents = stackComponents;
+        this.stackComponents = new ArrayList<>(stackComponents);
     }
 
     public static void register(StatusEffect effect) {
@@ -81,7 +89,8 @@ public class Component {
         return null;
     }
 
-    private final Config.IComponent config;
+    protected final Config.IComponent config;
+    public ComponentState state = null;
     private final List<Component> stackComponents;
     private double delta = 0;
     private double speed = 0;
@@ -141,8 +150,17 @@ public class Component {
         } else if (config.active() && AutoHud.config.revealType() == RevealType.HIDE_COMBINED) {
             components.forEach(c -> c.keepRevealed(visibleTime));
         } else if (config.active() && AutoHud.config.revealType() == RevealType.STACKED) {
-            stackComponents.forEach(c -> c.keepRevealed(visibleTime));
+            keepRevealedStacked(visibleTime);
         }
+    }
+    private void keepRevealedStacked(float visibleTime) {
+        keepRevealed(visibleTime);
+        stackComponents.forEach(c -> {
+            c.keepRevealedStacked(visibleTime);
+        });
+    }
+    public void addStackComponent(Component component) {
+        stackComponents.add(component);
     }
 
     /**

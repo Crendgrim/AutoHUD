@@ -2,14 +2,13 @@ package mod.crend.autohud.mixin;
 
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
-import mod.crend.autohud.component.StatState;
+import mod.crend.autohud.component.PolicyComponentState;
 import mod.crend.autohud.config.RevealPolicy;
 import net.minecraft.client.input.Input;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -25,18 +24,16 @@ public class ClientPlayerEntityMixin {
     }
 
     // Mount health
-    @Unique
-    private StatState mountHealth;
     @Inject( method = "tickRiding", at = @At(value = "RETURN") )
     private void mountHealthChange(CallbackInfo ci){
         ClientPlayerEntity thisPlayer = (ClientPlayerEntity) (Object) this;
         if (AutoHud.config.mountHealth().policy() != RevealPolicy.Disabled && thisPlayer.getVehicle() instanceof LivingEntity vehicle) {
-            if (mountHealth == null) {
-                mountHealth = new StatState(Component.MountHealth, (int) vehicle.getHealth(), (int) vehicle.getMaxHealth());
+            if (Component.MountHealth.state == null) {
+                Component.MountHealth.state = new PolicyComponentState(Component.MountHealth, () -> (int) vehicle.getHealth(), () -> (int) vehicle.getMaxHealth());
+                Component.MountHealth.revealCombined();
             }
-            mountHealth.changeConditional((int) vehicle.getHealth(), AutoHud.config.mountHealth().policy());
         } else {
-            mountHealth = null;
+            Component.MountHealth.state = null;
         }
     }
 }

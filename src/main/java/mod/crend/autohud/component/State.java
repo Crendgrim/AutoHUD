@@ -11,23 +11,19 @@ import java.util.Map;
 
 public class State {
 
-    private ItemStack previousStack;
-
-    private int previousExperience;
-    private StatState health;
-    private StatState food;
-    private StatState armor;
-    private StatState air;
     private Map<StatusEffect, StatusEffectInstance> previousStatusEffects;
 
     public State(ClientPlayerEntity player) {
-        previousStack = player.getMainHandStack();
-        previousExperience = player.totalExperience;
+        Component.Hotbar.state = new ValueComponentState<>(Component.Hotbar, player::getMainHandStack);
+        Component.Tooltip.state = new ValueComponentState<>(Component.Tooltip, player::getMainHandStack);
+        Component.Health.state = new PolicyComponentState(Component.Health, () -> (int) player.getHealth(), () -> (int) player.getMaxHealth());
+        Component.Hunger.state = new PolicyComponentState(Component.Hunger, () -> player.getHungerManager().getFoodLevel(), 20);
+        Component.Armor.state = new PolicyComponentState(Component.Armor, player::getArmor, 20);
+        Component.Air.state = new PolicyComponentState(Component.Air, player::getAir, player::getMaxAir);
+        Component.ExperienceBar.state = new ValueComponentState<>(Component.ExperienceBar, () -> player.totalExperience);
+        Component.Scoreboard.state = new ComponentState(Component.Scoreboard);
+
         previousStatusEffects = new HashMap<>();
-        health = new StatState(Component.Health, (int) player.getHealth(), (int) player.getMaxHealth());
-        food = new StatState(Component.Hunger, player.getHungerManager().getFoodLevel(), 20);
-        armor = new StatState(Component.Armor, player.getArmor(), 20);
-        air = new StatState(Component.Air, player.getAir(), player.getMaxAir());
     }
 
     private boolean revealHotbarOnDurability(ItemStack itemStack) {
@@ -41,27 +37,17 @@ public class State {
         }
         return false;
     }
+
     public void tick(ClientPlayerEntity player) {
         if (player == null) return;
 
-        Component.Hotbar.revealIf(previousStack != player.getMainHandStack());
-        Component.Tooltip.revealIf(previousStack != player.getMainHandStack());
+        Component.tickAll();
+
         if (AutoHud.config.isHotbarOnLowDurability()) {
             if (!revealHotbarOnDurability(player.getMainHandStack())) {
                 revealHotbarOnDurability(player.getOffHandStack());
             }
         }
-        previousStack = player.getMainHandStack();
-
-        health.changeConditional((int) player.getHealth(), AutoHud.config.health().policy());
-        food.changeConditional(player.getHungerManager().getFoodLevel(), AutoHud.config.hunger().policy());
-        armor.changeConditional(player.getArmor(), AutoHud.config.armor().policy());
-        air.changeConditional(player.getAir(), AutoHud.config.air().policy());
-
-        Component.ExperienceBar.revealIf(previousExperience != player.totalExperience);
-        previousExperience = player.totalExperience;
-
-        Component.Scoreboard.revealIf(false);
 
         if (AutoHud.config.statusEffects().active()) {
             if (AutoHud.config.statusEffects().onChange()) {

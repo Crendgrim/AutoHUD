@@ -4,13 +4,17 @@
   "package": "mod.crend.autohud.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "ClientPlayNetworkHandlerMixin",
     "ClientPlayerEntityMixin",
     "ClientPlayerInteractionManagerMixin",
+    "EntityMixin",
+    "HungerManagerMixin",
     "InGameHudMixin",
     "StatusEffectTimerMixin",
     "mod.armor_hud.ArmorHudMixin",
     "mod.dehydration.DehydrationMixin$EarlyMixin",
     "mod.dehydration.DehydrationMixin$LateMixin",
+    "mod.dehydration.ThirstManagerMixin",
     "mod.detailab.ArmorBarRendererMixin",
     "mod.inventoryprofilesnext.LockSlotsHandlerMixin"
   ],

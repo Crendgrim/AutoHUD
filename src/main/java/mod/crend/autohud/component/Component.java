@@ -221,11 +221,18 @@ public class Component {
             revealCombined();
         }
     }
+
+    public void updateState() {
+        if (state != null) {
+            state.update();
+        }
+    }
+
     public void render(float tickDelta) {
         if (visibleTime == 0) { // hide component
             if (fullyHidden()) { // component is fully hidden, keep it in place
                 speed = 0;
-            } else { // component is not yet fully hidden, animate
+            } else if (state == null || !state.scheduledUpdate()) { // component is not yet fully hidden, animate unless update scheduled
                 moveOut(tickDelta);
             }
         } else if (fullyRevealed()) { // show component, fully revealed, keep it in place
@@ -233,9 +240,13 @@ public class Component {
         } else { // show component, not yet fully revealed, animate
             moveIn(tickDelta);
         }
-        if (config.active() && Hud.actDynamic()) {
+        if (config.active() && Hud.actDynamic() && visibleTime > 0) {
             // this is where the component gets "ticked" to ensure smooth start to hide animation
             visibleTime = Math.max(0, visibleTime - tickDelta);
+            // if we would unhide next tick, update state again to make sure
+            if (visibleTime == 0 && state != null) {
+                state.updateNextTick();
+            }
         }
     }
 }

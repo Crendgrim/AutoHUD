@@ -18,11 +18,11 @@ public class State {
         previousStatusEffects = new HashMap<>();
     }
    public void initStates(ClientPlayerEntity player) {
-        Component.Hotbar.state = new ValueComponentState<>(Component.Hotbar, player::getMainHandStack);
-        Component.Tooltip.state = new ValueComponentState<>(Component.Tooltip, player::getMainHandStack);
+        Component.Hotbar.state = new ValueComponentState<>(Component.Hotbar, player::getMainHandStack, true);
+        Component.Tooltip.state = new ValueComponentState<>(Component.Tooltip, player::getMainHandStack, true);
         Component.Health.state = new PolicyComponentState(Component.Health, () -> (int) player.getHealth(), () -> (int) player.getMaxHealth());
         Component.Hunger.state = new PolicyComponentState(Component.Hunger, () -> player.getHungerManager().getFoodLevel(), 20);
-        Component.Armor.state = new PolicyComponentState(Component.Armor, player::getArmor, 20);
+        Component.Armor.state = new PolicyComponentState(Component.Armor, player::getArmor, 20, true);
         Component.Air.state = new PolicyComponentState(Component.Air, player::getAir, player::getMaxAir);
         Component.ExperienceBar.state = new ValueComponentState<>(Component.ExperienceBar, () -> player.totalExperience);
         Component.Scoreboard.state = new ComponentState(Component.Scoreboard);

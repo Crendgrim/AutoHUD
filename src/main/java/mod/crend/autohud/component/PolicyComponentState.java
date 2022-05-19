@@ -7,12 +7,18 @@ import java.util.function.Supplier;
 public class PolicyComponentState extends ValueComponentState<Integer> {
     Supplier<Integer> maxValueSupplier;
 
-    public PolicyComponentState(Component component, Supplier<Integer> newValueSupplier, Supplier<Integer> maxValueSupplier) {
-        super(component, newValueSupplier);
+    public PolicyComponentState(Component component, Supplier<Integer> newValueSupplier, Supplier<Integer> maxValueSupplier, boolean updateEveryTick) {
+        super(component, newValueSupplier, updateEveryTick);
         this.maxValueSupplier = maxValueSupplier;
     }
+    public PolicyComponentState(Component component, Supplier<Integer> newValueSupplier, Supplier<Integer> maxValueSupplier) {
+        this(component, newValueSupplier, maxValueSupplier, false);
+    }
+    public PolicyComponentState(Component component, Supplier<Integer> newValueSupplier, Integer maxValueSupplier, boolean updateEveryTick) {
+        this(component, newValueSupplier, () -> maxValueSupplier, updateEveryTick);
+    }
     public PolicyComponentState(Component component, Supplier<Integer> newValueSupplier, Integer maxValueSupplier) {
-        this(component, newValueSupplier, () -> maxValueSupplier);
+        this(component, newValueSupplier, maxValueSupplier, false);
     }
 
     @Override

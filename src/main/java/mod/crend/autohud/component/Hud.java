@@ -9,7 +9,6 @@ public class Hud {
     private static boolean dynamic = false;
     private static boolean wasPeeking = false;
 
-    private static ClientPlayerEntity player;
     private static State state = null;
 
     public static boolean actDynamic() {
@@ -42,15 +41,17 @@ public class Hud {
         wasPeeking = doPeek;
     }
 
+    public static void resetState() {
+        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        state = new State(player);
+    }
+
     public static void tick() {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player != null) {
             if (state == null) {
                 state = new State(player);
                 wasPeeking = false;
-            } else if (player != Hud.player) {
-                state.initStates(player);
-                Hud.player = player;
             }
             state.tick(player);
         } else {

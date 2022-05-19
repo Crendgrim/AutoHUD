@@ -2,7 +2,6 @@ package mod.crend.autohud.component;
 
 import mod.crend.autohud.config.Config;
 
-import java.util.Objects;
 import java.util.function.Supplier;
 
 public class PolicyComponentState extends ValueComponentState<Integer> {
@@ -23,7 +22,7 @@ public class PolicyComponentState extends ValueComponentState<Integer> {
             case Low -> (newValue <= maxValueSupplier.get() / 3);
             case Increasing -> (newValue > oldValue);
             case Decreasing -> (newValue < oldValue);
-            case Changing -> (!Objects.equals(newValue, oldValue));
+            case Changing -> (!newValue.equals(oldValue));
             case Disabled -> !Hud.actDynamic();
             case Always -> true;
         };

@@ -55,7 +55,7 @@ public class Config implements ConfigData {
 
         @Override
         public boolean active() {
-            return policy != RevealPolicy.Disabled;
+            return policy != RevealPolicy.Always;
         }
 
         @Override

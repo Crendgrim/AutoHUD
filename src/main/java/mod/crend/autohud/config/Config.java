@@ -131,7 +131,11 @@ public class Config implements ConfigData {
     boolean hidePersistentStatusEffects = true;
     @ConfigEntry.Gui.TransitiveObject
     @ConfigEntry.Category("components")
-    SimpleComponent scoreboard = new SimpleComponent();
+    BooleanComponent scoreboard = new BooleanComponent();
+    @ConfigEntry.Category("components")
+    boolean scoreboardOnScoreChange = true;
+    @ConfigEntry.Category("components")
+    boolean scoreboardOnTeamChange = true;
 
     public PolicyComponent health() { return health; }
     public PolicyComponent armor() { return armor; }
@@ -147,7 +151,9 @@ public class Config implements ConfigData {
     public int getHotbarDurabilityTotal() { return hotbarDurabilityTotal; }
     public BooleanComponent statusEffects() { return statusEffects; }
     public boolean hidePersistentStatusEffects() { return hidePersistentStatusEffects; }
-    public SimpleComponent scoreboard() { return scoreboard; }
+    public BooleanComponent scoreboard() { return scoreboard; }
+    public boolean isScoreboardOnScoreChange() { return scoreboardOnScoreChange; }
+    public boolean isScoreboardOnTeamChange() { return scoreboardOnTeamChange; }
 
 
     @ConfigEntry.Category("components")

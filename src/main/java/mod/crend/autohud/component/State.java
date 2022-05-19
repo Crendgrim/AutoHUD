@@ -25,7 +25,7 @@ public class State {
         Component.Armor.state = new PolicyComponentState(Component.Armor, player::getArmor, 20, true);
         Component.Air.state = new PolicyComponentState(Component.Air, player::getAir, player::getMaxAir);
         Component.ExperienceBar.state = new ValueComponentState<>(Component.ExperienceBar, () -> player.totalExperience);
-        Component.Scoreboard.state = new ComponentState(Component.Scoreboard);
+        Component.Scoreboard.state = new ScoreboardComponentState(Component.Scoreboard);
 
         AutoHud.apis.forEach(api -> api.initState(player));
     }

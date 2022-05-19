@@ -9,6 +9,7 @@
     "ClientPlayerInteractionManagerMixin",
     "EntityMixin",
     "HungerManagerMixin",
+    "ScoreboardMixin",
     "gui.InGameHudMixin",
     "gui.StatusEffectTimerMixin",
     "compat.armor_hud.ArmorHudMixin",

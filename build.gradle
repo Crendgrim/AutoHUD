@@ -12,6 +12,8 @@ archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
+def extractedDir = "$buildDir/dependencies/extractedDir"
+
 repositories {
 	maven { url "https://jitpack.io" }
 	maven { url "https://maven.shedaniel.me/" }
@@ -31,6 +33,10 @@ repositories {
 	}
 }
 
+configurations {
+	jijArchive
+}
+
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -48,7 +54,23 @@ dependencies {
 	modCompileOnly("curse.maven:berdinskiybears-armor-hud-420155:3671102") {transitive = false}
 	modCompileOnly("curse.maven:dehydration-410830:3683635") {transitive = false}
 	modCompileOnly("maven.modrinth:inventory-profiles-next:fabric-1.18.2-1.3.8") {transitive = false}
+
+	jijArchive "maven.modrinth:microdurability:0.3.3+1.18"
+	modCompileOnly fileTree(dir: "${extractedDir}", include: '*.jar')
 }
+
+// Special magic to extract a jar-in-jar archive and add it to the include path
+task extractJij(type: Copy) {
+	configurations.jijArchive.asFileTree.each {
+		zipTree(it).each { it2 ->
+			if (it2.name.endsWith(".jar")) {
+				from(it2)
+			}
+		}
+	}
+	into extractedDir
+}
+build.dependsOn extractJij
 
 processResources {
 	inputs.property "version", project.version

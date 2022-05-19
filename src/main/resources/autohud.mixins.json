@@ -16,7 +16,8 @@
     "compat.dehydration.DehydrationMixin$LateMixin",
     "compat.dehydration.ThirstManagerMixin",
     "compat.detailab.ArmorBarRendererMixin",
-    "compat.inventoryprofilesnext.LockSlotsHandlerMixin"
+    "compat.inventoryprofilesnext.LockSlotsHandlerMixin",
+    "compat.microdurability.MicroDurabilityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

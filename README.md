@@ -57,6 +57,7 @@ Known to be compatible:
 * [BerdinskiyBears Armor Hud](https://www.curseforge.com/minecraft/mc-mods/berdinskiybears-armor-hud) is supported in "hotbar" configuration
 * [Dehydration](https://www.curseforge.com/minecraft/mc-mods/dehydration) is supported (hydration bar follows hunger bar settings).
 * [Inventory Profiles Next](https://modrinth.com/mod/inventory-profiles-next)' lock symbol is supported.
+* [Micro Durability](https://modrinth.com/mod/microdurability) is supported (but does not get dynamically shown)
 
 Known to be incompatible:
 * OptiFabric crashes due to mixin conflicts.

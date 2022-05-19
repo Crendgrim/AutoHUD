@@ -1,4 +1,4 @@
-package mod.crend.autohud.mixin.mod.armor_hud;
+package mod.crend.autohud.mixin.compat.armor_hud;
 
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Hud;
@@ -13,24 +13,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = InGameHud.class, priority = 1200)
 public class ArmorHudMixin {
     @Dynamic("added by BerdinskiyBears Armor Hud")
-    @Inject(method="drawSlots1", at=@At(value = "HEAD"))
-    private void preDrawSlots1(MatrixStack matrices, int y, int x, int w, int l, CallbackInfo ci) {
+    @Inject(method="drawSlots1", at=@At("HEAD"))
+    private void autoHud$preDrawSlots1(MatrixStack matrices, int y, int x, int w, int l, CallbackInfo ci) {
         Hud.preInject(matrices, Component.Hotbar);
     }
     @Dynamic("added by BerdinskiyBears Armor Hud")
-    @Inject(method="drawSlots1", at=@At(value = "TAIL"))
-    private void postDrawSlots1(MatrixStack matrices, int y, int x, int w, int l, CallbackInfo ci) {
+    @Inject(method="drawSlots1", at=@At("TAIL"))
+    private void autoHud$postDrawSlots1(MatrixStack matrices, int y, int x, int w, int l, CallbackInfo ci) {
         Hud.postInject(matrices);
     }
 
     @Dynamic("added by BerdinskiyBears Armor Hud")
-    @Inject(method="drawSlots2", at=@At(value = "HEAD"))
-    private void preDrawSlots2(MatrixStack matrices, int y, int x, int w, int l, CallbackInfo ci) {
+    @Inject(method="drawSlots2", at=@At("HEAD"))
+    private void autoHud$preDrawSlots2(MatrixStack matrices, int y, int x, int w, int l, CallbackInfo ci) {
         Hud.preInject(matrices, Component.Hotbar);
     }
     @Dynamic("added by BerdinskiyBears Armor Hud")
-    @Inject(method="drawSlots2", at=@At(value = "TAIL"))
-    private void postDrawSlots2(MatrixStack matrices, int y, int x, int w, int l, CallbackInfo ci) {
+    @Inject(method="drawSlots2", at=@At("TAIL"))
+    private void autoHud$postDrawSlots2(MatrixStack matrices, int y, int x, int w, int l, CallbackInfo ci) {
         Hud.postInject(matrices);
     }
 }

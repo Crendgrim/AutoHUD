@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientPlayerInteractionManager.class)
 public class ClientPlayerInteractionManagerMixin {
     @Inject(method="syncSelectedSlot", at=@At(value = "INVOKE", target="Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V"))
-    private void revealOnSlotChange(CallbackInfo ci) {
+    private void autoHud$revealOnSlotChange(CallbackInfo ci) {
         if (AutoHud.config.isHotbarOnSlotChange()) Component.Hotbar.updateState();
     }
 }

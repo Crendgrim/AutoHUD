@@ -1,4 +1,4 @@
-package mod.crend.autohud.mixin;
+package mod.crend.autohud.mixin.gui;
 
 import com.google.common.collect.Ordering;
 import mod.crend.autohud.AutoHud;

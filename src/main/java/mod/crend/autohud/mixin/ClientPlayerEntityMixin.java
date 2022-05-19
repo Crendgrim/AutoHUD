@@ -24,25 +24,25 @@ public class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
     }
 
     @Inject(method = "updateHealth", at = @At("TAIL"))
-    private void autohud$updateHealth(float health, CallbackInfo ci) {
+    private void autoHud$updateHealth(float health, CallbackInfo ci) {
         Component.Health.updateState();
     }
     @Inject(method = "setExperience", at = @At("TAIL"))
-    private void autohud$setExperience(float progress, int total, int level, CallbackInfo ci) {
+    private void autoHud$setExperience(float progress, int total, int level, CallbackInfo ci) {
         Component.ExperienceBar.updateState();
     }
 
 
     // Jumpbar
     @Shadow public Input input;
-    @Inject( method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getVehicle()Lnet/minecraft/entity/Entity;") )
-    private void jumpBarChanged(CallbackInfo ci){
+    @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getVehicle()Lnet/minecraft/entity/Entity;"))
+    private void autoHud$jumpBarChanged(CallbackInfo ci){
         if (this.input.jumping && AutoHud.config.mountJumpBar().onChange()) Component.MountJumpBar.revealNow();
     }
 
     // Mount health
-    @Inject( method = "tickRiding", at = @At(value = "RETURN") )
-    private void mountHealthChange(CallbackInfo ci){
+    @Inject(method = "tickRiding", at = @At("RETURN"))
+    private void autoHud$mountHealthChange(CallbackInfo ci){
         ClientPlayerEntity thisPlayer = (ClientPlayerEntity) (Object) this;
         if (AutoHud.config.mountHealth().policy() != RevealPolicy.Disabled && thisPlayer.getVehicle() instanceof LivingEntity vehicle) {
             if (Component.MountHealth.state == null) {

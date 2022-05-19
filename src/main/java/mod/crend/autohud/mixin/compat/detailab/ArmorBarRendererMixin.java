@@ -1,4 +1,4 @@
-package mod.crend.autohud.mixin.mod.detailab;
+package mod.crend.autohud.mixin.compat.detailab;
 
 import com.redlimerl.detailab.render.ArmorBarRenderer;
 import mod.crend.autohud.component.Component;
@@ -12,12 +12,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ArmorBarRenderer.class)
 public class ArmorBarRendererMixin {
-    @Inject(method="render", at=@At(value = "HEAD"))
-    private void preRender(MatrixStack matrices, PlayerEntity player, CallbackInfo ci) {
+    @Inject(method="render", at=@At("HEAD"))
+    private void autoHud$preRender(MatrixStack matrices, PlayerEntity player, CallbackInfo ci) {
         Hud.preInject(matrices, Component.Armor);
     }
-    @Inject(method="render", at=@At(value = "TAIL"))
-    private void postRender(MatrixStack matrices, PlayerEntity player, CallbackInfo ci) {
+    @Inject(method="render", at=@At("TAIL"))
+    private void autoHud$postRender(MatrixStack matrices, PlayerEntity player, CallbackInfo ci) {
         Hud.postInject(matrices);
     }
 }

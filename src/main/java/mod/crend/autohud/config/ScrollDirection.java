@@ -1,4 +1,4 @@
-package mod.crend.autohud.component;
+package mod.crend.autohud.config;
 
 public enum ScrollDirection {
     UP,

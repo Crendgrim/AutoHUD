@@ -1,4 +1,4 @@
-package mod.crend.autohud.mixin.mod.dehydration;
+package mod.crend.autohud.mixin.compat.dehydration;
 
 import mod.crend.autohud.compat.DehydrationCompat;
 import mod.crend.autohud.component.Component;
@@ -14,7 +14,7 @@ public class DehydrationMixin {
     @Mixin(value = InGameHud.class, priority = 900)
     public static class EarlyMixin {
         @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", ordinal = 1))
-        private void preThirst(MatrixStack matrices, CallbackInfo ci) {
+        private void autoHud$preThirst(MatrixStack matrices, CallbackInfo ci) {
             Hud.postInject(matrices);
             Hud.preInject(matrices, DehydrationCompat.Thirst);
         }
@@ -22,7 +22,7 @@ public class DehydrationMixin {
     @Mixin(value = InGameHud.class, priority = 1200)
     public static class LateMixin {
         @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", ordinal = 1))
-        private void postThirst(MatrixStack matrices, CallbackInfo ci) {
+        private void autoHud$postThirst(MatrixStack matrices, CallbackInfo ci) {
             Hud.postInject(matrices);
             Hud.preInject(matrices, Component.Hunger);
         }

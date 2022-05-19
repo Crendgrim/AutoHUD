@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(HungerManager.class)
 public class HungerManagerMixin {
     @Inject(method="setFoodLevel", at=@At("TAIL"))
-    private void autohud$setFoodLevel(int foodLevel, CallbackInfo ci) {
+    private void autoHud$setFoodLevel(int foodLevel, CallbackInfo ci) {
         Component.Hunger.updateState();
     }
 }

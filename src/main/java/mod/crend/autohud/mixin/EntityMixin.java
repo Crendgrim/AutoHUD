@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class EntityMixin {
 
     @Inject(method="setAir", at=@At("TAIL"))
-    public void autohud$setAir(int air, CallbackInfo ci) {
+    public void autoHud$setAir(int air, CallbackInfo ci) {
         if (((Object) this) instanceof ClientPlayerEntity) {
             Component.Air.updateState();
         }

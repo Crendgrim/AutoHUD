@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientPlayNetworkHandler.class)
 public class ClientPlayNetworkHandlerMixin {
     @Inject(method="onPlayerRespawn", at=@At("TAIL"))
-    private void autohud$onPlayerRespaawn(PlayerRespawnS2CPacket packet, CallbackInfo ci) {
+    private void autoHud$onPlayerRespawn(PlayerRespawnS2CPacket packet, CallbackInfo ci) {
         Hud.resetState();
     }
 }

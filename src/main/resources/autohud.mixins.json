@@ -9,18 +9,17 @@
     "ClientPlayerInteractionManagerMixin",
     "EntityMixin",
     "HungerManagerMixin",
-    "InGameHudMixin",
-    "StatusEffectTimerMixin",
-    "mod.armor_hud.ArmorHudMixin",
-    "mod.dehydration.DehydrationMixin$EarlyMixin",
-    "mod.dehydration.DehydrationMixin$LateMixin",
-    "mod.dehydration.ThirstManagerMixin",
-    "mod.detailab.ArmorBarRendererMixin",
-    "mod.inventoryprofilesnext.LockSlotsHandlerMixin"
+    "gui.InGameHudMixin",
+    "gui.StatusEffectTimerMixin",
+    "compat.armor_hud.ArmorHudMixin",
+    "compat.dehydration.DehydrationMixin$EarlyMixin",
+    "compat.dehydration.DehydrationMixin$LateMixin",
+    "compat.dehydration.ThirstManagerMixin",
+    "compat.detailab.ArmorBarRendererMixin",
+    "compat.inventoryprofilesnext.LockSlotsHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
-  "setSourceFile": true,
   "plugin": "mod.crend.autohud.AutoHudMixinPlugin"
 }

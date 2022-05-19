@@ -2,7 +2,6 @@ package mod.crend.autohud.config;
 
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
-import mod.crend.autohud.component.ScrollDirection;
 
 @me.shedaniel.autoconfig.annotation.Config(name = "autohud")
 public class Config implements ConfigData {

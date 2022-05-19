@@ -10,17 +10,12 @@ import java.util.Set;
 
 public class AutoHudMixinPlugin implements IMixinConfigPlugin {
 
-    private static final List<String> MOD_COMPAT = List.of(
-            "armor_hud",
-            "dehydration",
-            "detailab",
-            "inventoryprofilesnext"
-    );
-
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        for (String modid : MOD_COMPAT) {
-            if (mixinClassName.contains(modid)) return FabricLoader.getInstance().isModLoaded(modid);
+        String[] split = mixinClassName.split("\\.compat\\.");
+        if (split.length == 2) {
+            String modid = split[1].split("\\.")[0];
+            return FabricLoader.getInstance().isModLoaded(modid);
         }
         return true;
     }

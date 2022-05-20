@@ -124,14 +124,14 @@ public class Component {
     public double getDeltaX() {
         return switch (config.direction()) {
             case Up, Down -> 0;
-            case Left -> -delta;
-            case Right -> delta;
+            case Left -> -delta * config.distance();
+            case Right -> delta * config.distance();
         };
     }
     public double getDeltaY() {
         return switch (config.direction()) {
-            case Up -> -delta;
-            case Down -> delta;
+            case Up -> -delta * config.distance();
+            case Down -> delta * config.distance();
             case Left, Right -> 0;
         };
     }
@@ -147,7 +147,7 @@ public class Component {
      * reveal animation to play out.
      */
     public void revealFromHidden() {
-        delta = config.distance();
+        delta = 1.0;
         reveal();
     }
 
@@ -219,7 +219,7 @@ public class Component {
         return delta == 0;
     }
     public boolean fullyHidden() {
-        return delta == config.distance();
+        return delta == 1;
     }
 
     // This method is used to ensure that linked components start their hide animation at the same time
@@ -234,9 +234,9 @@ public class Component {
      * This causes the animation to feel smoother.
      */
     private void speedDelta(float tickDelta) {
-        if (delta > config.distance() / 2.0) speed -= AutoHud.config.animationSpeed() * config.speedMultiplier() * tickDelta;
-        else speed += AutoHud.config.animationSpeed() * config.speedMultiplier() * tickDelta;
-        speed = Math.max(0.75, speed);
+        if (delta > 0.5) speed -= AutoHud.config.animationSpeed() * config.speedMultiplier() * tickDelta * 0.005;
+        else speed += AutoHud.config.animationSpeed() * config.speedMultiplier() * tickDelta * 0.005;
+        speed = Math.min(0.5, Math.max(0.0125, speed));
     }
     private void moveIn(float tickDelta) {
         // use negative multiplier in argument to reverse speed curve
@@ -245,7 +245,7 @@ public class Component {
     }
     private void moveOut(float tickDelta) {
         speedDelta(tickDelta);
-        delta = Math.min(config.distance(), delta + speed * tickDelta);
+        delta = Math.min(1, delta + speed * tickDelta);
     }
     public void revealIf(boolean trigger) {
         if (!config.active() || config.onChange() && trigger) {

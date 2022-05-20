@@ -46,7 +46,7 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
 
 
     public void updateObjective(ScoreboardObjective objective) {
-        if (objective == oldValue) {
+        if (Objects.equals(oldValue, objective)) {
             Text newDisplayName = oldValue.getDisplayName();
             if (newDisplayName != oldDisplayName) {
                 oldDisplayName = newDisplayName;
@@ -55,7 +55,7 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
         }
     }
     public void updateScore(ScoreboardPlayerScore playerScore) {
-        if (oldValue.equals(playerScore.getObjective())) {
+        if (Objects.equals(oldValue, playerScore.getObjective())) {
             Integer score = playerScores.get(playerScore);
             if (score == null) {
                 component.revealCombined();
@@ -71,12 +71,12 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
         playerScores.keySet().removeIf(playerScore -> playerScore.getPlayerName().equals(playerName));
     }
     public void removeScore(String playerName, ScoreboardObjective objective) {
-        if (objective.equals(oldValue)) {
+        if (Objects.equals(oldValue, objective)) {
             removeScore(playerName);
         }
     }
     public void updateTeam(Team team) {
-        if (playerTeam.equals(team)) {
+        if (Objects.equals(playerTeam, team)) {
             int newTeamId = playerTeam.getColor().getColorIndex();
             if (newTeamId != oldTeamId) {
                 oldTeamId = newTeamId;

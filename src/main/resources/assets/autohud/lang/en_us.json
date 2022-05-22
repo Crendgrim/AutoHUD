@@ -67,6 +67,22 @@
   "text.autoconfig.autohud.option.advanced.scoreboard.speedMultiplier": "Scoreboard: Speed Multiplier",
   "text.autoconfig.autohud.option.advanced.scoreboard.distance": "Scoreboard: Distance",
 
+  "text.autohud.option.scrollDirection.Up": "Up",
+  "text.autohud.option.scrollDirection.Down": "Down",
+  "text.autohud.option.scrollDirection.Left": "Left",
+  "text.autohud.option.scrollDirection.Right": "Right",
+  "text.autohud.option.revealType.Individual": "Individual",
+  "text.autohud.option.revealType.Stacked": "Stacked",
+  "text.autohud.option.revealType.HideCombined": "Hide Combined",
+  "text.autohud.option.revealType.Combined": "Combined",
+  "text.autohud.option.revealPolicy.Always": "Always",
+  "text.autohud.option.revealPolicy.Disabled": "Disabled",
+  "text.autohud.option.revealPolicy.Changing": "Changing",
+  "text.autohud.option.revealPolicy.Increasing": "Increasing",
+  "text.autohud.option.revealPolicy.Decreasing": "Decreasing",
+  "text.autohud.option.revealPolicy.NotFull": "Not Full",
+  "text.autohud.option.revealPolicy.Low": "Low",
+
   "key.category.autohud": "Auto HUD",
   "key.autohud.toggle-hud": "Toggle dynamic HUD",
   "key.autohud.peek-hud": "Toggle HUD while held"

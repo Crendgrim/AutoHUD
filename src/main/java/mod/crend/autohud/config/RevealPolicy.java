@@ -7,5 +7,10 @@ public enum RevealPolicy {
     Increasing,
     Decreasing,
     NotFull,
-    Low
+    Low;
+
+    @Override
+    public String toString() {
+        return "text.autohud.option.revealPolicy." + name();
+    }
 }

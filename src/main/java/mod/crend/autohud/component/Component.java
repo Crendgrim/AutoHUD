@@ -105,16 +105,16 @@ public class Component {
 
     public double getDeltaX() {
         return switch (config.values.direction()) {
-            case UP, DOWN -> 0;
-            case LEFT -> -delta;
-            case RIGHT -> delta;
+            case Up, Down -> 0;
+            case Left -> -delta;
+            case Right -> delta;
         };
     }
     public double getDeltaY() {
         return switch (config.values.direction()) {
-            case UP -> -delta;
-            case DOWN -> delta;
-            case LEFT, RIGHT -> 0;
+            case Up -> -delta;
+            case Down -> delta;
+            case Left, Right -> 0;
         };
     }
 
@@ -151,11 +151,11 @@ public class Component {
      */
     public void revealCombined() {
         visibleTime = AutoHud.config.timeRevealed();
-        if (config.active() && AutoHud.config.revealType() == RevealType.COMBINED) {
+        if (config.active() && AutoHud.config.revealType() == RevealType.Combined) {
             components.forEach(c -> c.visibleTime = Math.max(c.visibleTime, visibleTime));
-        } else if (config.active() && AutoHud.config.revealType() == RevealType.HIDE_COMBINED) {
+        } else if (config.active() && AutoHud.config.revealType() == RevealType.HideCombined) {
             components.forEach(c -> c.keepRevealed(visibleTime));
-        } else if (config.active() && AutoHud.config.revealType() == RevealType.STACKED) {
+        } else if (config.active() && AutoHud.config.revealType() == RevealType.Stacked) {
             keepRevealedStacked(visibleTime);
         }
     }

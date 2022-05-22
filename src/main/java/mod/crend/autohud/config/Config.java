@@ -11,7 +11,7 @@ public class Config implements ConfigData {
     double animationSpeed = 1.0;
     @ConfigEntry.Gui.Tooltip(count = 3)
     @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-    RevealType revealType = RevealType.STACKED;
+    RevealType revealType = RevealType.Stacked;
     boolean statusEffectTimer = true;
     public boolean dynamicOnLoad() { return dynamicOnLoad; }
     public int timeRevealed() { return ticksRevealed; }
@@ -24,7 +24,7 @@ public class Config implements ConfigData {
         private AdvancedComponent() { }
 
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        ScrollDirection direction = ScrollDirection.DOWN;
+        ScrollDirection direction = ScrollDirection.Down;
         double speedMultiplier = 1.0;
         int distance = 60;
 
@@ -182,8 +182,8 @@ public class Config implements ConfigData {
         @ConfigEntry.Gui.TransitiveObject
         AdvancedComponent scoreboard = new AdvancedComponent();
         private AdvancedComponents() {
-            statusEffects.direction = ScrollDirection.UP;
-            scoreboard.direction = ScrollDirection.RIGHT;
+            statusEffects.direction = ScrollDirection.Up;
+            scoreboard.direction = ScrollDirection.Right;
             scoreboard.distance = 100;
         }
     }

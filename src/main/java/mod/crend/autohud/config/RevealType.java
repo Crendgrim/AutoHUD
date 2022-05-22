@@ -1,8 +1,13 @@
 package mod.crend.autohud.config;
 
 public enum RevealType {
-    INDIVIDUAL,
-    STACKED,
-    HIDE_COMBINED,
-    COMBINED
+    Individual,
+    Stacked,
+    HideCombined,
+    Combined;
+
+    @Override
+    public String toString() {
+        return "text.autohud.option.revealType." + name();
+    }
 }

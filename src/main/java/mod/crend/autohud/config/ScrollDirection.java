@@ -1,8 +1,13 @@
 package mod.crend.autohud.config;
 
 public enum ScrollDirection {
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT
+    Up,
+    Down,
+    Left,
+    Right;
+
+    @Override
+    public String toString() {
+        return "text.autohud.option.scrollDirection." + name();
+    }
 }

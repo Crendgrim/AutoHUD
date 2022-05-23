@@ -56,7 +56,6 @@ dependencies {
 	modCompileOnly("maven.modrinth:inventory-profiles-next:fabric-1.18.2-1.3.8") {transitive = false}
 
 	jijArchive "maven.modrinth:microdurability:0.3.3+1.18"
-	modCompileOnly fileTree(dir: "${extractedDir}", include: '*.jar')
 }
 
 // Special magic to extract a jar-in-jar archive and add it to the include path
@@ -65,12 +64,13 @@ task extractJij(type: Copy) {
 		zipTree(it).each { it2 ->
 			if (it2.name.endsWith(".jar")) {
 				from(it2)
+				compileJava.classpath += files("${extractedDir}/${it2.getName()}")
 			}
 		}
 	}
 	into extractedDir
 }
-build.dependsOn extractJij
+compileJava.dependsOn extractJij
 
 processResources {
 	inputs.property "version", project.version

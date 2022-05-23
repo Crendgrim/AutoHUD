@@ -146,7 +146,7 @@ public class InGameHudMixin {
     private void autoHud$postEffect(MatrixStack matrices, CallbackInfo ci) {
         Hud.postInject(matrices);
     }
-    @Inject(method = "method_18620", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;drawSprite(Lnet/minecraft/client/util/math/MatrixStack;IIIIILnet/minecraft/client/texture/Sprite;)V"))
+    @Inject(method = "method_18620", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;drawSprite(Lnet/minecraft/client/util/math/MatrixStack;IIIIILnet/minecraft/client/texture/Sprite;)V"), remap = false)
     private void autoHud$preSprite(Sprite sprite, float g, MatrixStack matrices, int n, int o, CallbackInfo ci) {
         Component component = Component.findBySprite(sprite);
         if (component != null) {
@@ -156,7 +156,7 @@ public class InGameHudMixin {
             matrices.push();
         }
     }
-    @Inject(method = "method_18620", at = @At(value = "RETURN"))
+    @Inject(method = "method_18620", at = @At(value = "RETURN"), remap = false)
     private void autoHud$postSprite(Sprite sprite, float g, MatrixStack matrices, int n, int o, CallbackInfo ci) {
         Hud.postInject(matrices);
     }

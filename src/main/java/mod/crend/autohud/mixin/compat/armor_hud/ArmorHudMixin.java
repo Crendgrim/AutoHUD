@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = InGameHud.class, priority = 1200)
+@Mixin(value = InGameHud.class, priority = 1200, remap = false)
 public class ArmorHudMixin {
     @Dynamic("added by BerdinskiyBears Armor Hud")
     @Inject(method="drawSlots1", at=@At("HEAD"))

@@ -1,6 +1,7 @@
 package mod.crend.autohud.mixin;
 
 import mod.crend.autohud.component.ScoreboardHelper;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
@@ -40,7 +41,14 @@ public class ScoreboardMixin {
     @Inject(method="updateScoreboardTeam", at=@At("HEAD"))
     public void updateScoreboardTeam(Team team, CallbackInfo ci) {
         // team modified
-        ScoreboardHelper.updateTeam(team);
+        // The null safeguard is a workaround for DisguiseLib compatibility.
+        // That mod modifies teams in its mod initialiser, before any teams may even exist.
+        // Since it might get initialised before AutoHud, our config has not been read yet,
+        // and instantiating Component will fail to generate static initialisers and crash
+        // the game.
+        if (MinecraftClient.getInstance().world != null) {
+            ScoreboardHelper.updateTeam(team);
+        }
     }
 
 }

@@ -50,12 +50,12 @@ dependencies {
 	}
 	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-	modCompileOnly("com.github.RedLime:DetailArmorBar:2.6.1") {transitive = false}
-	modCompileOnly("curse.maven:berdinskiybears-armor-hud-420155:3671102") {transitive = false}
-	modCompileOnly("curse.maven:dehydration-410830:3683635") {transitive = false}
-	modCompileOnly("maven.modrinth:inventory-profiles-next:fabric-1.18.2-1.3.8") {transitive = false}
+	modCompileOnly("maven.modrinth:detail-armor-bar:${project.detailab_version}") { transitive = false }
+	modCompileOnly("curse.maven:berdinskiybears-armor-hud-${project.armor_hud_version}") { transitive = false }
+	modCompileOnly("curse.maven:dehydration-${project.dehydration_version}") { transitive = false }
+	modCompileOnly("maven.modrinth:inventory-profiles-next:${project.inventory_profiles_next_version}") { transitive = false }
 
-	jijArchive "maven.modrinth:microdurability:0.3.3+1.18"
+	jijArchive "maven.modrinth:microdurability:${project.microdurability_version}"
 	modCompileOnly fileTree(dir: "${extractedDir}", include: '*.jar')
 }
 

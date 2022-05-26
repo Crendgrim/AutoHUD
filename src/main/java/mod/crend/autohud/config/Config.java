@@ -9,86 +9,46 @@ public class Config implements ConfigData {
     boolean dynamicOnLoad = true;
     int ticksRevealed = 150;
     double animationSpeed = 1.0;
-    @ConfigEntry.Gui.Tooltip(count = 3)
+    @ConfigEntry.Gui.Tooltip(count = 5)
     @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
     RevealType revealType = RevealType.Stacked;
     boolean statusEffectTimer = true;
-    public boolean dynamicOnLoad() { return dynamicOnLoad; }
-    public int timeRevealed() { return ticksRevealed; }
-    public double animationSpeed() { return animationSpeed; }
-    public RevealType revealType() { return revealType; }
-    public boolean statusEffectTimer() { return statusEffectTimer; }
 
     /* COMPONENTS */
+    public static class DefaultValues {
+        DefaultValues() { }
+
+        double speedMultiplier = 1.0;
+        int distance = 60;
+    }
+    @ConfigEntry.Gui.TransitiveObject
+    @ConfigEntry.Category("components")
+    DefaultValues defaultValues = new DefaultValues();
+
     public static class AdvancedComponent {
-        private AdvancedComponent() { }
+        AdvancedComponent() { }
 
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         ScrollDirection direction = ScrollDirection.Down;
-        double speedMultiplier = 1.0;
-        int distance = 60;
-
-        public ScrollDirection direction() { return direction; }
-        public double speedMultiplier() { return speedMultiplier; }
-        public int distance() { return distance; }
+        double speedMultiplier = -1;
+        int distance = -1;
     }
-    public static abstract class IComponent {
-        @ConfigEntry.Gui.Excluded
-        public AdvancedComponent values = new AdvancedComponent();
-        public abstract boolean active();
-        public boolean onChange() { return false; }
+    public static class IComponent {
     }
     public static class SimpleComponent extends IComponent {
         private SimpleComponent() { }
         boolean active = true;
-
-        @Override
-        public boolean active() {
-            return active;
-        }
     }
     public static class PolicyComponent extends IComponent {
         private PolicyComponent() { }
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         RevealPolicy policy = RevealPolicy.Changing;
-
-        @Override
-        public boolean active() {
-            return policy != RevealPolicy.Always;
-        }
-
-        @Override
-        public boolean onChange() {
-            return policy != RevealPolicy.Always;
-        }
-
-        public RevealPolicy policy() {
-            return policy;
-        }
     }
     public static class BooleanComponent extends IComponent {
         private BooleanComponent() { }
-
         boolean active = true;
         boolean onChange = true;
-
-        @Override
-        public boolean active() {
-            return active;
-        }
-
-        @Override
-        public boolean onChange() {
-            return onChange;
-        }
     }
-    @ConfigEntry.Gui.Excluded
-    public static final IComponent None = new IComponent() {
-        @Override
-        public boolean active() {
-            return true;
-        }
-    };
 
     @ConfigEntry.Gui.TransitiveObject
     @ConfigEntry.Category("components")
@@ -137,28 +97,10 @@ public class Config implements ConfigData {
     @ConfigEntry.Category("components")
     boolean scoreboardOnTeamChange = true;
 
-    public PolicyComponent health() { return health; }
-    public PolicyComponent armor() { return armor; }
-    public PolicyComponent hunger() { return hunger; }
-    public PolicyComponent air() { return air; }
-    public BooleanComponent experience() { return experience; }
-    public BooleanComponent mountJumpBar() { return mountJumpBar; }
-    public PolicyComponent mountHealth() { return mountHealth; }
-    public BooleanComponent hotbar() { return hotbar; }
-    public boolean isHotbarOnSlotChange() { return hotbarOnSlotChange; }
-    public boolean isHotbarOnLowDurability() { return hotbarOnLowDurability; }
-    public int getHotbarDurabilityPercentage() { return hotbarDurabilityPercentage; }
-    public int getHotbarDurabilityTotal() { return hotbarDurabilityTotal; }
-    public BooleanComponent statusEffects() { return statusEffects; }
-    public boolean hidePersistentStatusEffects() { return hidePersistentStatusEffects; }
-    public BooleanComponent scoreboard() { return scoreboard; }
-    public boolean isScoreboardOnScoreChange() { return scoreboardOnScoreChange; }
-    public boolean isScoreboardOnTeamChange() { return scoreboardOnTeamChange; }
-
 
     @ConfigEntry.Category("components")
     @ConfigEntry.Gui.CollapsibleObject()
-    AdvancedComponents advanced = new AdvancedComponents();
+    AdvancedComponents advanced = new AdvancedComponents(defaultValues);
 
     public static class AdvancedComponents {
         @ConfigEntry.Gui.TransitiveObject
@@ -181,7 +123,7 @@ public class Config implements ConfigData {
         AdvancedComponent statusEffects = new AdvancedComponent();
         @ConfigEntry.Gui.TransitiveObject
         AdvancedComponent scoreboard = new AdvancedComponent();
-        private AdvancedComponents() {
+        private AdvancedComponents(DefaultValues defaultValues) {
             statusEffects.direction = ScrollDirection.Up;
             scoreboard.direction = ScrollDirection.Right;
             scoreboard.distance = 100;
@@ -192,29 +134,15 @@ public class Config implements ConfigData {
     private Config() {
         hunger.policy = RevealPolicy.Low;
         air.policy = RevealPolicy.NotFull;
-        bindValues();
     }
 
     /* OPTIONS END */
-    private void bindValues() {
-        health.values = advanced.health;
-        armor.values = advanced.armor;
-        hunger.values = advanced.hunger;
-        air.values = advanced.air;
-        hotbar.values = advanced.hotbar;
-        experience.values = advanced.experience;
-        mountJumpBar.values = advanced.mountJumpBar;
-        mountHealth.values = advanced.mountHealth;
-        statusEffects.values = advanced.statusEffects;
-        scoreboard.values = advanced.scoreboard;
-    }
 
     @Override
     public void validatePostLoad() throws ValidationException {
         ConfigData.super.validatePostLoad();
         if (ticksRevealed < 20) ticksRevealed = 20;
         animationSpeed = Math.min(10.0, Math.max(0.1, animationSpeed));
-        bindValues();
     }
 
 }

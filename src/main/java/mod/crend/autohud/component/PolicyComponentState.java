@@ -1,6 +1,6 @@
 package mod.crend.autohud.component;
 
-import mod.crend.autohud.config.Config;
+import mod.crend.autohud.config.ConfigHandler;
 
 import java.util.function.Supplier;
 
@@ -23,7 +23,7 @@ public class PolicyComponentState extends ValueComponentState<Integer> {
 
     @Override
     protected boolean doReveal(Integer newValue) {
-        return switch (((Config.PolicyComponent) component.config).policy()) {
+        return switch (((ConfigHandler.PolicyComponent) component.config).policy()) {
             case NotFull -> (newValue < maxValueSupplier.get());
             case Low -> (newValue <= maxValueSupplier.get() / 3);
             case Increasing -> (newValue > oldValue);

@@ -12,7 +12,7 @@ import java.util.List;
 
 public class DehydrationCompat implements AutoHudApi {
     // We bind this to the hunger config, as that is the most closely related one.
-    public static Component Thirst = new Component("Thirst", AutoHud.config.hunger(), List.of(Component.Air));
+    public static Component Thirst = new Component("Thirst", AutoHud.config.hunger(), List.of(Component.Air), true);
     static {
         Component.registerComponent(Thirst);
         Component.Hunger.addStackComponent(Thirst);

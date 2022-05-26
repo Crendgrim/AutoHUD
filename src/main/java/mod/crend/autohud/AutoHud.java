@@ -18,13 +18,12 @@ import java.util.List;
 
 public class AutoHud implements ClientModInitializer {
 
-    public static Config config;
+    public static ConfigHandler config;
     public static final List<AutoHudApi> apis = new ArrayList<>();
 
     @Override
     public void onInitializeClient() {
-        ConfigHandler.init();
-        config = ConfigHandler.getConfig();
+        config = new ConfigHandler();
         if (config.dynamicOnLoad()) {
             Hud.enableDynamic();
         }

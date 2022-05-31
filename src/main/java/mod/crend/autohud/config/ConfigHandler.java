@@ -112,15 +112,16 @@ public class ConfigHandler {
     public BooleanComponent mountJumpBar() { return mountJumpBar; }
     public PolicyComponent mountHealth() { return mountHealth; }
     public BooleanComponent hotbar() { return hotbar; }
-    public boolean isHotbarOnSlotChange() { return config.hotbarOnSlotChange; }
-    public boolean isHotbarOnLowDurability() { return config.hotbarOnLowDurability; }
-    public int getHotbarDurabilityPercentage() { return config.hotbarDurabilityPercentage; }
-    public int getHotbarDurabilityTotal() { return config.hotbarDurabilityTotal; }
+    public boolean isHotbarOnSlotChange() { return config.hotbar.onSlotChange; }
+    public boolean isHotbarOnLowDurability() { return config.hotbar.onLowDurability; }
+    public int getHotbarDurabilityPercentage() { return config.hotbar.durabilityPercentage; }
+    public int getHotbarDurabilityTotal() { return config.hotbar.durabilityTotal; }
     public BooleanComponent statusEffects() { return statusEffects; }
     public boolean hidePersistentStatusEffects() { return config.hidePersistentStatusEffects; }
     public BooleanComponent scoreboard() { return scoreboard; }
-    public boolean isScoreboardOnScoreChange() { return config.scoreboardOnScoreChange; }
-    public boolean isScoreboardOnTeamChange() { return config.scoreboardOnTeamChange; }
+    public boolean shouldRevealScoreboardOnTitleChange() { return config.scoreboard.scoreboard.onChange; }
+    public boolean shouldRevealScoreboardOnScoreChange() { return config.scoreboard.onScoreChange; }
+    public boolean shouldRevealScoreboardOnTeamChange() { return config.scoreboard.onTeamChange; }
 
     private void init() {
         health = new PolicyComponent(config.health, config.advanced.health, config.defaultValues);
@@ -130,8 +131,8 @@ public class ConfigHandler {
         experience = new BooleanComponent(config.experience, config.advanced.experience, config.defaultValues);
         mountJumpBar = new BooleanComponent(config.mountJumpBar, config.advanced.mountJumpBar, config.defaultValues);
         mountHealth = new PolicyComponent(config.mountHealth, config.advanced.mountHealth, config.defaultValues);
-        hotbar = new BooleanComponent(config.hotbar, config.advanced.hotbar, config.defaultValues);
+        hotbar = new BooleanComponent(config.hotbar.hotbar, config.advanced.hotbar, config.defaultValues);
         statusEffects = new BooleanComponent(config.statusEffects, config.advanced.statusEffects, config.defaultValues);
-        scoreboard = new BooleanComponent(config.scoreboard, config.advanced.scoreboard, config.defaultValues);
+        scoreboard = new BooleanComponent(config.scoreboard.scoreboard, config.advanced.scoreboard, config.defaultValues);
     }
 }

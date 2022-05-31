@@ -43,8 +43,8 @@ public class ScoreboardMixin {
 	}
 	
 	// Might not be needed since this approach where teams are only added when needed might be better than what it is getting offered
-	// Remove this commend + the entire method just to be sure that DisguiseLib isn't going to crash AutoHUD considering the current
-	// approach
+	// Remove this comment + the entire method just to be sure that DisguiseLib isn't going to crash AutoHUD considering the current
+	// approach (JuggleStruggle hasn't tested as to whether this will cause problems down the line)
 	/*
     @Inject(method="updateScoreboardTeam", at=@At("HEAD"))
     public void updateScoreboardTeam(Team team, CallbackInfo ci) {

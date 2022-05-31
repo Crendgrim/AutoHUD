@@ -1,10 +1,9 @@
 package mod.crend.autohud.component;
 
-import net.minecraft.client.MinecraftClient;
-
-import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectIntMutablePair;
-import mod.crend.autohud.mixin.TeamMixinAccessor;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Objects;
 
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
@@ -13,7 +12,11 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
-import java.util.*;
+import net.minecraft.client.MinecraftClient;
+
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.objects.ObjectIntMutablePair;
+import mod.crend.autohud.mixin.TeamMixinAccessor;
 
 public class ScoreboardComponentState extends ValueComponentState<ScoreboardObjective> {
 	/**
@@ -21,13 +24,16 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
 	 * have to know if the objective slot provided is also either a team sidebar (if a player is 
 	 * inside of a team that uses a sidebar then it typically takes priority over the default sidebar)
 	 * 
-	 * <p> Should there be no objectives found, this by default returns -1.
+	 * <p> Should there be no objectives found, this by default returns -1. This should not be modified
+	 * unless it is needed to update.
 	 */
-    final int objectiveSlotUsed;
+    int objectiveSlotUsed;
     /**
      * Used to cache the team that the player was in when creating the component state.
+     * 
+     * <p> This should not be modified unless it is needed to update.
      */
-    final String cachedTeamUsedForObjectiveGen;
+    String cachedTeamUsedForObjectiveGen;
     /**
      * The old display name of the objective. Used to cross-reference changes between this
      * and the new display name.
@@ -52,18 +58,18 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
      * can be nullable but not the pair itself.
      */
     Map<String, Pair<String, Integer>> cachedPlayerScores = new HashMap<>();
-
-    /**
-     * Used over the constructor to ensure that there's an objective slot to be accounted rather than
-     * ignored when attempting to perform checks on what sidebar to show, though the best way to
-     * make sure when a change occurs is to at least try to listen for the player's team change and
-     * account for the sidebar changes as well. Team changes usually are prioritized since this is
-     * what the game shows you over the standard sidebar. (At the time this code was written, this had
-     * the objective slot used to check for objective changes but that broke the scoreboard visibility
-     * so it was forced to be ditched)
-     */
+    
+    public ScoreboardComponentState(Component component) {
+    	// the newValueSupplier in the use of super constructor does not allow the use of "this" qualifier, 
+    	// so instead all of it had to be redone to allow it
+    	super(component, () -> null, true); 
+    	super.newValueSupplier = this::createObjectiveAndUpdateCachedItems;
+    	super.oldValue = super.newValueSupplier.get();
+    	this.collectPlayerScores();
+    }
+    
     @SuppressWarnings("resource")
-    public static ScoreboardComponentState createScoreboardComponent(Component component) {
+    private ScoreboardObjective createObjectiveAndUpdateCachedItems() {
     	Scoreboard scoreboard = MinecraftClient.getInstance().world.getScoreboard();
     	ScoreboardObjective objectiveToUse = null;
     	int objectiveSlotUsed = -1;
@@ -80,22 +86,20 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
     		objectiveToUse = scoreboard.getObjectiveForSlot(objectiveSlotUsed);
     	}
     	
-    	return new ScoreboardComponentState(component, objectiveToUse, objectiveSlotUsed);
-    }
-    public ScoreboardComponentState(Component component, ScoreboardObjective objective, int objectiveSlotUsed, Team startingTeam) {
-    	super(component, () -> objective, true); this.objectiveSlotUsed = objectiveSlotUsed; 
-    	this.cachedTeamUsedForObjectiveGen = startingTeam == null ? null : startingTeam.getName(); 
-    	this.collectPlayerScores();
-    }
-    public ScoreboardComponentState(Component component, ScoreboardObjective objective, int objectiveSlotUsed) {
-    	this(component, objective, objectiveSlotUsed, null);
+    	if (objectiveToUse == null) {
+    		objectiveSlotUsed = -1;
+    	}
+    	
+    	this.cachedTeamUsedForObjectiveGen = playerTeam == null ? null : playerTeam.getName();
+    	this.objectiveSlotUsed = objectiveSlotUsed;
+    	
+    	return objectiveToUse;
     }
 
     private void collectPlayerScores() {
         if (super.oldValue == null) return;
         
-        this.cachedTeams.clear();
-        this.cachedPlayerScores.clear();
+        this.clear();
         this.oldDisplayName = super.oldValue.getDisplayName();
         
         super.oldValue.getScoreboard().getAllPlayerScores(super.oldValue).forEach(this::addPlayerScoreAndTeam);
@@ -107,16 +111,16 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
     	String teamName = playerTeam == null ? null : playerTeam.getName();
     	this.cachedPlayerScores.put(playerScore.getPlayerName(), new ObjectIntMutablePair<>(teamName, playerScore.getScore()));
     	
-    	if (teamName != null) {
-    		// First check if there's a cached team; if there is then update the amount of players
-    		// using the team +1, otherwise create a new one while copying the team's important parts and
-    		// set it to 1
-    		if (this.cachedTeams.containsKey(teamName)) {
-    			Pair<Team, Integer> teamEntry = this.cachedTeams.get(teamName);
-    			teamEntry.right(teamEntry.right() + 1);
-    		} else {
-    			this.cachedTeams.put(teamName, new ObjectIntMutablePair<>(copyTeam(playerTeam), 1));
-    		}
+    	if (teamName == null) return;
+    	
+    	// First check if there's a cached team; if there is then update the amount of players
+    	// using the team +1, otherwise create a new one while copying the team's important parts and
+    	// set it to 1
+    	if (this.cachedTeams.containsKey(teamName)) {
+    		Pair<Team, Integer> teamEntry = this.cachedTeams.get(teamName);
+    		teamEntry.right(teamEntry.right() + 1);
+    	} else {
+    		this.cachedTeams.put(teamName, new ObjectIntMutablePair<>(copyTeam(playerTeam), 1));
     	}
     }
     
@@ -130,7 +134,7 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
         if (Objects.equals(super.oldValue, objective)) {
             Text newDisplayName = objective.getDisplayName();
             
-            if (!this.isTextEqual(newDisplayName, this.oldDisplayName)) {
+            if (!isTextEqual(newDisplayName, this.oldDisplayName)) {
                 this.oldDisplayName = newDisplayName;
                 super.component.revealCombined();
             }
@@ -161,7 +165,7 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
     		Pair<String, Integer> cachedPair = this.cachedPlayerScores.get(playerName);
     		// before removing the player, remove them from the team's count if they are on a team
         	if (cachedPair.left() != null && this.cachedTeams.containsKey(cachedPair.left())) {
-        		this.onPlayerRemovedFromTeam(this.cachedTeams.get(cachedPair.left()).left());
+        		this.onTeamRemovedFromPlayer(this.cachedTeams.get(cachedPair.left()).left());
         	}
         	
         	this.cachedPlayerScores.remove(playerName);
@@ -195,9 +199,8 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
     	
     	Pair<Team, Integer> cachedTeam = this.cachedTeams.get(team.getName());
     	// Ensure that if they don't equal then reveal and update the current cached team with the new one
-    	if (!this.isTeamEqual(team, cachedTeam.left())) {
+    	if (!isTeamEqual(team, cachedTeam.left())) {
     		super.component.revealCombined();
-    		// this.cachedTeams.put(team.getName(), new Pair<>(copyTeam(team), cachedTeam.getRight()));
     		cachedTeam.left(copyTeam(team));
     	}
     }
@@ -217,7 +220,7 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
     		Pair<Team, Integer> cachedTeam = cachedTeamIsEmpty ? 
     			null : this.cachedTeams.get(cachedPlayerTeamAndScore.left());
     		boolean cachedTeamHasDifferences = cachedTeamIsEmpty || cachedTeam == null ? 
-    			false : !this.isTeamEqual(team, cachedTeam.left());
+    			false : !isTeamEqual(team, cachedTeam.left());
     		
     		if (cachedTeamIsEmpty || cachedTeamHasDifferences) {
     			// Ensure that the cached team is not empty and that the team 
@@ -225,14 +228,14 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
     			// (which actually doesn't remove the player from the team, but will in
     			// the sense of counts and in redirecting from the old team to a new one)
     			if (!cachedTeamIsEmpty && cachedTeamHasDifferences)
-    				this.onPlayerRemovedFromTeam(cachedTeam.left());
+    				this.onTeamRemovedFromPlayer(cachedTeam.left());
     		
     			super.component.revealCombined();
     		
     			// Set the new cached team while keeping the same score
     			cachedPlayerTeamAndScore.left(team.getName());
     			
-    			this.onPlayerAddedToTeam(team);
+    			this.onTeamAddedToPlayer(team);
     		} 
     	}
     }
@@ -245,11 +248,18 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
     	if (cachedPair != null && Objects.equals(cachedPair.left(), team.getName())) {
     		super.component.revealCombined();
     		// Clear the cached team while keeping the same score
-    		cachedPair.left(null); this.onPlayerRemovedFromTeam(team);
+    		cachedPair.left(null); this.onTeamRemovedFromPlayer(team);
     	}
     }
 	
-	private void onPlayerRemovedFromTeam(Team teamToRemoveFrom) {
+	private void onTeamAddedToPlayer(Team teamAddedTo) {
+		Pair<Team, Integer> cachedTeam = this.cachedTeams.get(teamAddedTo.getName());
+		if (cachedTeam == null)
+			this.cachedTeams.put(teamAddedTo.getName(), new ObjectIntMutablePair<>(copyTeam(teamAddedTo), 1));
+		else
+			cachedTeam.right(cachedTeam.right() + 1);
+	}
+	private void onTeamRemovedFromPlayer(Team teamToRemoveFrom) {
 		Pair<Team, Integer> cachedTeam = this.cachedTeams.get(teamToRemoveFrom.getName());
 		if (cachedTeam == null) return; 
 		
@@ -258,18 +268,11 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
 		else
 			cachedTeam.right(cachedTeam.right() - 1);
 	}
-	private void onPlayerAddedToTeam(Team teamAddedTo) {
-		Pair<Team, Integer> cachedTeam = this.cachedTeams.get(teamAddedTo.getName());
-		if (cachedTeam == null)
-			this.cachedTeams.put(teamAddedTo.getName(), new ObjectIntMutablePair<>(copyTeam(teamAddedTo), 1));
-		else
-			cachedTeam.right(cachedTeam.right() + 1);
-	}
 	
 	public void clear() {
 		this.cachedTeams.clear();
 		this.cachedPlayerScores.clear();
-		this.oldDisplayName = null;
+		this.oldDisplayName = LiteralText.EMPTY;
 	}
 	
     /**
@@ -283,15 +286,15 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
      * 
      * @return {@code true} if the team equals in what matters
      */
-    private boolean isTeamEqual(Team team, Team cachedTeam)  {
+    private static boolean isTeamEqual(Team team, Team cachedTeam)  {
     	if (team == cachedTeam) return true;
     	else if (team == null && cachedTeam != null) return false;
     	else if (team != null && cachedTeam == null) return false;
     	return team.getName().equals(cachedTeam.getName()) && team.getColor() == cachedTeam.getColor() && 
-    		this.isTextEqual(team.getDisplayName(), cachedTeam.getDisplayName()) && this.isTextEqual(team.getPrefix(), cachedTeam.getPrefix()) && 
-    		this.isTextEqual(team.getSuffix(), cachedTeam.getSuffix());
+    		isTextEqual(team.getDisplayName(), cachedTeam.getDisplayName()) && isTextEqual(team.getPrefix(), cachedTeam.getPrefix()) && 
+    		isTextEqual(team.getSuffix(), cachedTeam.getSuffix());
     }
-    private boolean isTextEqual(Text left, Text right) {
+    private static boolean isTextEqual(Text left, Text right) {
     	final boolean leftEmpty = left == null; 
     	final boolean rightEmpty = right == null;
     	

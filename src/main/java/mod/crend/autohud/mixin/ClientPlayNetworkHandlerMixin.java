@@ -27,12 +27,8 @@ public class ClientPlayNetworkHandlerMixin {
     }
     @Inject(method="onTeam", at=@At(value="INVOKE", target = "java/util/Optional.ifPresent(Ljava/util/function/Consumer;)V", shift=At.Shift.AFTER))
     private void autoHud$onTeamUpdate(TeamS2CPacket packet, CallbackInfo ci) {
-    	// JuggleStruggle: The reason why both getTeamOperation cannot be REMOVE and getPlayerListOperation has 
-    	// to be null is because for the former ones, we already perform team removal checks in 
-    	// autoHud$onTeamBeforeRemoval and the latter is done via the scoreboard mixin, where each new players 
-    	// are done through there
-//    	if (packet.getTeamOperation() == null && packet.getPlayerListOperation() == null)
-//    	if (packet.getPlayerListOperation() == null && packet.getTeamOperation() != TeamS2CPacket.Operation.REMOVE && packet.getTeam().isPresent())
+    	// JuggleStruggle: The reason why both getTeamOperation cannot be REMOVE is because we already perform team removal checks in 
+    	// autoHud$onTeamBeforeRemoval. As for team being present, it... just means that it is required to know that it has been updated.
     	if (packet.getTeamOperation() != TeamS2CPacket.Operation.REMOVE && packet.getTeam().isPresent())
     		ScoreboardHelper.onTeamUpdated(this.world.getScoreboard().getTeam(packet.getTeamName()));
     }

@@ -1,10 +1,9 @@
 package mod.crend.autohud.component;
 
+import mod.crend.autohud.AutoHud;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.scoreboard.Team;
-
-import mod.crend.autohud.AutoHud;
 
 public class ScoreboardHelper {
     public static void onObjectiveUpdate(ScoreboardObjective objective) {
@@ -30,35 +29,37 @@ public class ScoreboardHelper {
             getScoreboardComponent().onPlayerScoreRemove(playerName, objective);
         }
     }
-    
+
     public static void onTeamRemoved(Team team) {
-    	if (canUpdate() && AutoHud.config.shouldRevealScoreboardOnTeamChange()) {
-    		getScoreboardComponent().onTeamRemoved(team);
-    	}
+        if (canUpdate() && AutoHud.config.shouldRevealScoreboardOnTeamChange()) {
+            getScoreboardComponent().onTeamRemoved(team);
+        }
     }
+
     public static void onTeamUpdated(Team team) {
-    	if (canUpdate() && AutoHud.config.shouldRevealScoreboardOnTeamChange()) {
-    		getScoreboardComponent().onTeamUpdated(team);
-    	}
+        if (canUpdate() && AutoHud.config.shouldRevealScoreboardOnTeamChange()) {
+            getScoreboardComponent().onTeamUpdated(team);
+        }
     }
-    
+
     public static void onPlayerAddedToTeam(String playerName, Team team) {
-    	if (canUpdate() && AutoHud.config.shouldRevealScoreboardOnTeamChange()) {
-    		getScoreboardComponent().onPlayerAddedToTeam(playerName, team);
-    	}
+        if (canUpdate() && AutoHud.config.shouldRevealScoreboardOnTeamChange()) {
+            getScoreboardComponent().onPlayerAddedToTeam(playerName, team);
+        }
     }
+
     public static void onPlayerRemovedFromTeam(String playerName, Team team) {
-    	if (canUpdate() && AutoHud.config.shouldRevealScoreboardOnTeamChange()) {
-    		getScoreboardComponent().onPlayerRemovedFromTeam(playerName, team);
-    	}
+        if (canUpdate() && AutoHud.config.shouldRevealScoreboardOnTeamChange()) {
+            getScoreboardComponent().onPlayerRemovedFromTeam(playerName, team);
+        }
     }
-    
-    
+
     // The next two methods are used to cut down on unnecessary duplicate code
     private static boolean canUpdate() {
-    	return Component.Scoreboard.config.active() && Component.Scoreboard.state != null;
+        return Component.Scoreboard.config.active() && Component.Scoreboard.state != null;
     }
+
     private static ScoreboardComponentState getScoreboardComponent() {
-    	return (ScoreboardComponentState)Component.Scoreboard.state;
+        return (ScoreboardComponentState)Component.Scoreboard.state;
     }
 }

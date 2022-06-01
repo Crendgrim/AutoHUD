@@ -90,20 +90,20 @@ public class Config implements ConfigData {
 
     
     public static class HotbarComponents {
-    	@ConfigEntry.Gui.TransitiveObject
-    	BooleanComponent hotbar = new BooleanComponent();
-    	boolean onSlotChange = true;
-    	boolean onLowDurability = true;
-    	@ConfigEntry.BoundedDiscrete(max=100)
-    	int durabilityPercentage = 10;
-    	int durabilityTotal = 20;
+        @ConfigEntry.Gui.TransitiveObject
+        BooleanComponent hotbar = new BooleanComponent();
+        boolean onSlotChange = true;
+        boolean onLowDurability = true;
+        @ConfigEntry.BoundedDiscrete(max=100)
+        int durabilityPercentage = 10;
+        int durabilityTotal = 20;
     }
     
     public static class ScoreboardComponents {
-    	@ConfigEntry.Gui.TransitiveObject
-    	BooleanComponent scoreboard = new BooleanComponent();
-    	boolean onScoreChange = true;
-    	boolean onTeamChange = true;
+        @ConfigEntry.Gui.TransitiveObject
+        BooleanComponent scoreboard = new BooleanComponent();
+        boolean onScoreChange = true;
+        boolean onTeamChange = true;
     }
     
     public static class AdvancedComponents {

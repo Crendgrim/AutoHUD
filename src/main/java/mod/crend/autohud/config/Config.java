@@ -103,6 +103,7 @@ public class Config implements ConfigData {
         @ConfigEntry.Gui.TransitiveObject
         BooleanComponent scoreboard = new BooleanComponent();
         boolean onScoreChange = true;
+        @ConfigEntry.Gui.Tooltip
         boolean onTeamChange = true;
     }
     

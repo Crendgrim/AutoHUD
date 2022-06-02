@@ -23,8 +23,8 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
      * either a team sidebar (if a player is inside of a team that uses a sidebar
      * then it typically takes priority over the default sidebar)
      * 
-     * <p> Should there be no objectives found, this by default returns -1. This should
-     * not be modified unless it is needed to update.
+     * <p> Should there be no objectives found, this by default returns -1. This 
+     * should not be modified unless it is needed to update.
      */
     int objectiveSlotUsed;
     /**
@@ -43,17 +43,17 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
     /**
      * Caches teams so that the component state knows what to look out for.
      * 
-     * <p>
-     * The key represents the {@linkplain Team#getName() name of the team} whereas
-     * the pair represents both the actual team (specifically the cached version of
-     * the team for us to compare against) and how many players are in this team.
+     * <p> The key represents the {@linkplain Team#getName() name of the team} 
+     * whereas the pair represents both the actual team (specifically the cached 
+     * version of the team for us to compare against) and how many players are in 
+     * this team.
      */
     Map<String, Pair<Team, Integer>> cachedTeams = new HashMap<>();
     /**
      * Caches the players that are in this objective.
      * 
      * <p> The key represents the {@linkplain ScoreboardPlayerScore#getPlayerName()
-     * player name} whetheras the pair represents both the team the player is in
+     * player name} whether as the pair represents both the team the player is in
      * (which is referenced to {@link #cachedTeams}) and the current score the
      * player has. Both entries inside the pair can be nullable but not the pair
      * itself.
@@ -62,15 +62,13 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
 
     public ScoreboardComponentState(Component component) {
         // the newValueSupplier in the use of super constructor does not allow the use
-        // of "this" qualifier,
-        // so instead all of it had to be redone to allow it
+        // of "this" qualifier, so instead all of it had to be redone to allow it
         super(component, () -> null, true);
         super.newValueSupplier = this::createObjectiveAndUpdateCachedItems;
         super.oldValue = super.newValueSupplier.get();
-        this.collectPlayerScores();
+        this.collectPlayerScores(super.oldValue);
     }
 
-    @SuppressWarnings("resource")
     private ScoreboardObjective createObjectiveAndUpdateCachedItems() {
         Scoreboard scoreboard = MinecraftClient.getInstance().world.getScoreboard();
         ScoreboardObjective objectiveToUse = null;
@@ -98,17 +96,30 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
         return objectiveToUse;
     }
 
-    private void collectPlayerScores() {
-        if (super.oldValue == null) return;
+    @Override
+    protected void onUpdateReveal(ScoreboardObjective newObjective) {
+        // Actually ensure that the new objective and the cached objective aren't the 
+        // same even though in ValueComponentState#doReveal checks for it and if its 
+        // config isn't active, which the latter would be causing constant updates and 
+        // as a result this is the reason why it has to be comparing equality checks.
+        // The reason why do this is to clear anything that this component state has 
+        // stored (though it isn't fully sure if old player names & teams do get removed
+        // once there's a new objective to set in) and cache anything new from this
+        // objective.
+        if (newObjective != super.oldValue) this.collectPlayerScores(newObjective);
+    }
+    
+    private void collectPlayerScores(ScoreboardObjective objective) {
+        if (objective == null) return;
 
         this.clear();
-        this.oldDisplayName = super.oldValue.getDisplayName();
+        this.oldDisplayName = objective.getDisplayName();
 
-        super.oldValue.getScoreboard().getAllPlayerScores(super.oldValue).forEach(this::addPlayerScoreAndTeam);
+        objective.getScoreboard().getAllPlayerScores(objective).forEach(this::addPlayerScoreAndTeam);
     }
 
     private void addPlayerScoreAndTeam(ScoreboardPlayerScore playerScore) {
-        Team playerTeam = super.oldValue.getScoreboard().getPlayerTeam(playerScore.getPlayerName());
+        Team playerTeam = playerScore.getObjective().getScoreboard().getPlayerTeam(playerScore.getPlayerName());
 
         String teamName = playerTeam == null ? null : playerTeam.getName();
         this.cachedPlayerScores.put(playerScore.getPlayerName(),
@@ -149,11 +160,11 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
         if (Objects.equals(super.oldValue, playerScore.getObjective())) {
             if (this.cachedPlayerScores.containsKey(playerScore.getPlayerName())) {
                 // if there's an existing player cached, update the cache and perform checks
-                Pair<String, Integer> cachedPair = this.cachedPlayerScores.get(playerScore.getPlayerName());
+                Pair<String, Integer> cachedTeamAndScore = this.cachedPlayerScores.get(playerScore.getPlayerName());
 
-                if (cachedPair.right() == null || cachedPair.right() != playerScore.getScore()) {
+                if (cachedTeamAndScore.right() == null || cachedTeamAndScore.right() != playerScore.getScore()) {
                     super.component.revealCombined();
-                    cachedPair.right(playerScore.getScore());
+                    cachedTeamAndScore.right(playerScore.getScore());
                 }
             } else {
                 // else add this new player since we don't easily get to know when it was
@@ -206,8 +217,7 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
 
         // Remove the cached team after we remove all of the players associated with the
         // team
-        if (this.cachedTeams.containsKey(team.getName()))
-            this.cachedTeams.remove(team.getName());
+        this.cachedTeams.remove(team.getName());
 
         if (revealComponent)
             super.component.revealCombined();
@@ -228,34 +238,33 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
     // Note: We are not checking if this player name *has* been added, instead we
     // are checking if the player name exists in our cached list.
     public void onPlayerAddedToTeam(String playerName, Team team) {
-        if (this.cachedPlayerScores.isEmpty())
-            return;
+        if (this.cachedPlayerScores.isEmpty()) return;
 
-        Pair<String, Integer> cachedPlayerTeamAndScore = this.cachedPlayerScores.get(playerName);
+        Pair<String, Integer> cachedTeamAndScore = this.cachedPlayerScores.get(playerName);
 
-        if (cachedPlayerTeamAndScore == null) return;
+        if (cachedTeamAndScore == null) return;
 
-        if (!Objects.equals(cachedPlayerTeamAndScore.left(), team.getName())) {
-            final boolean cachedTeamIsEmpty = cachedPlayerTeamAndScore.left() == null;
+        if (!Objects.equals(cachedTeamAndScore.left(), team.getName())) {
+            final boolean cachedPlayerTeamIsEmpty = cachedTeamAndScore.left() == null;
 
             // cachedTeam still can return null, so better be safe than sorry
-            Pair<Team, Integer> cachedTeam = cachedTeamIsEmpty ? 
-                    null : this.cachedTeams.get(cachedPlayerTeamAndScore.left());
-            boolean cachedTeamHasDifferences = cachedTeamIsEmpty || cachedTeam == null ? 
-                    false : !isTeamEqual(team, cachedTeam.left());
+            Pair<Team, Integer> cachedTeam = cachedPlayerTeamIsEmpty ? 
+                    null : this.cachedTeams.get(cachedTeamAndScore.left());
+            boolean cachedTeamHasDifferences = !cachedPlayerTeamIsEmpty && cachedTeam != null &&
+                    !isTeamEqual(team, cachedTeam.left());
 
-            if (cachedTeamIsEmpty || cachedTeamHasDifferences) {
+            if (cachedPlayerTeamIsEmpty || cachedTeamHasDifferences) {
                 // Ensure that the cached team is not empty and that the team checked has 
                 // some changes in order to remove the player from the team (which actually 
                 // doesn't remove the player from the team, but will in the sense of counts 
                 // and in redirecting from the old team to a new one)
-                if (!cachedTeamIsEmpty && cachedTeamHasDifferences)
+                if (cachedTeamHasDifferences)
                     this.onTeamRemovedFromPlayer(cachedTeam.left());
 
                 super.component.revealCombined();
 
                 // Set the new cached team while keeping the same score
-                cachedPlayerTeamAndScore.left(team.getName());
+                cachedTeamAndScore.left(team.getName());
 
                 this.onTeamAddedToPlayer(team);
             }
@@ -265,12 +274,12 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
     public void onPlayerRemovedFromTeam(String playerName, Team team) {
         if (this.cachedPlayerScores.isEmpty()) return;
 
-        Pair<String, Integer> cachedPair = this.cachedPlayerScores.get(playerName);
+        Pair<String, Integer> cachedTeamAndScore = this.cachedPlayerScores.get(playerName);
 
-        if (cachedPair != null && Objects.equals(cachedPair.left(), team.getName())) {
+        if (cachedTeamAndScore != null && Objects.equals(cachedTeamAndScore.left(), team.getName())) {
             super.component.revealCombined();
             // Clear the cached team while keeping the same player score
-            cachedPair.left(null);
+            cachedTeamAndScore.left(null);
             this.onTeamRemovedFromPlayer(team);
         }
     }
@@ -283,12 +292,12 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
             cachedTeam.right(cachedTeam.right() + 1);
     }
 
-    private void onTeamRemovedFromPlayer(Team teamToRemoveFrom) {
-        Pair<Team, Integer> cachedTeam = this.cachedTeams.get(teamToRemoveFrom.getName());
+    private void onTeamRemovedFromPlayer(Team teamRemovedFrom) {
+        Pair<Team, Integer> cachedTeam = this.cachedTeams.get(teamRemovedFrom.getName());
         if (cachedTeam == null) return;
 
         if (cachedTeam.right() - 1 < 1)
-            this.cachedTeams.remove(teamToRemoveFrom.getName());
+            this.cachedTeams.remove(teamRemovedFrom.getName());
         else
             cachedTeam.right(cachedTeam.right() - 1);
     }
@@ -313,9 +322,8 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
      */
     private static boolean isTeamEqual(Team team, Team cachedTeam) {
         if (team == cachedTeam) return true;
-        else if (team == null && cachedTeam != null) return false;
-        else if (team != null && cachedTeam == null) return false;
-        
+        if (team == null || cachedTeam == null) return false;
+            
         return team.getName().equals(cachedTeam.getName()) && team.getColor() == cachedTeam.getColor()
                 && isTextEqual(team.getDisplayName(), cachedTeam.getDisplayName())
                 && isTextEqual(team.getPrefix(), cachedTeam.getPrefix())
@@ -323,11 +331,11 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
     }
 
     private static boolean isTextEqual(Text left, Text right) {
-        final boolean leftEmpty = left == null;
-        final boolean rightEmpty = right == null;
+        final boolean leftIsEmpty = left == null;
+        final boolean rightIsEmpty = right == null;
 
-        if (leftEmpty != rightEmpty) return false;
-        if (leftEmpty && rightEmpty) return true;
+        if (leftIsEmpty && rightIsEmpty) return true;
+        if (leftIsEmpty != rightIsEmpty) return false;
 
         return left.getString().equals(right.getString());
     }

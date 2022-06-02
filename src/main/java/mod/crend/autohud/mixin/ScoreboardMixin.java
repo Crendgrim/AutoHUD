@@ -41,23 +41,4 @@ public class ScoreboardMixin {
     public void autoHud$onPlayerRemovedFromTeam(String playerName, Team teamRemovedFrom, CallbackInfo ci) {
         ScoreboardHelper.onPlayerRemovedFromTeam(playerName, teamRemovedFrom);
     }
-    	
-    // Might not be needed since this approach where teams are only added when needed might be better than what it is getting offered
-    // Remove this comment + the entire method just to be sure that DisguiseLib isn't going to crash AutoHUD considering the current
-    // approach (JuggleStruggle hasn't tested as to whether this will cause problems down the line)
-	/*
-    @Inject(method="updateScoreboardTeam", at=@At("HEAD"))
-    public void updateScoreboardTeam(Team team, CallbackInfo ci) {
-        // team modified
-        // The null safeguard is a workaround for DisguiseLib compatibility.
-        // That mod modifies teams in its mod initialiser, before any teams may even exist.
-        // Since it might get initialised before AutoHud, our config has not been read yet,
-        // and instantiating Component will fail to generate static initialisers and crash
-        // the game.
-        if (MinecraftClient.getInstance().world != null) {
-            ScoreboardHelper.updateTeam(team);
-        }
-    }
-	 */
-
 }

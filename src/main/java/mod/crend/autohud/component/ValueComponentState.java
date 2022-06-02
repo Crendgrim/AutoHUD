@@ -19,6 +19,7 @@ public class ValueComponentState<T> extends ComponentState {
     public void update() {
         T newValue = newValueSupplier.get();
         if (doReveal(newValue)) {
+            this.onUpdateReveal(newValue);
             component.revealCombined();
         }
         oldValue = newValue;
@@ -27,5 +28,7 @@ public class ValueComponentState<T> extends ComponentState {
     protected boolean doReveal(T newValue) {
         return !component.config.active() || newValue != oldValue;
     }
+    
+    protected void onUpdateReveal(T newValue) {}
 }
 

@@ -45,13 +45,11 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
     public ScoreboardComponentState(Component component) {
         // the newValueSupplier in the use of super constructor does not allow the use
         // of "this" qualifier, so instead all of it had to be redone to allow it
-        super(component, () -> null, true);
-        super.newValueSupplier = this::createObjectiveAndUpdateCachedItems;
-        super.oldValue = super.newValueSupplier.get();
+        super(component, ScoreboardComponentState::createObjective, true);
         this.collectPlayerScores(super.oldValue);
     }
 
-    private ScoreboardObjective createObjectiveAndUpdateCachedItems() {
+    private static ScoreboardObjective createObjective() {
         Scoreboard scoreboard = MinecraftClient.getInstance().world.getScoreboard();
         ScoreboardObjective objectiveToUse = null;
         int teamColorIndex;

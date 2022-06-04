@@ -18,28 +18,10 @@ import java.util.Objects;
 
 public class ScoreboardComponentState extends ValueComponentState<ScoreboardObjective> {
     /**
-     * Cache the slot used for just in case if we end up having our current
-     * objective removed and have to know if the objective slot provided is also
-     * either a team sidebar (if a player is inside of a team that uses a sidebar
-     * then it typically takes priority over the default sidebar)
-     * 
-     * <p> Should there be no objectives found, this by default returns -1. This 
-     * should not be modified unless it is needed to update.
-     */
-    int objectiveSlotUsed;
-    /**
-     * Used to cache the team that the player was in when creating the component
-     * state.
-     * 
-     * <p> This should not be modified unless it is needed to update.
-     */
-    String cachedTeamUsedForObjectiveGen;
-    /**
-     * The old display name of the objective. Used to cross-reference changes
+     * The cached display name of the objective. Used to cross-reference changes
      * between this and the new display name.
      */
-    Text oldDisplayName;
-
+    Text cachedDisplayName;
     /**
      * Caches teams so that the component state knows what to look out for.
      * 
@@ -72,26 +54,16 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
     private ScoreboardObjective createObjectiveAndUpdateCachedItems() {
         Scoreboard scoreboard = MinecraftClient.getInstance().world.getScoreboard();
         ScoreboardObjective objectiveToUse = null;
-        int objectiveSlotUsed = -1;
         int teamColorIndex;
 
         Team playerTeam = scoreboard.getPlayerTeam(MinecraftClient.getInstance().player.getEntityName());
         if (playerTeam != null && (teamColorIndex = playerTeam.getColor().getColorIndex()) >= 0) {
-            objectiveSlotUsed = Scoreboard.MIN_SIDEBAR_TEAM_DISPLAY_SLOT_ID + teamColorIndex;
-            objectiveToUse = scoreboard.getObjectiveForSlot(objectiveSlotUsed);
+            objectiveToUse = scoreboard.getObjectiveForSlot(Scoreboard.MIN_SIDEBAR_TEAM_DISPLAY_SLOT_ID + teamColorIndex);
         }
 
         if (objectiveToUse == null) {
-            objectiveSlotUsed = Scoreboard.SIDEBAR_DISPLAY_SLOT_ID;
-            objectiveToUse = scoreboard.getObjectiveForSlot(objectiveSlotUsed);
+            objectiveToUse = scoreboard.getObjectiveForSlot(Scoreboard.SIDEBAR_DISPLAY_SLOT_ID);
         }
-
-        if (objectiveToUse == null) {
-            objectiveSlotUsed = -1;
-        }
-
-        this.cachedTeamUsedForObjectiveGen = playerTeam == null ? null : playerTeam.getName();
-        this.objectiveSlotUsed = objectiveSlotUsed;
 
         return objectiveToUse;
     }
@@ -104,7 +76,7 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
         // as a result this is the reason why it has to be comparing equality checks.
         // The reason why do this is to clear anything that this component state has 
         // stored (though it isn't fully sure if old player names & teams do get removed
-        // once there's a new objective to set in) and cache anything new from this
+        // once there's a new objective to set in) and cache anything new from this new
         // objective.
         if (newObjective != super.oldValue) this.collectPlayerScores(newObjective);
     }
@@ -112,16 +84,17 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
     private void collectPlayerScores(ScoreboardObjective objective) {
         if (objective == null) return;
 
-        this.clear();
-        this.oldDisplayName = objective.getDisplayName();
+        this.cachedTeams.clear();
+        this.cachedPlayerScores.clear();
+        this.cachedDisplayName = objective.getDisplayName();
 
         objective.getScoreboard().getAllPlayerScores(objective).forEach(this::addPlayerScoreAndTeam);
     }
 
     private void addPlayerScoreAndTeam(ScoreboardPlayerScore playerScore) {
         Team playerTeam = playerScore.getObjective().getScoreboard().getPlayerTeam(playerScore.getPlayerName());
-
         String teamName = playerTeam == null ? null : playerTeam.getName();
+
         this.cachedPlayerScores.put(playerScore.getPlayerName(),
                 new ObjectIntMutablePair<>(teamName, playerScore.getScore()));
 
@@ -149,8 +122,8 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
         if (Objects.equals(super.oldValue, objective)) {
             Text newDisplayName = objective.getDisplayName();
 
-            if (!isTextEqual(newDisplayName, this.oldDisplayName)) {
-                this.oldDisplayName = newDisplayName;
+            if (!isTextEqual(newDisplayName, this.cachedDisplayName)) {
+                this.cachedDisplayName = newDisplayName;
                 super.component.revealCombined();
             }
         }
@@ -178,10 +151,10 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
 
     public void onPlayerScoreRemove(String playerName) {
         if (this.cachedPlayerScores.containsKey(playerName)) {
-            Pair<String, Integer> cachedPair = this.cachedPlayerScores.get(playerName);
+            Pair<String, Integer> cachedTeamAndScore = this.cachedPlayerScores.get(playerName);
             // Before removing the player, remove them from the team's count if they are on a team
-            if (cachedPair.left() != null && this.cachedTeams.containsKey(cachedPair.left())) {
-                this.onTeamRemovedFromPlayer(this.cachedTeams.get(cachedPair.left()).left());
+            if (cachedTeamAndScore.left() != null && this.cachedTeams.containsKey(cachedTeamAndScore.left())) {
+                this.onTeamRemovedFromPlayer(this.cachedTeams.get(cachedTeamAndScore.left()).left());
             }
 
             this.cachedPlayerScores.remove(playerName);
@@ -300,12 +273,6 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
             this.cachedTeams.remove(teamRemovedFrom.getName());
         else
             cachedTeam.right(cachedTeam.right() - 1);
-    }
-
-    public void clear() {
-        this.cachedTeams.clear();
-        this.cachedPlayerScores.clear();
-        this.oldDisplayName = LiteralText.EMPTY;
     }
 
     /**

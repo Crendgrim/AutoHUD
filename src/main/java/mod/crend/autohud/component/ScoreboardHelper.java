@@ -6,33 +6,60 @@ import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.scoreboard.Team;
 
 public class ScoreboardHelper {
-    public static void updateObjective(ScoreboardObjective objective) {
-        if (Component.Scoreboard.config.active() && Component.Scoreboard.config.onChange() && Component.Scoreboard.state != null) {
-            ((ScoreboardComponentState) Component.Scoreboard.state).updateObjective(objective);
+    public static void onObjectiveUpdate(ScoreboardObjective objective) {
+        if (canUpdate() && AutoHud.config.shouldRevealScoreboardOnTitleChange()) {
+            getScoreboardComponent().updateObjectiveDisplayName(objective);
         }
     }
 
-    public static void updateScore(ScoreboardPlayerScore score) {
-        if (Component.Scoreboard.config.active() && AutoHud.config.isScoreboardOnScoreChange() && Component.Scoreboard.state != null) {
-            ((ScoreboardComponentState) Component.Scoreboard.state).updateScore(score);
+    public static void onPlayerScoreUpdate(ScoreboardPlayerScore score) {
+        if (canUpdate() && AutoHud.config.shouldRevealScoreboardOnScoreChange()) {
+            getScoreboardComponent().onPlayerScoreUpdate(score);
         }
     }
 
-    public static void removeScore(String playerName) {
-        if (Component.Scoreboard.config.active() && AutoHud.config.isScoreboardOnScoreChange() && Component.Scoreboard.state != null) {
-            ((ScoreboardComponentState) Component.Scoreboard.state).removeScore(playerName);
+    public static void onPlayerScoreRemove(String playerName) {
+        if (canUpdate() && AutoHud.config.shouldRevealScoreboardOnScoreChange()) {
+            getScoreboardComponent().onPlayerScoreRemove(playerName);
         }
     }
 
-    public static void removeScore(String playerName, ScoreboardObjective objective) {
-        if (Component.Scoreboard.config.active() && AutoHud.config.isScoreboardOnScoreChange() && Component.Scoreboard.state != null) {
-            ((ScoreboardComponentState) Component.Scoreboard.state).removeScore(playerName, objective);
+    public static void onPlayerScoreRemove(String playerName, ScoreboardObjective objective) {
+        if (canUpdate() && AutoHud.config.shouldRevealScoreboardOnScoreChange()) {
+            getScoreboardComponent().onPlayerScoreRemove(playerName, objective);
         }
     }
 
-    public static void updateTeam(Team team) {
-        if (Component.Scoreboard.config.active() && AutoHud.config.isScoreboardOnTeamChange() && Component.Scoreboard.state != null) {
-            ((ScoreboardComponentState) Component.Scoreboard.state).updateTeam(team);
+    public static void onTeamRemoved(Team team) {
+        if (canUpdate() && AutoHud.config.shouldRevealScoreboardOnTeamChange()) {
+            getScoreboardComponent().onTeamRemoved(team);
         }
+    }
+
+    public static void onTeamUpdated(Team team) {
+        if (canUpdate() && AutoHud.config.shouldRevealScoreboardOnTeamChange()) {
+            getScoreboardComponent().onTeamUpdated(team);
+        }
+    }
+
+    public static void onPlayerAddedToTeam(String playerName, Team team) {
+        if (canUpdate() && AutoHud.config.shouldRevealScoreboardOnTeamChange()) {
+            getScoreboardComponent().onPlayerAddedToTeam(playerName, team);
+        }
+    }
+
+    public static void onPlayerRemovedFromTeam(String playerName, Team team) {
+        if (canUpdate() && AutoHud.config.shouldRevealScoreboardOnTeamChange()) {
+            getScoreboardComponent().onPlayerRemovedFromTeam(playerName, team);
+        }
+    }
+
+    // The next two methods are used to cut down on unnecessary duplicate code
+    private static boolean canUpdate() {
+        return Component.Scoreboard.config.active() && Component.Scoreboard.state != null;
+    }
+
+    private static ScoreboardComponentState getScoreboardComponent() {
+        return (ScoreboardComponentState)Component.Scoreboard.state;
     }
 }

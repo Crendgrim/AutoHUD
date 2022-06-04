@@ -10,6 +10,7 @@
     "EntityMixin",
     "HungerManagerMixin",
     "ScoreboardMixin",
+    "TeamMixinAccessor",
     "gui.InGameHudMixin",
     "gui.StatusEffectTimerMixin",
     "compat.armor_hud.ArmorHudMixin",

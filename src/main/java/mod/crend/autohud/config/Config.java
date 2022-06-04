@@ -73,35 +73,40 @@ public class Config implements ConfigData {
     PolicyComponent mountHealth = new PolicyComponent();
     @ConfigEntry.Gui.TransitiveObject
     @ConfigEntry.Category("components")
-    BooleanComponent hotbar = new BooleanComponent();
-    @ConfigEntry.Category("components")
-    boolean hotbarOnSlotChange = true;
-    @ConfigEntry.Category("components")
-    boolean hotbarOnLowDurability = true;
-    @ConfigEntry.Category("components")
-    @ConfigEntry.BoundedDiscrete(max=100)
-    int hotbarDurabilityPercentage = 10;
-    @ConfigEntry.Category("components")
-    int hotbarDurabilityTotal = 20;
-    @ConfigEntry.Gui.TransitiveObject
-    @ConfigEntry.Category("components")
     BooleanComponent statusEffects = new BooleanComponent();
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("components")
     boolean hidePersistentStatusEffects = true;
-    @ConfigEntry.Gui.TransitiveObject
-    @ConfigEntry.Category("components")
-    BooleanComponent scoreboard = new BooleanComponent();
-    @ConfigEntry.Category("components")
-    boolean scoreboardOnScoreChange = true;
-    @ConfigEntry.Category("components")
-    boolean scoreboardOnTeamChange = true;
 
-
+    @ConfigEntry.Category("components")
+    @ConfigEntry.Gui.CollapsibleObject(startExpanded=true)
+    HotbarComponents hotbar = new HotbarComponents();
+    @ConfigEntry.Category("components")
+    @ConfigEntry.Gui.CollapsibleObject(startExpanded=true)
+    ScoreboardComponents scoreboard = new ScoreboardComponents();
     @ConfigEntry.Category("components")
     @ConfigEntry.Gui.CollapsibleObject()
     AdvancedComponents advanced = new AdvancedComponents(defaultValues);
 
+    
+    public static class HotbarComponents {
+        @ConfigEntry.Gui.TransitiveObject
+        BooleanComponent hotbar = new BooleanComponent();
+        boolean onSlotChange = true;
+        boolean onLowDurability = true;
+        @ConfigEntry.BoundedDiscrete(max=100)
+        int durabilityPercentage = 10;
+        int durabilityTotal = 20;
+    }
+    
+    public static class ScoreboardComponents {
+        @ConfigEntry.Gui.TransitiveObject
+        BooleanComponent scoreboard = new BooleanComponent();
+        boolean onScoreChange = true;
+        @ConfigEntry.Gui.Tooltip
+        boolean onTeamChange = true;
+    }
+    
     public static class AdvancedComponents {
         @ConfigEntry.Gui.TransitiveObject
         AdvancedComponent hotbar = new AdvancedComponent();

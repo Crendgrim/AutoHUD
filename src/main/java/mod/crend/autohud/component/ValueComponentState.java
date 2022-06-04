@@ -1,5 +1,6 @@
 package mod.crend.autohud.component;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class ValueComponentState<T> extends ComponentState {
@@ -25,7 +26,7 @@ public class ValueComponentState<T> extends ComponentState {
     }
 
     protected boolean doReveal(T newValue) {
-        return !component.config.active() || !newValue.equals(oldValue);
+        return !component.config.active() || !Objects.equals(newValue, oldValue);
     }
 }
 

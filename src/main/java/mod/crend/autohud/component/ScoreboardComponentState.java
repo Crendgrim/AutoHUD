@@ -76,7 +76,7 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
         // stored (though it isn't fully sure if old player names & teams do get removed
         // once there's a new objective to set in) and cache anything new from this new
         // objective.
-        if (newObjective != super.oldValue) this.collectPlayerScores(newObjective);
+        if (!Objects.equals(newObjective, super.oldValue)) this.collectPlayerScores(newObjective);
     }
     
     private void collectPlayerScores(ScoreboardObjective objective) {

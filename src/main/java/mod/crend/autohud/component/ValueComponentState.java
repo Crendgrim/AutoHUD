@@ -25,7 +25,7 @@ public class ValueComponentState<T> extends ComponentState {
     }
 
     protected boolean doReveal(T newValue) {
-        return !component.config.active() || newValue != oldValue;
+        return !component.config.active() || !newValue.equals(oldValue);
     }
 }
 

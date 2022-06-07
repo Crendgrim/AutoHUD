@@ -93,5 +93,8 @@
 
   "key.category.autohud": "Auto HUD",
   "key.autohud.toggle-hud": "Включить динамический HUD",
-  "key.autohud.peek-hud": "Показать HUD (зажать)"
+  "key.autohud.peek-hud": "Показать HUD (зажать)",
+
+  "modmenu.summaryTranslation.dynamiccrosshair": "Динамический HUD, элементы которого прячутся, если они не нужны.",
+  "modmenu.descriptionTranslation.dynamiccrosshair": "Динамический HUD, элементы которого прячутся, если они не нужны."
 }

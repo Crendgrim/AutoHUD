@@ -52,11 +52,6 @@ dependencies {
 	}
 	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-	modCompileOnly("maven.modrinth:detail-armor-bar:${project.detailab_version}") { transitive = false }
-	modCompileOnly("curse.maven:berdinskiybears-armor-hud-${project.armor_hud_version}") { transitive = false }
-	modCompileOnly("curse.maven:dehydration-${project.dehydration_version}") { transitive = false }
-	modCompileOnly("maven.modrinth:inventory-profiles-next:${project.inventory_profiles_next_version}") { transitive = false }
-
 	jijArchive "maven.modrinth:microdurability:${project.microdurability_version}"
 	modCompileOnly fileTree(dir: "${extractedDir}", include: '*.jar')
 }

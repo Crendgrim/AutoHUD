@@ -95,6 +95,6 @@
   "key.autohud.toggle-hud": "Включить динамический HUD",
   "key.autohud.peek-hud": "Показать HUD (зажать)",
 
-  "modmenu.summaryTranslation.dynamiccrosshair": "Динамический HUD, элементы которого прячутся, если они не нужны.",
-  "modmenu.descriptionTranslation.dynamiccrosshair": "Динамический HUD, элементы которого прячутся, если они не нужны."
+  "modmenu.summaryTranslation.autohud": "Динамически прячет элементы интерфейса",
+  "modmenu.descriptionTranslation.autohud": "Динамический HUD, элементы которого прячутся, если они не нужны."
 }

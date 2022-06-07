@@ -93,5 +93,8 @@
 
   "key.category.autohud": "Auto HUD",
   "key.autohud.toggle-hud": "Toggle dynamic HUD",
-  "key.autohud.peek-hud": "Toggle HUD while held"
+  "key.autohud.peek-hud": "Toggle HUD while held",
+
+  "modmenu.summaryTranslation.autohud": "Dynamically hide interface elements",
+  "modmenu.descriptionTranslation.autohud": "Dynamic HUD that hides interface elements while they are not needed."
 }

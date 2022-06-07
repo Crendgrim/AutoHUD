@@ -35,10 +35,10 @@
   "depends": {
     "fabric-key-binding-api-v1": "*",
 
-    "fabricloader": ">=0.13.3",
+    "fabricloader": "*",
     "fabric": "*",
-    "minecraft": "~1.18.2",
-    "java": ">=17"
+    "minecraft": "${supported_version_pattern}",
+    "java": "*"
   },
   "suggests": {
   }

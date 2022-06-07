@@ -1,4 +1,4 @@
-package mod.crend.autohud.mixin.compat.armor_hud;
+package mod.crend.autohud.compat.mixin.armor_hud;
 
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Hud;

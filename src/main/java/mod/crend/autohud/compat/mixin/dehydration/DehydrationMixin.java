@@ -1,4 +1,4 @@
-package mod.crend.autohud.mixin.compat.dehydration;
+package mod.crend.autohud.compat.mixin.dehydration;
 
 import mod.crend.autohud.compat.DehydrationCompat;
 import mod.crend.autohud.component.Component;

@@ -1,4 +1,4 @@
-package mod.crend.autohud.mixin.compat.inventoryprofilesnext;
+package mod.crend.autohud.compat.mixin.inventoryprofilesnext;
 
 import mod.crend.autohud.component.Component;
 import org.anti_ad.mc.ipnext.event.LockSlotsHandler;

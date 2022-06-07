@@ -1,4 +1,4 @@
-package mod.crend.autohud.mixin.compat.microdurability;
+package mod.crend.autohud.compat.mixin.microdurability;
 
 import com.github.reviversmc.microdurability.RendererBase;
 import mod.crend.autohud.compat.MicroDurabilityCompat;

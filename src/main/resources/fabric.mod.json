@@ -29,7 +29,8 @@
     ]
   },
   "mixins": [
-    "autohud.mixins.json"
+    "autohud.mixins.json",
+    "autohud.compat.mixins.json"
   ],
 
   "depends": {

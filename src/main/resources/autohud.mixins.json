@@ -12,17 +12,9 @@
     "ScoreboardMixin",
     "TeamMixinAccessor",
     "gui.InGameHudMixin",
-    "gui.StatusEffectTimerMixin",
-    "compat.armor_hud.ArmorHudMixin",
-    "compat.dehydration.DehydrationMixin$EarlyMixin",
-    "compat.dehydration.DehydrationMixin$LateMixin",
-    "compat.dehydration.ThirstManagerMixin",
-    "compat.detailab.ArmorBarRendererMixin",
-    "compat.inventoryprofilesnext.LockSlotsHandlerMixin",
-    "compat.microdurability.MicroDurabilityMixin"
+    "gui.StatusEffectTimerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "plugin": "mod.crend.autohud.AutoHudMixinPlugin"
+  }
 }

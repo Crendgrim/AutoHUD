@@ -12,7 +12,7 @@ public class AutoHudMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        String[] split = mixinClassName.split("\\.compat\\.");
+        String[] split = mixinClassName.split("\\.compat\\.mixin\\.");
         if (split.length == 2) {
             String modid = split[1].split("\\.")[0];
             return FabricLoader.getInstance().isModLoaded(modid);

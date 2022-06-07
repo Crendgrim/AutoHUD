@@ -1,4 +1,4 @@
-package mod.crend.autohud.mixin.compat.detailab;
+package mod.crend.autohud.compat.mixin.detailab;
 
 import com.redlimerl.detailab.render.ArmorBarRenderer;
 import mod.crend.autohud.component.Component;

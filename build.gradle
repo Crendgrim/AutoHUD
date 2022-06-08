@@ -52,6 +52,7 @@ dependencies {
 	}
 	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
+	modImplementation "curse.maven:inventory-profiles-next-${project.inventory_profiles_next_version}"
 	jijArchive "maven.modrinth:microdurability:${project.microdurability_version}"
 	modCompileOnly fileTree(dir: "${extractedDir}", include: '*.jar')
 }

@@ -4,15 +4,27 @@
   "package": "mod.crend.autohud.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "ClientPlayNetworkHandlerMixin",
     "ClientPlayerEntityMixin",
     "ClientPlayerInteractionManagerMixin",
+    "ClientPlayNetworkHandlerMixin",
     "EntityMixin",
     "HungerManagerMixin",
     "ScoreboardMixin",
     "TeamMixinAccessor",
     "gui.InGameHudMixin",
-    "gui.StatusEffectTimerMixin"
+    "gui.StatusEffectTimerMixin",
+    "render.BannerBlockEntityRendererMixin",
+    "render.BedBlockEntityRendererMixin",
+    "render.ChestBlockEntityRendererMixin",
+    "render.ConduitBlockEntityRendererMixin",
+    "render.InGameHudMixin",
+    "render.ItemRendererMixin",
+    "render.ModelPartMixin",
+    "render.RenderLayersMixin",
+    "render.ShulkerBoxBlockEntityRendererMixin",
+    "render.SkullBlockEntityRendererMixin",
+    "render.TextRendererMixin",
+    "render.VertexConsumerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -6,11 +6,9 @@ import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.ComponentState;
 import net.minecraft.client.network.ClientPlayerEntity;
 
-import java.util.List;
-
 public class MicroDurabilityCompat implements AutoHudApi {
     // We bind this to the hotbar config, as that is the most closely related one.
-    public static Component MicroDurabilityComponent = new Component("MicroDurability", AutoHud.config.hunger(), List.of(Component.Air), true);
+    public static Component MicroDurabilityComponent = new Component("MicroDurability", AutoHud.config.hotbar(), true);
     static {
         Component.registerComponent(MicroDurabilityComponent);
         Component.ExperienceBar.addStackComponent(MicroDurabilityComponent);

@@ -56,7 +56,7 @@ Known to be compatible:
 * [DetailArmorBar](https://modrinth.com/mod/detail-armor-bar) is supported.
 * [BerdinskiyBears Armor Hud](https://www.curseforge.com/minecraft/mc-mods/berdinskiybears-armor-hud) is supported in "hotbar" configuration
 * [Dehydration](https://www.curseforge.com/minecraft/mc-mods/dehydration) is supported (hydration bar follows hunger bar settings).
-* [Inventory Profiles Next](https://modrinth.com/mod/inventory-profiles-next)' lock symbol is supported.
+* [Inventory Profiles Next](https://modrinth.com/mod/inventory-profiles-next)' lock symbol is supported (but not in "fade" setting).
 * [Micro Durability](https://modrinth.com/mod/microdurability) is supported (but does not get dynamically shown)
 
 Known to be incompatible:
@@ -64,3 +64,4 @@ Known to be incompatible:
 * Any other mod that draws status effect timers should have that functionality disabled.
 * HUD elements created by other mods will most likely not be moved.
 * Bedrockify overwrites the status effect modifications. To get them working, disable the `screenSafeArea` mixin.
+* "Fade" mode is more likely to cause issues with any mods that alter the GUI.

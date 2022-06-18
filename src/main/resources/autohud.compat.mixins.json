@@ -4,11 +4,13 @@
   "package": "mod.crend.autohud.compat.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "appleskin.HUDOverlayHandlerMixin",
     "armor_hud.ArmorHudMixin",
     "dehydration.DehydrationMixin$EarlyMixin",
     "dehydration.DehydrationMixin$LateMixin",
     "dehydration.ThirstManagerMixin",
     "detailab.ArmorBarRendererMixin",
+    "detailab.InGameDrawerMixin",
     "inventoryprofilesnext.LockSlotsHandlerMixin",
     "microdurability.MicroDurabilityMixin"
   ],

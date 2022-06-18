@@ -5,6 +5,7 @@
 
   "text.autoconfig.autohud.option.dynamicOnLoad": "Включать динамический HUD при загрузке игры",
   "text.autoconfig.autohud.option.ticksRevealed": "Время отображения (в тиках)",
+  "text.autoconfig.autohud.option.animationType": "Animation type",
   "text.autoconfig.autohud.option.animationSpeed": "Скорость анимации",
   "text.autoconfig.autohud.option.revealType": "Управление компонентами",
   "text.autoconfig.autohud.option.revealType.@Tooltip[0]": "Индивидуальное: перемещать все компоненты независимо друг от друга",
@@ -74,6 +75,9 @@
   "text.autoconfig.autohud.option.advanced.scoreboard.speedMultiplier": "Таблица результатов: множитель скорости (-1 - по умолчанию)",
   "text.autoconfig.autohud.option.advanced.scoreboard.distance": "Таблица результатов: дистанция (-1 - по умолчанию)",
 
+  "text.autohud.option.animationType.Move": "Move",
+  "text.autohud.option.animationType.Fade": "Fade",
+  "text.autohud.option.animationType.None": "None",
   "text.autohud.option.scrollDirection.Up": "Вверх",
   "text.autohud.option.scrollDirection.Down": "Вниз",
   "text.autohud.option.scrollDirection.Left": "Влево",

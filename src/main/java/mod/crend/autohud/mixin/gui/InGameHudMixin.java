@@ -63,7 +63,8 @@ public class InGameHudMixin {
     }
 
     // Experience Bar
-    @Inject(method = "renderExperienceBar", at = @At(value = "HEAD"))
+    //@Inject(method = "renderExperienceBar", at = @At(value = "HEAD"))
+    @Inject(method = "renderExperienceBar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getNextLevelExperience()I"))
     private void autoHud$preExperienceBar(final MatrixStack matrixStack, final int x, final CallbackInfo ci) {
         Hud.preInject(matrixStack, Component.ExperienceBar);
     }

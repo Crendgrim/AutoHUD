@@ -209,6 +209,11 @@ public class Component {
     public void hide() {
         if (!config.active()) return;
         visibleTime = 0;
+        // Check next tick whether we actually want to hide.
+        // This ensures that components that are set to always-show do not get hidden indefinitely.
+        if (state != null) {
+            state.updateNextTick();
+        }
     }
     private boolean fullyRevealed() {
         return delta == 0;

@@ -77,6 +77,7 @@ task extractJij(type: Copy) {
 compileJava.dependsOn extractJij
 
 processResources {
+	inputs.property "version", project.version
 	filesMatching("fabric.mod.json") {
 		expand(project.properties)
 	}

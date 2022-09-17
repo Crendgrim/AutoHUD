@@ -22,7 +22,7 @@ public class DehydrationCompat implements AutoHudApi {
 
     @Override
     public void initState(ClientPlayerEntity player) {
-        ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager(player);
+        ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager();
         if (thirstManager.hasThirst()) {
             Thirst.state = new PolicyComponentState(Thirst, thirstManager::getThirstLevel, 20);
         }

@@ -56,6 +56,7 @@ dependencies {
 	modCompileOnly("maven.modrinth:detail-armor-bar:${project.detailab_version}") { transitive = false }
 	modCompileOnly("curse.maven:dehydration-${project.dehydration_version}") { transitive = false }
 	modCompileOnly("curse.maven:inventory-profiles-next-${project.inventory_profiles_next_version}") { transitive = false }
+	modCompileOnly("curse.maven:onebar-${project.onebar_version}") { transitive = false }
 	jijArchive "maven.modrinth:microdurability:${project.microdurability_version}"
 	modCompileOnly fileTree(dir: "${extractedDir}", include: '*.jar')
 }

@@ -2,7 +2,6 @@ package mod.crend.autohud;
 
 import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.component.Hud;
-import mod.crend.autohud.config.Config;
 import mod.crend.autohud.config.ConfigHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -20,6 +19,14 @@ public class AutoHud implements ClientModInitializer {
 
     public static ConfigHandler config;
     public static final List<AutoHudApi> apis = new ArrayList<>();
+
+    // These are global toggles that are usually always true.
+    // Whole sections may be disabled using these flags to enhance mod compatibility.
+    public static boolean targetHotbar = true;
+    public static boolean targetExperienceBar = true;
+    public static boolean targetStatusBars = true;
+    public static boolean targetScoreboard = true;
+    public static boolean targetStatusEffects = true;
 
     @Override
     public void onInitializeClient() {

@@ -11,7 +11,8 @@
     "detailab.ArmorBarRendererMixin",
     "detailab.InGameDrawerMixin",
     "inventoryprofilesnext.LockSlotsHandlerMixin",
-    "microdurability.MicroDurabilityMixin"
+    "microdurability.MicroDurabilityMixin",
+    "onebar.OneBarElementsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

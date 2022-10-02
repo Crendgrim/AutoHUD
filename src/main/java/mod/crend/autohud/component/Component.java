@@ -244,6 +244,11 @@ public class Component {
         }
     }
 
+    public void synchronizeFrom(Component other) {
+        delta = Math.min(delta, other.delta);
+        visibleTime = Math.max(visibleTime, other.visibleTime);
+    }
+
     /* Maths to ensure a more visually interesting speed curve for the animation.
      * Speeds up until half way, then slows down.
      * This causes the animation to feel smoother.

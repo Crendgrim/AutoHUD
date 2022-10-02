@@ -11,17 +11,24 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import java.util.List;
 
 public class DehydrationCompat implements AutoHudApi {
+
+    @Override
+    public String modId() {
+        return "dehydration";
+    }
+
     // We bind this to the hunger config, as that is the most closely related one.
     public static Component Thirst = new Component("Thirst", AutoHud.config.hunger(), List.of(Component.Air), true);
     static {
-        Component.registerComponent(Thirst);
-        Component.Hunger.addStackComponent(Thirst);
         // Fake this API being inserted via entry point
-        AutoHud.apis.add(new DehydrationCompat());
+        AutoHud.addApi(new DehydrationCompat());
     }
 
     @Override
     public void initState(ClientPlayerEntity player) {
+        Component.registerComponent(Thirst);
+        Component.Hunger.addStackComponent(Thirst);
+
         ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager();
         if (thirstManager.hasThirst()) {
             Thirst.state = new PolicyComponentState(Thirst, thirstManager::getThirstLevel, 20);

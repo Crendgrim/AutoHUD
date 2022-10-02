@@ -28,6 +28,12 @@ public class AutoHud implements ClientModInitializer {
     public static boolean targetScoreboard = true;
     public static boolean targetStatusEffects = true;
 
+    public static void addApi(AutoHudApi api) {
+        if (FabricLoader.getInstance().isModLoaded(api.modId())) {
+            apis.add(api);
+        }
+    }
+
     @Override
     public void onInitializeClient() {
         config = new ConfigHandler();
@@ -58,7 +64,7 @@ public class AutoHud implements ClientModInitializer {
         });
 
         FabricLoader.getInstance().getEntrypointContainers("autohud", AutoHudApi.class).forEach(entrypoint -> {
-            apis.add(entrypoint.getEntrypoint());
+            addApi(entrypoint.getEntrypoint());
         });
 
     }

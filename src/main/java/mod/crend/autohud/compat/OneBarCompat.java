@@ -7,12 +7,15 @@ import mod.crend.autohud.component.ComponentState;
 import net.minecraft.client.network.ClientPlayerEntity;
 
 public class OneBarCompat implements AutoHudApi {
+	@Override
+	public String modId() {
+		return "onebar";
+	}
+
 	public static Component OneBarComponent = new Component("OneBar", AutoHud.config.health(), true);
 	static {
-		Component.registerComponent(OneBarComponent);
-		Component.ExperienceBar.addStackComponent(OneBarComponent);
 		// Fake this API being inserted via entry point
-		AutoHud.apis.add(new OneBarCompat());
+		AutoHud.addApi(new OneBarCompat());
 	}
 
 	@Override
@@ -20,6 +23,9 @@ public class OneBarCompat implements AutoHudApi {
 		// Disable vanilla elements that are handled by OneBar
 		AutoHud.targetExperienceBar = false;
 		AutoHud.targetStatusBars = false;
+
+		Component.registerComponent(OneBarComponent);
+		Component.ExperienceBar.addStackComponent(OneBarComponent);
 		OneBarComponent.state = new ComponentState(OneBarComponent);
 		OneBarComponent.hideNow();
 	}

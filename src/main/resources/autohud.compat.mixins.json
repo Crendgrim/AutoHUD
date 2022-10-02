@@ -10,6 +10,7 @@
     "dehydration.ThirstManagerMixin",
     "detailab.ArmorBarRendererMixin",
     "detailab.InGameDrawerMixin",
+    "essentialgui.EssentialGuiMixin",
     "inventoryprofilesnext.LockSlotsHandlerMixin",
     "microdurability.MicroDurabilityMixin",
     "onebar.OneBarElementsMixin",

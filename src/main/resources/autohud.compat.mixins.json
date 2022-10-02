@@ -12,7 +12,8 @@
     "detailab.InGameDrawerMixin",
     "inventoryprofilesnext.LockSlotsHandlerMixin",
     "microdurability.MicroDurabilityMixin",
-    "onebar.OneBarElementsMixin"
+    "onebar.OneBarElementsMixin",
+    "statuseffectbars.StatusEffectBarRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

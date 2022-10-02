@@ -15,6 +15,10 @@ public class AutoHudMixinPlugin implements IMixinConfigPlugin {
         String[] split = mixinClassName.split("\\.compat\\.mixin\\.");
         if (split.length == 2) {
             String modid = split[1].split("\\.")[0];
+            // Special handling for mods with - in their mod id
+            if (modid.equals("statuseffectbars")) {
+                modid = "status-effect-bars";
+            }
             return FabricLoader.getInstance().isModLoaded(modid);
         }
         return true;

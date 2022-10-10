@@ -1,5 +1,7 @@
 package mod.crend.autohud.mixin.gui;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
@@ -27,36 +29,43 @@ import java.util.List;
 public class InGameHudMixin {
 
     // Hotbar
-    @Inject(method = "renderHotbar", at = @At(value = "HEAD"))
-    private void autoHud$preHotbar(float f, MatrixStack matrixStack, CallbackInfo ci) {
+    @WrapOperation(
+            method = "render",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbar(FLnet/minecraft/client/util/math/MatrixStack;)V"
+            )
+    )
+    private void autoHud$wrapHotbar(InGameHud instance, float tickDelta, MatrixStack matrixStack, Operation<Void> original) {
         if (AutoHud.targetHotbar) {
             Hud.preInject(matrixStack, Component.Hotbar);
         }
-    }
-
-    @Inject(method = "renderHotbar", at = @At(value = "RETURN"))
-    private void autoHud$postHotbar(float f, MatrixStack matrixStack, CallbackInfo ci) {
+        original.call(instance, tickDelta, matrixStack);
         if (AutoHud.targetHotbar) {
             Hud.postInject(matrixStack);
         }
     }
 
     // Tooltip
-    @Inject(method = "renderHeldItemTooltip", at = @At(value = "HEAD"))
-    private void autoHud$preTooltip(MatrixStack matrixStack, CallbackInfo ci) {
+    @WrapOperation(
+            method = "render",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHeldItemTooltip(Lnet/minecraft/client/util/math/MatrixStack;)V"
+            )
+    )
+    private void autoHud$wrapTooltip(InGameHud instance, MatrixStack matrixStack, Operation<Void> original) {
         if (AutoHud.targetHotbar) {
             Hud.preInject(matrixStack, Component.Tooltip);
         }
-    }
-
-    @Inject(method = "renderHeldItemTooltip", at = @At(value = "RETURN"))
-    private void autoHud$postTooltip(MatrixStack matrixStack, CallbackInfo ci) {
+        original.call(instance, matrixStack);
         if (AutoHud.targetHotbar) {
             Hud.postInject(matrixStack);
         }
     }
 
     // Hotbar items
+    // We have to use matrix modification here to move the rendered items, as the y value is passed as an integer
     @Inject(method = "renderHotbarItem", at = @At(value = "HEAD"))
     private void autoHud$preHotbarItems(final int x, final int y, final float tickDelta, final PlayerEntity player, final ItemStack stack, final int seed, final CallbackInfo ci) {
         if (AutoHud.targetHotbar) {
@@ -76,26 +85,39 @@ public class InGameHudMixin {
     }
 
     // Experience Bar
-    //@Inject(method = "renderExperienceBar", at = @At(value = "HEAD"))
-    @Inject(method = "renderExperienceBar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getNextLevelExperience()I"))
-    private void autoHud$preExperienceBar(final MatrixStack matrixStack, final int x, final CallbackInfo ci) {
+    @WrapOperation(
+            method = "render",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderExperienceBar(Lnet/minecraft/client/util/math/MatrixStack;I)V"
+            )
+    )
+    private void autoHud$wrapExperienceBar(InGameHud instance, MatrixStack matrixStack, int x, Operation<Void> original) {
         if (AutoHud.targetExperienceBar) {
             Hud.preInject(matrixStack, Component.ExperienceBar);
         }
-    }
-
-    @Inject(method = "renderExperienceBar", at = @At(value = "RETURN"))
-    private void autoHud$postExperienceBar(final MatrixStack matrixStack, final int x, final CallbackInfo ci) {
+        original.call(instance, matrixStack, x);
         if (AutoHud.targetExperienceBar) {
             Hud.postInject(matrixStack);
         }
     }
 
     // Status Bars
-    @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;getProfiler()Lnet/minecraft/util/profiler/Profiler;", ordinal = 0))
-    private void autoHud$preArmorBar(final MatrixStack matrixStack, final CallbackInfo ci) {
+    @WrapOperation(
+            method = "render",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderStatusBars(Lnet/minecraft/client/util/math/MatrixStack;)V"
+            )
+    )
+    private void autoHud$wrapStatusBars(InGameHud instance, MatrixStack matrixStack, Operation<Void> original) {
         if (AutoHud.targetStatusBars) {
+            // Armor is the first rendered status bar in the vanilla renderer
             Hud.preInject(matrixStack, Component.Armor);
+        }
+        original.call(instance, matrixStack);
+        if (AutoHud.targetStatusBars) {
+            Hud.postInject(matrixStack);
         }
     }
 
@@ -123,53 +145,55 @@ public class InGameHudMixin {
         }
     }
 
-    @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;getProfiler()Lnet/minecraft/util/profiler/Profiler;", ordinal = 4))
-    private void autoHud$postAirBar(final MatrixStack matrixStack, final CallbackInfo ci) {
-        if (AutoHud.targetStatusBars) {
-            Hud.postInject(matrixStack);
-        }
-    }
-
     // Mount Health
-    @Inject(method = "renderMountHealth", at = @At(value = "HEAD"))
-    private void autoHud$preMountHealth(final MatrixStack matrixStack, final CallbackInfo ci) {
+    @WrapOperation(
+            method = "render",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMountHealth(Lnet/minecraft/client/util/math/MatrixStack;)V"
+            )
+    )
+    private void autoHud$wrapMountHealth(InGameHud instance, MatrixStack matrixStack, Operation<Void> original) {
         if (AutoHud.targetStatusBars) {
             Hud.preInject(matrixStack, Component.MountHealth);
         }
-    }
-
-    @Inject(method = "renderMountHealth", at = @At(value = "RETURN"))
-    private void autoHud$postMountHealth(final MatrixStack matrixStack, final CallbackInfo ci) {
+        original.call(instance, matrixStack);
         if (AutoHud.targetStatusBars) {
             Hud.postInject(matrixStack);
         }
     }
 
     // Mount Jump Bar
-    @Inject(method = "renderMountJumpBar", at = @At(value = "HEAD"))
-    private void autoHud$preMountJumpBar(final MatrixStack matrixStack, final int x, final CallbackInfo ci) {
+    @WrapOperation(
+            method = "render",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMountJumpBar(Lnet/minecraft/client/util/math/MatrixStack;I)V"
+            )
+    )
+    private void autoHud$wrapMountJumpBar(InGameHud instance, MatrixStack matrixStack, int x, Operation<Void> original) {
         if (AutoHud.targetStatusBars) {
             Hud.preInject(matrixStack, Component.MountJumpBar);
         }
-    }
-
-    @Inject(method = "renderMountJumpBar", at = @At(value = "RETURN"))
-    private void autoHud$postMountJumpBar(final MatrixStack matrixStack, final int x, final CallbackInfo ci) {
+        original.call(instance, matrixStack, x);
         if (AutoHud.targetStatusBars) {
             Hud.postInject(matrixStack);
         }
     }
 
     // Scoreboard
-    @Inject(method = "renderScoreboardSidebar", at = @At(value = "HEAD"))
-    private void autoHud$preScoreboard(final MatrixStack matrixStack, final ScoreboardObjective objective, final CallbackInfo ci) {
+    @WrapOperation(
+            method = "render",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderScoreboardSidebar(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/scoreboard/ScoreboardObjective;)V"
+            )
+    )
+    private void autoHud$wrapScoreboardSidebar(InGameHud instance, MatrixStack matrixStack, ScoreboardObjective objective, Operation<Void> original) {
         if (AutoHud.targetScoreboard) {
             Hud.preInject(matrixStack, Component.Scoreboard);
         }
-    }
-
-    @Inject(method = "renderScoreboardSidebar", at = @At(value = "RETURN"))
-    private void autoHud$postScoreboard(final MatrixStack matrixStack, final ScoreboardObjective objective, final CallbackInfo ci) {
+        original.call(instance, matrixStack, objective);
         if (AutoHud.targetScoreboard) {
             Hud.postInject(matrixStack);
         }

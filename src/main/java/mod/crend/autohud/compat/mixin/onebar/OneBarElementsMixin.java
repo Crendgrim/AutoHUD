@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = OneBarElements.class, remap = false)
@@ -20,9 +21,6 @@ public abstract class OneBarElementsMixin {
 
 	@Inject(method = "renderOneBar", at=@At("HEAD"))
 	private void autoHud$preRenderOneBar(CallbackInfo ci) {
-		if (!stack.isEmpty()) {
-			Hud.postInject(stack);
-		}
 		Hud.preInject(stack, OneBarCompat.OneBarComponent);
 	}
 
@@ -38,9 +36,13 @@ public abstract class OneBarElementsMixin {
 		Hud.preInject(stack, OneBarCompat.OneBarComponent);
 	}
 
-
 	@Inject(method = "renderOneBar", at=@At("TAIL"))
 	private void autoHud$postRenderOneBar(CallbackInfo ci) {
 		Hud.postInject(stack);
+	}
+
+	@ModifyVariable(method = "renderBar", at = @At("HEAD"), ordinal = 4, argsOnly = true)
+	private int autoHud$alpha(int color) {
+		return Hud.modifyArgb(color);
 	}
 }

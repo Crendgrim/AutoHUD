@@ -79,6 +79,13 @@ public class Hud {
     public static boolean inRender;
     public static float alpha = 1.0f;
 
+    public static void preInjectFade(Component component) {
+        if (AutoHud.config.animationType() == AnimationType.Fade) {
+            alpha = component.getAlpha();
+            RenderSystem.enableBlend();
+            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
+        }
+    }
     public static void preInject(MatrixStack matrixStack, Component component) {
         if (AutoHud.config.animationType() == AnimationType.Fade) {
             alpha = component.getAlpha();

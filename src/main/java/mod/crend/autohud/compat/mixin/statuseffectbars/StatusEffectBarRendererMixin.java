@@ -2,6 +2,7 @@ package mod.crend.autohud.compat.mixin.statuseffectbars;
 
 import io.github.a5b84.statuseffectbars.StatusEffectBarRenderer;
 import mod.crend.autohud.component.Component;
+import mod.crend.autohud.component.Hud;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,6 +17,9 @@ public class StatusEffectBarRendererMixin {
 			ordinal = 1,
 			argsOnly = true)
 	private static int autoHud$renderWithOffset(int y, MatrixStack matrices, StatusEffectInstance effect) {
-		return y + (int) Component.get(effect.getEffectType()).getDeltaY();
+		if (Hud.inRender) {
+			return y + (int) Component.get(effect.getEffectType()).getDeltaY();
+		}
+		return y;
 	}
 }

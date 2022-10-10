@@ -40,6 +40,7 @@ public class ConfigHandler {
         public ScrollDirection direction() { return values.direction; }
         public double speedMultiplier() { return (values.speedMultiplier < 0 ? defaultValues.speedMultiplier : values.speedMultiplier); }
         public int distance() { return (values.distance < 0 ? defaultValues.distance : values.distance); }
+        public double maximumFade() { return (values.maximumFade < 0 ? Math.min(defaultValues.maximumFade, 1.0d) : Math.min(values.maximumFade, 1.0d)); }
     }
     public static class SimpleComponent extends IComponent {
         private SimpleComponent(Config.SimpleComponent config, Config.AdvancedComponent values, Config.DefaultValues defaultValues) {

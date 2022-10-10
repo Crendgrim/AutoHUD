@@ -24,6 +24,7 @@ public class Config implements ConfigData {
 
         double speedMultiplier = 1.0;
         int distance = 60;
+        double maximumFade = 0.0d;
     }
     @ConfigEntry.Gui.TransitiveObject
     @ConfigEntry.Category("components")
@@ -36,6 +37,7 @@ public class Config implements ConfigData {
         ScrollDirection direction = ScrollDirection.Down;
         double speedMultiplier = -1;
         int distance = -1;
+        double maximumFade = -1d;
     }
     public static class IComponent {
     }

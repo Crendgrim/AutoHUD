@@ -89,7 +89,7 @@ public class Component {
     public static void register(StatusEffect effect) {
         if (!statusEffectComponents.containsKey(effect)) {
             Component c = new Component(effect.getTranslationKey(), AutoHud.config.statusEffects());
-            c.delta = c.config.distance();
+            c.delta = 1.0f;
             statusEffectComponents.put(effect, c);
         }
     }
@@ -140,7 +140,7 @@ public class Component {
     }
     public float getAlpha() {
         if (AutoHud.config.animationType() != AnimationType.Fade) return 1.0f;
-        return 1.0f - (float) delta;
+        return 1.0f - (float) ((1.0d - config.maximumFade()) * delta);
     }
 
     public boolean isHidden() {

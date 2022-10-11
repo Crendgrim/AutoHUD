@@ -17,7 +17,7 @@
     "statuseffectbars.StatusEffectBarRendererMixin"
   ],
   "injectors": {
-    "defaultRequire": 1
+    "defaultRequire": 0
   },
   "plugin": "mod.crend.autohud.AutoHudMixinPlugin"
 }

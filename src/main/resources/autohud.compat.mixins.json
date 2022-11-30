@@ -9,6 +9,7 @@
     "dehydration.DehydrationMixin$EarlyMixin",
     "dehydration.DehydrationMixin$LateMixin",
     "dehydration.ThirstManagerMixin",
+    "detailab.ArmorBarRendererMixin",
     "detailab.InGameDrawerMixin",
     "inventoryprofilesnext.LockSlotsHandlerMixin",
     "microdurability.MicroDurabilityMixin",

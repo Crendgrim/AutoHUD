@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-@Mixin(InGameDrawer.class)
+@Mixin(value = InGameDrawer.class, remap = false)
 public class InGameDrawerMixin {
 	@ModifyArg(
 			method = "drawTexture(Lnet/minecraft/client/util/math/MatrixStack;IIFFIIIILjava/awt/Color;Z)V",

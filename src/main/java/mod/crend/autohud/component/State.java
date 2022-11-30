@@ -1,33 +1,79 @@
 package mod.crend.autohud.component;
 
+import com.mojang.datafixers.util.Pair;
 import mod.crend.autohud.AutoHud;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.PotionItem;
+import net.minecraft.item.Wearable;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionUtil;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class State {
 
     private Map<StatusEffect, StatusEffectInstance> previousStatusEffects;
+    private ItemStack previousItemStack;
 
     public State(ClientPlayerEntity player) {
         initStates(player);
         previousStatusEffects = new HashMap<>();
+        previousItemStack = player.getMainHandStack().copy();
     }
    public void initStates(ClientPlayerEntity player) {
         Component.Hotbar.state = new ValueComponentState<>(Component.Hotbar, player::getMainHandStack, true);
         Component.Tooltip.state = new ValueComponentState<>(Component.Tooltip, player::getMainHandStack, true);
-        Component.Health.state = new PolicyComponentState(Component.Health, () -> (int) player.getHealth(), () -> (int) player.getMaxHealth());
-        Component.Hunger.state = new PolicyComponentState(Component.Hunger, () -> player.getHungerManager().getFoodLevel(), 20);
-        Component.Armor.state = new PolicyComponentState(Component.Armor, player::getArmor, 20, true);
+        Component.Health.state = new EnhancedPolicyComponentState(Component.Health,
+                () -> (int) player.getHealth(),
+                () -> (int) player.getMaxHealth(),
+                this::canHeal);
+        Component.Hunger.state = new EnhancedPolicyComponentState(Component.Hunger,
+                () -> player.getHungerManager().getFoodLevel(),
+                20,
+                () -> player.getHungerManager().getFoodLevel() < 20 && player.getMainHandStack().isFood());
+        Component.Armor.state = new EnhancedPolicyComponentState(Component.Armor,
+                player::getArmor,
+                20,
+                () -> player.getMainHandStack().getItem() instanceof Wearable && player.canEquip(player.getMainHandStack()), true);
         Component.Air.state = new PolicyComponentState(Component.Air, player::getAir, player::getMaxAir);
         Component.ExperienceBar.state = new ValueComponentState<>(Component.ExperienceBar, () -> player.totalExperience, true);
         Component.Scoreboard.state = new ScoreboardComponentState(Component.Scoreboard);
 
         AutoHud.apis.forEach(api -> api.initState(player));
+    }
+
+    private boolean isHealEffect(StatusEffectInstance effect) {
+        return (effect.getEffectType() == StatusEffects.REGENERATION
+                || effect.getEffectType() == StatusEffects.INSTANT_HEALTH
+                || effect.getEffectType() == StatusEffects.HEALTH_BOOST
+                || effect.getEffectType() == StatusEffects.ABSORPTION);
+
+    }
+    private boolean canHeal() {
+        ItemStack itemStack = MinecraftClient.getInstance().player.getMainHandStack();
+        if (itemStack.isFood()) {
+            List<Pair<StatusEffectInstance, Float>> statusEffects = itemStack.getItem().getFoodComponent().getStatusEffects();
+            for (Pair<StatusEffectInstance, Float> effect : statusEffects) {
+                if (isHealEffect(effect.getFirst())) {
+                    return true;
+                }
+            }
+        } else if (itemStack.getItem() instanceof PotionItem) {
+            Potion potion = PotionUtil.getPotion(itemStack);
+            for (StatusEffectInstance effect : potion.getEffects()) {
+                if (isHealEffect(effect)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean revealHotbarOnDurability(ItemStack itemStack) {
@@ -44,6 +90,14 @@ public class State {
 
     public void tick(ClientPlayerEntity player) {
         if (player == null) return;
+
+        ItemStack mainHandStack = player.getMainHandStack();
+        if (!ItemStack.areEqual(mainHandStack, previousItemStack)) {
+            previousItemStack = mainHandStack.copy();
+            Component.Health.state.updateNextTick();
+            Component.Hunger.state.updateNextTick();
+            Component.Armor.state.updateNextTick();
+        }
 
         Component.tickAll();
 

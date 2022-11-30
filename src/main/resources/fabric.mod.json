@@ -41,7 +41,7 @@
 
     "fabricloader": "*",
     "fabric": "*",
-    "minecraft": "${supported_version_pattern}",
+    "minecraft": ">=1.19",
     "java": "*"
   },
   "suggests": {

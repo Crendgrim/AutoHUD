@@ -20,5 +20,5 @@
   "injectors": {
     "defaultRequire": 0
   },
-  "plugin": "mod.crend.autohud.AutoHudMixinPlugin"
+  "plugin": "mod.crend.autohud.AutoHudCompatMixinPlugin"
 }

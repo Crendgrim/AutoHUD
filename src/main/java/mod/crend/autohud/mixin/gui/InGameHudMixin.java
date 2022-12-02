@@ -10,6 +10,7 @@ import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.StatusEffectSpriteManager;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.JumpingMount;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -168,10 +169,10 @@ public class InGameHudMixin {
             method = "render",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMountJumpBar(Lnet/minecraft/client/util/math/MatrixStack;I)V"
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMountJumpBar(Lnet/minecraft/entity/JumpingMount;Lnet/minecraft/client/util/math/MatrixStack;I)V"
             )
     )
-    private void autoHud$wrapMountJumpBar(InGameHud instance, MatrixStack matrixStack, int x, Operation<Void> original) {
+    private void autoHud$wrapMountJumpBar(InGameHud instance, JumpingMount mount, MatrixStack matrixStack, int x, Operation<Void> original) {
         if (AutoHud.targetStatusBars) {
             Hud.preInject(matrixStack, Component.MountJumpBar);
         }

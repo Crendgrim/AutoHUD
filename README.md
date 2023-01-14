@@ -56,6 +56,7 @@ Known to be compatible:
 * [DetailArmorBar](https://modrinth.com/mod/detail-armor-bar) is supported.
 * [BerdinskiyBears Armor Hud](https://www.curseforge.com/minecraft/mc-mods/berdinskiybears-armor-hud) is supported in "hotbar" configuration
 * [Dehydration](https://www.curseforge.com/minecraft/mc-mods/dehydration) is supported (hydration bar follows hunger bar settings).
+* [OneBar](https://modrinth.com/mod/onebar) is supported.
 * [Inventory Profiles Next](https://modrinth.com/mod/inventory-profiles-next)' lock symbol is supported (but not in "fade" setting).
 * [Micro Durability](https://modrinth.com/mod/microdurability) is supported (but does not get dynamically shown)
 

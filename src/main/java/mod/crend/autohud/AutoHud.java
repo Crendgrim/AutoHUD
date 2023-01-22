@@ -17,6 +17,8 @@ import java.util.List;
 
 public class AutoHud implements ClientModInitializer {
 
+    public static final String MOD_ID = "autohud";
+
     public static ConfigHandler config;
     public static final List<AutoHudApi> apis = new ArrayList<>();
 
@@ -63,7 +65,7 @@ public class AutoHud implements ClientModInitializer {
             Hud.peekHud(peekHudKeyBinding.isPressed());
         });
 
-        FabricLoader.getInstance().getEntrypointContainers("autohud", AutoHudApi.class).forEach(entrypoint -> {
+        FabricLoader.getInstance().getEntrypointContainers(MOD_ID, AutoHudApi.class).forEach(entrypoint -> {
             addApi(entrypoint.getEntrypoint());
         });
 

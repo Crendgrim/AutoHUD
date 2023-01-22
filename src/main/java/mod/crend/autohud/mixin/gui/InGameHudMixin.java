@@ -6,6 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Hud;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.StatusEffectSpriteManager;
@@ -27,7 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @Mixin(value = InGameHud.class, priority = 800)
-public class InGameHudMixin {
+public class InGameHudMixin extends DrawableHelper {
 
     // Hotbar
     @WrapOperation(
@@ -176,7 +177,7 @@ public class InGameHudMixin {
         if (AutoHud.targetStatusBars) {
             Hud.preInject(matrixStack, Component.MountJumpBar);
         }
-        original.call(instance, matrixStack, x);
+        original.call(instance, mount, matrixStack, x);
         if (AutoHud.targetStatusBars) {
             Hud.postInject(matrixStack);
         }

@@ -17,7 +17,7 @@ public class HUDOverlayHandlerMixin {
 	@Inject(method = "onPreRender", at=@At("TAIL"))
 	void autoHud$injectTransparency(MatrixStack matrixStack, CallbackInfo ci) {
 		if (AutoHud.config.animationFade()) {
-			Hud.preInject(matrixStack, Component.Hunger);
+			Hud.preInjectFade(Component.Hunger);
 		}
 	}
 

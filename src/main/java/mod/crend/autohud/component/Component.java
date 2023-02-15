@@ -1,7 +1,6 @@
 package mod.crend.autohud.component;
 
 import mod.crend.autohud.AutoHud;
-import mod.crend.autohud.config.AnimationType;
 import mod.crend.autohud.config.ConfigHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.Sprite;
@@ -123,7 +122,7 @@ public class Component {
     private float visibleTime = 1;
 
     public double getDeltaX() {
-        if (AutoHud.config.animationType() == AnimationType.Fade) return 0;
+        if (!AutoHud.config.animationMove() && AutoHud.config.animationFade()) return 0;
         return switch (config.direction()) {
             case Up, Down -> 0;
             case Left -> -delta * config.distance();
@@ -131,7 +130,7 @@ public class Component {
         };
     }
     public double getDeltaY() {
-        if (AutoHud.config.animationType() == AnimationType.Fade) return 0;
+        if (!AutoHud.config.animationMove() && AutoHud.config.animationFade()) return 0;
         return switch (config.direction()) {
             case Up -> -delta * config.distance();
             case Down -> delta * config.distance();
@@ -139,7 +138,7 @@ public class Component {
         };
     }
     public float getAlpha() {
-        if (AutoHud.config.animationType() != AnimationType.Fade) return 1.0f;
+        if (!AutoHud.config.animationFade()) return 1.0f;
         return 1.0f - (float) ((1.0d - config.maximumFade()) * delta);
     }
 
@@ -284,7 +283,7 @@ public class Component {
             if (fullyHidden()) { // component is fully hidden, keep it in place
                 speed = 0;
             } else if (state == null || !state.scheduledUpdate()) { // component is not yet fully hidden, animate unless update scheduled
-                if (AutoHud.config.animationType() == AnimationType.None) {
+                if (AutoHud.config.animationNone()) {
                     hideNow();
                 } else {
                     moveOut(tickDelta);
@@ -293,7 +292,7 @@ public class Component {
         } else if (fullyRevealed()) { // show component, fully revealed, keep it in place
             speed = 0;
         } else { // show component, not yet fully revealed, animate
-            if (AutoHud.config.animationType() == AnimationType.None) {
+            if (AutoHud.config.animationNone()) {
                 revealNow();
             } else {
                 moveIn(tickDelta);

@@ -8,8 +8,8 @@ public class Config implements ConfigData {
     /* MAIN OPTIONS */
     boolean dynamicOnLoad = true;
     int ticksRevealed = 150;
-    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-    AnimationType animationType = AnimationType.Move;
+    boolean animationMove = true;
+    boolean animationFade = true;
     double animationSpeed = 1.0;
 
     @ConfigEntry.Gui.Tooltip(count = 5)

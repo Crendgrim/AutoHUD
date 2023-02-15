@@ -19,7 +19,9 @@ public class ConfigHandler {
 
     public boolean dynamicOnLoad() { return config.dynamicOnLoad; }
     public int timeRevealed() { return config.ticksRevealed; }
-    public AnimationType animationType() { return config.animationType; }
+    public boolean animationMove() { return config.animationMove; }
+    public boolean animationFade() { return config.animationFade; }
+    public boolean animationNone() { return !config.animationMove && !config.animationFade; }
     public double animationSpeed() { return config.animationSpeed; }
     public RevealType revealType() { return config.revealType; }
     public boolean statusEffectTimer() { return config.statusEffectTimer; }

@@ -3,7 +3,6 @@ package mod.crend.autohud.component;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mod.crend.autohud.AutoHud;
-import mod.crend.autohud.config.AnimationType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.SimpleFramebuffer;
@@ -86,18 +85,19 @@ public class Hud {
     public static float alpha = 1.0f;
 
     public static void preInjectFade(Component component) {
-        if (AutoHud.config.animationType() == AnimationType.Fade) {
+        if (AutoHud.config.animationFade()) {
             alpha = component.getAlpha();
             RenderSystem.enableBlend();
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
         }
     }
     public static void preInject(MatrixStack matrixStack, Component component) {
-        if (AutoHud.config.animationType() == AnimationType.Fade) {
+        if (AutoHud.config.animationFade()) {
             alpha = component.getAlpha();
             RenderSystem.enableBlend();
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
-        } else {
+        }
+        if (AutoHud.config.animationMove() || !AutoHud.config.animationFade()) {
             matrixStack.push();
             if (component.isHidden()) {
                 matrixStack.translate(component.getDeltaX(), component.getDeltaY(), 0);
@@ -105,11 +105,18 @@ public class Hud {
         }
     }
 
-    public static void postInject(MatrixStack matrixStack) {
-        if (AutoHud.config.animationType() == AnimationType.Fade) {
+    public static void postInjectFade() {
+        if (AutoHud.config.animationFade()) {
             alpha = 1.0f;
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
-        } else {
+        }
+    }
+    public static void postInject(MatrixStack matrixStack) {
+        if (AutoHud.config.animationFade()) {
+            alpha = 1.0f;
+            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
+        }
+        if (AutoHud.config.animationMove() || !AutoHud.config.animationFade()) {
             matrixStack.pop();
         }
     }

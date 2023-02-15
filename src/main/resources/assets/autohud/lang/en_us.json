@@ -5,7 +5,8 @@
 
   "text.autoconfig.autohud.option.dynamicOnLoad": "Enable dynamic HUD on game load",
   "text.autoconfig.autohud.option.ticksRevealed": "Time revealed (ticks)",
-  "text.autoconfig.autohud.option.animationType": "Animation type",
+  "text.autoconfig.autohud.option.animationMove": "Animation type: Move",
+  "text.autoconfig.autohud.option.animationFade": "Animation type: Fade",
   "text.autoconfig.autohud.option.animationSpeed": "Animation speed",
   "text.autoconfig.autohud.option.revealType": "Handle components as",
   "text.autoconfig.autohud.option.revealType.@Tooltip[0]": "Individual: move all components individually",
@@ -86,9 +87,6 @@
   "text.autoconfig.autohud.option.advanced.scoreboard.distance": "Scoreboard: Distance (-1 to use default)",
   "text.autoconfig.autohud.option.advanced.scoreboard.maximumFade": "Scoreboard: Fade-out limit",
 
-  "text.autohud.option.animationType.Move": "Move",
-  "text.autohud.option.animationType.Fade": "Fade",
-  "text.autohud.option.animationType.None": "None",
   "text.autohud.option.scrollDirection.Up": "Up",
   "text.autohud.option.scrollDirection.Down": "Down",
   "text.autohud.option.scrollDirection.Left": "Left",

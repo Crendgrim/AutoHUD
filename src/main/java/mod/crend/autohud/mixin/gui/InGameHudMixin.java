@@ -80,25 +80,6 @@ public class InGameHudMixin {
     }
 
     // Hotbar items
-    // We have to use matrix modification here to move the rendered items, as the y value is passed as an integer
-    @Inject(method = "renderHotbarItem", at = @At(value = "HEAD"))
-    private void autoHud$preHotbarItems(final int x, final int y, final float tickDelta, final PlayerEntity player, final ItemStack stack, final int seed, final CallbackInfo ci) {
-        if (AutoHud.targetHotbar) {
-            MatrixStack matrixStack = RenderSystem.getModelViewStack();
-            Hud.preInject(matrixStack, Component.Hotbar);
-            RenderSystem.applyModelViewMatrix();
-        }
-    }
-
-    @Inject(method = "renderHotbarItem", at = @At(value = "RETURN"))
-    private void autoHud$postHotbarItems(final int x, final int y, final float tickDelta, final PlayerEntity player, final ItemStack stack, final int seed, final CallbackInfo ci) {
-        if (AutoHud.targetHotbar) {
-            MatrixStack matrixStack = RenderSystem.getModelViewStack();
-            Hud.postInject(matrixStack);
-            RenderSystem.applyModelViewMatrix();
-        }
-    }
-
     @WrapOperation(
             method = "renderHotbar",
             at = @At(
@@ -108,18 +89,30 @@ public class InGameHudMixin {
     )
     private void autoHud$transparentHotbarItems(InGameHud instance, int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed, Operation<Void> original, float tickDelta2, MatrixStack matrices) {
         if (AutoHud.targetHotbar) {
-            // Setup custom framebuffer
-            Hud.prepareExtraFramebuffer();
+            if (AutoHud.config.animationFade()) {
+                // Setup custom framebuffer
+                Hud.prepareExtraFramebuffer();
+            } else {
+                MatrixStack matrixStack = RenderSystem.getModelViewStack();
+                Hud.preInject(matrixStack, Component.Hotbar);
+                RenderSystem.applyModelViewMatrix();
+            }
         }
 
         // Have the original call draw onto the custom framebuffer
         original.call(instance, x, y, tickDelta, player, stack, seed);
 
         if (AutoHud.targetHotbar) {
-            // Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
-            Hud.preInject(matrices, Component.Hotbar);
-            Hud.drawExtraFramebuffer(matrices);
-            Hud.postInject(matrices);
+            if (AutoHud.config.animationFade()) {
+                // Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
+                Hud.preInjectFade(Component.Hotbar);
+                Hud.drawExtraFramebuffer(matrices);
+                Hud.postInjectFade();
+            } else {
+                MatrixStack matrixStack = RenderSystem.getModelViewStack();
+                Hud.postInject(matrixStack);
+                RenderSystem.applyModelViewMatrix();
+            }
         }
     }
 

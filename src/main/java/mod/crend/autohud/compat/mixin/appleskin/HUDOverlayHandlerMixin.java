@@ -3,7 +3,6 @@ package mod.crend.autohud.compat.mixin.appleskin;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Hud;
-import mod.crend.autohud.config.AnimationType;
 import net.minecraft.client.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,7 +16,7 @@ public class HUDOverlayHandlerMixin {
 
 	@Inject(method = "onPreRender", at=@At("TAIL"))
 	void autoHud$injectTransparency(MatrixStack matrixStack, CallbackInfo ci) {
-		if (AutoHud.config.animationType() == AnimationType.Fade) {
+		if (AutoHud.config.animationFade()) {
 			Hud.preInject(matrixStack, Component.Hunger);
 		}
 	}

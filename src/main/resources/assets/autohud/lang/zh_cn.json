@@ -5,7 +5,8 @@
 
   "text.autoconfig.autohud.option.dynamicOnLoad": "在游戏加载时启用动态 HUD",
   "text.autoconfig.autohud.option.ticksRevealed": "显示时间 (ticks)",
-  "text.autoconfig.autohud.option.animationType": "动画类型",
+  "text.autoconfig.autohud.option.animationMove": "动画类型：移动",
+  "text.autoconfig.autohud.option.animationFade": "动画类型：渐变",
   "text.autoconfig.autohud.option.animationSpeed": "动画速度",
   "text.autoconfig.autohud.option.revealType": "以如下方式处理组件",
   "text.autoconfig.autohud.option.revealType.@Tooltip[0]": "独立：独立移动所有部件",
@@ -86,9 +87,6 @@
   "text.autoconfig.autohud.option.advanced.scoreboard.distance": "积分板：距离（设置为 -1 使用默认值）",
   "text.autoconfig.autohud.option.advanced.scoreboard.maximumFade": "积分板：淡出限制",
 
-  "text.autohud.option.animationType.Move": "移动",
-  "text.autohud.option.animationType.Fade": "渐变",
-  "text.autohud.option.animationType.None": "无",
   "text.autohud.option.scrollDirection.Up": "上",
   "text.autohud.option.scrollDirection.Down": "下",
   "text.autohud.option.scrollDirection.Left": "左",

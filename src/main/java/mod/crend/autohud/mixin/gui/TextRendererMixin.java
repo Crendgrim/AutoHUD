@@ -1,4 +1,4 @@
-package mod.crend.autohud.mixin.render;
+package mod.crend.autohud.mixin.gui;
 
 import mod.crend.autohud.component.Hud;
 import net.minecraft.client.font.TextRenderer;

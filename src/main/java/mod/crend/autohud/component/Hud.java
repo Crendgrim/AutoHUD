@@ -1,12 +1,18 @@
 package mod.crend.autohud.component;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.config.AnimationType;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.Framebuffer;
+import net.minecraft.client.gl.SimpleFramebuffer;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import org.lwjgl.opengl.GL30;
 
 public class Hud {
     private static boolean dynamic = false;
@@ -128,4 +134,46 @@ public class Hud {
         }
     }
 
+    static Framebuffer framebuffer = null;
+    static int previousFramebuffer;
+    public static void prepareExtraFramebuffer() {
+        // Setup extra framebuffer to draw into
+        Window window = MinecraftClient.getInstance().getWindow();
+        previousFramebuffer = GlStateManager.getBoundFramebuffer();
+        if (framebuffer == null) {
+            framebuffer = new SimpleFramebuffer(window.getFramebufferWidth(), window.getFramebufferHeight(), true, MinecraftClient.IS_SYSTEM_MAC);
+            framebuffer.setClearColor(0, 0, 0, 0);
+        }
+        framebuffer.clear(MinecraftClient.IS_SYSTEM_MAC);
+        framebuffer.beginWrite(false);
+    }
+
+    public static void drawExtraFramebuffer(MatrixStack matrices) {
+        // Restore the original framebuffer
+        GlStateManager._glBindFramebuffer(GL30.GL_FRAMEBUFFER, previousFramebuffer);
+
+        // Render the custom framebuffer's contents with transparency into the main buffer
+        RenderSystem.setShaderTexture(0, framebuffer.getColorAttachment());
+        Window window = MinecraftClient.getInstance().getWindow();
+        DrawableHelper.drawTexture(
+                matrices,
+                0,
+                0,
+                window.getScaledWidth(),
+                window.getScaledHeight(),
+                0,
+                framebuffer.textureHeight,
+                framebuffer.textureWidth,
+                -framebuffer.textureHeight,
+                framebuffer.textureWidth,
+                framebuffer.textureHeight
+        );
+    }
+
+    public static void resizeFramebuffer() {
+        if (framebuffer != null) {
+            Window window = MinecraftClient.getInstance().getWindow();
+            framebuffer.resize(window.getFramebufferWidth(), window.getFramebufferHeight(), MinecraftClient.IS_SYSTEM_MAC);
+        }
+    }
 }

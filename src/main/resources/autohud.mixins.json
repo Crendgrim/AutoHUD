@@ -12,22 +12,11 @@
     "ScoreboardMixin",
     "TeamMixinAccessor",
     "gui.InGameHudMixin",
+    "gui.MinecraftClientMixin",
     "gui.StatusEffectTimerMixin",
-    "render.BannerBlockEntityRendererMixin",
-    "render.BedBlockEntityRendererMixin",
-    "render.ChestBlockEntityRendererMixin",
-    "render.ConduitBlockEntityRendererMixin",
-    "render.InGameHudMixin",
-    "render.ItemRendererMixin",
-    "render.ModelPartMixin",
-    "render.RenderLayersMixin",
-    "render.ShulkerBoxBlockEntityRendererMixin",
-    "render.SkullBlockEntityRendererMixin",
-    "render.TextRendererMixin",
-    "render.VertexConsumerMixin"
+    "gui.TextRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "plugin": "mod.crend.autohud.AutoHudMixinPlugin"
+  }
 }

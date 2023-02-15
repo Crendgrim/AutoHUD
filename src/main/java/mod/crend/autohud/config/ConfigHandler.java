@@ -23,6 +23,10 @@ public class ConfigHandler {
     public boolean animationFade() { return config.animationFade; }
     public boolean animationNone() { return !config.animationMove && !config.animationFade; }
     public double animationSpeed() { return config.animationSpeed; }
+    public double animationSpeedMoveIn() { return config.animationSpeeds.moveIn == 0 ? config.animationSpeed : config.animationSpeeds.moveIn; }
+    public double animationSpeedMoveOut() { return config.animationSpeeds.moveOut == 0 ? config.animationSpeed : config.animationSpeeds.moveOut; }
+    public double animationSpeedFadeIn() { return config.animationSpeeds.fadeIn == 0 ? config.animationSpeed : config.animationSpeeds.fadeIn; }
+    public double animationSpeedFadeOut() { return config.animationSpeeds.fadeOut == 0 ? config.animationSpeed : config.animationSpeeds.fadeOut; }
     public RevealType revealType() { return config.revealType; }
     public boolean statusEffectTimer() { return config.statusEffectTimer; }
 

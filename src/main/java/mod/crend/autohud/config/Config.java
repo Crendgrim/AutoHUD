@@ -11,6 +11,16 @@ public class Config implements ConfigData {
     boolean animationMove = true;
     boolean animationFade = true;
     double animationSpeed = 1.0;
+    public static class AnimationSpeeds {
+        AnimationSpeeds() { }
+
+        double moveIn = 0;
+        double moveOut = 0;
+        double fadeIn = 0;
+        double fadeOut = 0;
+    }
+    @ConfigEntry.Gui.CollapsibleObject
+    AnimationSpeeds animationSpeeds = new AnimationSpeeds();
 
     @ConfigEntry.Gui.Tooltip(count = 5)
     @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)

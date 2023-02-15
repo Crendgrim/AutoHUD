@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -43,6 +44,29 @@ public abstract class OneBarElementsMixin {
 
 	@ModifyVariable(method = "renderBar", at = @At("HEAD"), ordinal = 4, argsOnly = true)
 	private int autoHud$alpha(int color) {
+		return Hud.modifyArgb(color);
+	}
+
+	@ModifyArg(
+			method = "barText",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/client/util/math/MatrixStack;Ljava/lang/String;FFI)I")
+	)
+	private int autoHud$barTextAlpha(int color) {
+		return Hud.modifyArgb(color);
+	}
+	@ModifyArg(
+			method = "xpBar",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;drawWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Ljava/lang/String;FFI)I")
+	)
+	private int autoHud$xpBarTextAlpha(int color) {
+		return Hud.modifyArgb(color);
+	}
+	@ModifyArg(
+			method = "xpBar",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawableHelper;drawCenteredText(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V"),
+			index = 5
+	)
+	private int autoHud$xpBarTextCenteredAlpha(int color) {
 		return Hud.modifyArgb(color);
 	}
 }

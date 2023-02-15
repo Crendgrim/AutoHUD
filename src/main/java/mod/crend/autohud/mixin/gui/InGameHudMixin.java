@@ -17,6 +17,7 @@ import net.minecraft.scoreboard.ScoreboardObjective;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
@@ -27,6 +28,16 @@ import java.util.List;
 
 @Mixin(value = InGameHud.class, priority = 800)
 public class InGameHudMixin {
+
+    @Inject(method="render", at=@At("HEAD"))
+    private void autoHud$preRender(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
+        Hud.inRender = true;
+    }
+    @Inject(method="render", at=@At("RETURN"))
+    private void autoHud$postRender(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
+        Hud.inRender = false;
+    }
+
 
     // Hotbar
     @WrapOperation(
@@ -44,6 +55,10 @@ public class InGameHudMixin {
         if (AutoHud.targetHotbar) {
             Hud.postInject(matrixStack);
         }
+    }
+    @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShader(Ljava/util/function/Supplier;)V", ordinal = 0))
+    private void autoHud$preHotbar(float f, MatrixStack matrixStack, CallbackInfo ci) {
+        Hud.injectTransparency();
     }
 
     // Tooltip
@@ -84,6 +99,30 @@ public class InGameHudMixin {
         }
     }
 
+    @WrapOperation(
+            method = "renderHotbar",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(IIFLnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V"
+            )
+    )
+    private void autoHud$transparentHotbarItems(InGameHud instance, int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed, Operation<Void> original, float tickDelta2, MatrixStack matrices) {
+        if (AutoHud.targetHotbar) {
+            // Setup custom framebuffer
+            Hud.prepareExtraFramebuffer();
+        }
+
+        // Have the original call draw onto the custom framebuffer
+        original.call(instance, x, y, tickDelta, player, stack, seed);
+
+        if (AutoHud.targetHotbar) {
+            // Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
+            Hud.preInject(matrices, Component.Hotbar);
+            Hud.drawExtraFramebuffer(matrices);
+            Hud.postInject(matrices);
+        }
+    }
+
     // Experience Bar
     @WrapOperation(
             method = "render",
@@ -101,6 +140,15 @@ public class InGameHudMixin {
             Hud.postInject(matrixStack);
         }
     }
+
+    @ModifyArg(method = "renderExperienceBar", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/client/util/math/MatrixStack;Ljava/lang/String;FFI)I"))
+    private int autoHud$experienceText(int alpha) {
+        if (Hud.inRender) {
+            return Hud.modifyArgb(alpha);
+        }
+        return alpha;
+    }
+
 
     // Status Bars
     @WrapOperation(
@@ -198,6 +246,29 @@ public class InGameHudMixin {
             Hud.postInject(matrixStack);
         }
     }
+
+    @ModifyArg(method = "renderScoreboardSidebar", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/client/util/math/MatrixStack;Ljava/lang/String;FFI)I"))
+    private int autoHud$scoreboardSidebarString(int color) {
+        if (Hud.inRender) {
+            return Hud.getArgb() | 0xFFFFFF;
+        }
+        return color;
+    }
+    @ModifyArg(method = "renderScoreboardSidebar", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/text/Text;FFI)I"))
+    private int autoHud$scoreboardSidebarText(int color) {
+        if (Hud.inRender) {
+            return Hud.getArgb() | 0xFFFFFF;
+        }
+        return color;
+    }
+    @ModifyArg(method = "renderScoreboardSidebar", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;fill(Lnet/minecraft/client/util/math/MatrixStack;IIIII)V"), index=5)
+    private int autoHud$scoreboardSidebarFill(int color) {
+        if (Hud.inRender) {
+            return Hud.modifyArgb(color);
+        }
+        return color;
+    }
+
 
     // Status Effects
     @Inject(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;getEffectType()Lnet/minecraft/entity/effect/StatusEffect;", ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT)

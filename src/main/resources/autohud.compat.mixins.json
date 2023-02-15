@@ -14,8 +14,6 @@
     "inventoryprofilesnext.LockSlotsHandlerMixin",
     "microdurability.MicroDurabilityMixin",
     "onebar.OneBarElementsMixin",
-    "sodium.QuadVertexSinkMixin",
-    "sodium.QuadVertexWriterMixin",
     "statuseffectbars.StatusEffectBarRendererMixin"
   ],
   "injectors": {

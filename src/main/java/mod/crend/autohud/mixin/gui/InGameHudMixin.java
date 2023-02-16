@@ -105,7 +105,7 @@ public class InGameHudMixin {
         if (AutoHud.targetHotbar) {
             if (AutoHud.config.animationFade()) {
                 // Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
-                Hud.preInjectFade(Component.Hotbar);
+                Hud.preInjectFade(Component.Hotbar, AutoHud.config.getHotbarItemsMaximumFade());
                 Hud.drawExtraFramebuffer(matrices);
                 Hud.postInjectFade();
             } else {

@@ -85,8 +85,11 @@ public class Hud {
     public static float alpha = 1.0f;
 
     public static void preInjectFade(Component component) {
+        preInjectFade(component, 0.0f);
+    }
+    public static void preInjectFade(Component component, float minAlpha) {
         if (AutoHud.config.animationFade()) {
-            alpha = component.getAlpha();
+            alpha = Math.max(component.getAlpha(), minAlpha);
             RenderSystem.enableBlend();
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
         }

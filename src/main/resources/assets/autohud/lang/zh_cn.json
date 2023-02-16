@@ -37,6 +37,7 @@
   "text.autoconfig.autohud.option.hotbar.onLowDurability": "在低耐久时显示",
   "text.autoconfig.autohud.option.hotbar.durabilityPercentage": "低于显示的百分比",
   "text.autoconfig.autohud.option.hotbar.durabilityTotal": "低于显示的耐久",
+  "text.autoconfig.autohud.option.hotbar.maximumFadeHotbarItems": "Fade-out limit for hotbar items",
   "text.autoconfig.autohud.option.statusEffects.active": "隐藏状态效果",
   "text.autoconfig.autohud.option.statusEffects.onChange": "显示当前的状态效果",
   "text.autoconfig.autohud.option.hidePersistentStatusEffects": "隐藏持续的状态效果",

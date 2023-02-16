@@ -37,6 +37,7 @@
   "text.autoconfig.autohud.option.hotbar.onLowDurability": "Reveal on low durability",
   "text.autoconfig.autohud.option.hotbar.durabilityPercentage": "Percentage below which to reveal",
   "text.autoconfig.autohud.option.hotbar.durabilityTotal": "Durability below which to reveal",
+  "text.autoconfig.autohud.option.hotbar.maximumFadeHotbarItems": "Fade-out limit for hotbar items",
   "text.autoconfig.autohud.option.statusEffects.active": "Hide status effects",
   "text.autoconfig.autohud.option.statusEffects.onChange": "Reveal status effects that are currently active",
   "text.autoconfig.autohud.option.hidePersistentStatusEffects": "Hide persistent status effects",

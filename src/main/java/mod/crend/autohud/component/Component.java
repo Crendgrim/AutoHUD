@@ -142,7 +142,7 @@ public class Component {
     }
     public float getAlpha() {
         if (!AutoHud.config.animationFade()) return 1.0f;
-        return (float) ((1.0d - config.maximumFade()) * alpha);
+        return (float) ((1.0d - config.maximumFade()) * alpha + config.maximumFade());
     }
 
     public boolean isHidden() {

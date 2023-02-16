@@ -112,6 +112,7 @@ public class Config implements ConfigData {
         @ConfigEntry.BoundedDiscrete(max=100)
         int durabilityPercentage = 10;
         int durabilityTotal = 20;
+        float maximumFadeHotbarItems = 0.0f;
     }
     
     public static class ScoreboardComponents {

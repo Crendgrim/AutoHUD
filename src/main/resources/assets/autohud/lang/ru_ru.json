@@ -37,6 +37,7 @@
   "text.autoconfig.autohud.option.hotbar.onLowDurability": "Показывать при низком уровне прочности",
   "text.autoconfig.autohud.option.hotbar.durabilityPercentage": "Процент прочности, при котором будет отображение",
   "text.autoconfig.autohud.option.hotbar.durabilityTotal": "Уровень прочности, при котором будет отображение",
+  "text.autoconfig.autohud.option.hotbar.maximumFadeHotbarItems": "Fade-out limit for hotbar items",
   "text.autoconfig.autohud.option.statusEffects.active": "Прятать статус эффектов",
   "text.autoconfig.autohud.option.statusEffects.onChange": "Показывать статус активных эффектов",
   "text.autoconfig.autohud.option.hidePersistentStatusEffects": "Прятать статус постоянных эффектов",

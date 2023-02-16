@@ -124,6 +124,7 @@ public class ConfigHandler {
     public boolean isHotbarOnLowDurability() { return config.hotbar.onLowDurability; }
     public int getHotbarDurabilityPercentage() { return config.hotbar.durabilityPercentage; }
     public int getHotbarDurabilityTotal() { return config.hotbar.durabilityTotal; }
+    public float getHotbarItemsMaximumFade() { return config.hotbar.maximumFadeHotbarItems; }
     public BooleanComponent statusEffects() { return statusEffects; }
     public boolean hidePersistentStatusEffects() { return config.hidePersistentStatusEffects; }
     public BooleanComponent scoreboard() { return scoreboard; }

@@ -101,7 +101,7 @@ public class Config implements ConfigData {
     ScoreboardComponents scoreboard = new ScoreboardComponents();
     @ConfigEntry.Category("components")
     @ConfigEntry.Gui.CollapsibleObject()
-    AdvancedComponents advanced = new AdvancedComponents(defaultValues);
+    AdvancedComponents advanced = new AdvancedComponents();
 
     
     public static class HotbarComponents {
@@ -144,7 +144,7 @@ public class Config implements ConfigData {
         AdvancedComponent statusEffects = new AdvancedComponent();
         @ConfigEntry.Gui.TransitiveObject
         AdvancedComponent scoreboard = new AdvancedComponent();
-        private AdvancedComponents(DefaultValues defaultValues) {
+        private AdvancedComponents() {
             statusEffects.direction = ScrollDirection.Up;
             scoreboard.direction = ScrollDirection.Right;
             scoreboard.distance = 100;

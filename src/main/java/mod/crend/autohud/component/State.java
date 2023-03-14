@@ -7,9 +7,9 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.item.Equipment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PotionItem;
-import net.minecraft.item.Wearable;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 
@@ -41,7 +41,7 @@ public class State {
         Component.Armor.state = new EnhancedPolicyComponentState(Component.Armor,
                 player::getArmor,
                 20,
-                () -> player.getMainHandStack().getItem() instanceof Wearable && player.canEquip(player.getMainHandStack()), true);
+                () -> player.getMainHandStack().getItem() instanceof Equipment equipment && equipment.getSlotType().isArmorSlot() && player.canEquip(player.getMainHandStack()), true);
         Component.Air.state = new PolicyComponentState(Component.Air, player::getAir, player::getMaxAir);
         Component.ExperienceBar.state = new ValueComponentState<>(Component.ExperienceBar, () -> player.totalExperience, true);
         Component.Scoreboard.state = new ScoreboardComponentState(Component.Scoreboard);

@@ -17,8 +17,8 @@ public class TextRendererMixin {
     // ItemRenderer overlay
     // Experience number
     // Scoreboard sidebar: String
-    @Inject(method = "draw(Ljava/lang/String;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;ZIIZ)I", at=@At("HEAD"), cancellable = true)
-    private void autoHud$draw(String text, float x, float y, int color, boolean shadow, Matrix4f matrix, VertexConsumerProvider vertexConsumers, boolean seeThrough, int backgroundColor, int light, boolean rightToLeft, CallbackInfoReturnable<Integer> cir) {
+    @Inject(method = "draw(Ljava/lang/String;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;IIZ)I", at=@At("HEAD"), cancellable = true)
+    private void autoHud$draw(String text, float x, float y, int color, boolean shadow, Matrix4f matrix, VertexConsumerProvider vertexConsumers, TextRenderer.TextLayerType layerType, int backgroundColor, int light, boolean rightToLeft, CallbackInfoReturnable<Integer> cir) {
         if (Hud.inRender && Hud.alpha <= 0.015) {
             cir.setReturnValue(0);
         }

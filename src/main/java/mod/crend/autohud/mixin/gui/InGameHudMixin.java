@@ -58,7 +58,7 @@ public class InGameHudMixin extends DrawableHelper {
             Hud.postInject(matrixStack);
         }
     }
-    @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShader(Ljava/util/function/Supplier;)V", ordinal = 0))
+    @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderTexture(ILnet/minecraft/util/Identifier;)V", ordinal = 0))
     private void autoHud$preHotbar(float f, MatrixStack matrixStack, CallbackInfo ci) {
         Hud.injectTransparency();
     }
@@ -86,23 +86,22 @@ public class InGameHudMixin extends DrawableHelper {
             method = "renderHotbar",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(IIFLnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V"
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/util/math/MatrixStack;IIFLnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V"
             )
     )
-    private void autoHud$transparentHotbarItems(InGameHud instance, int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed, Operation<Void> original, float tickDelta2, MatrixStack matrices) {
+    private void autoHud$transparentHotbarItems(InGameHud instance, MatrixStack matrices, int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed, Operation<Void> original) {
         if (AutoHud.targetHotbar) {
             if (AutoHud.config.animationFade()) {
                 // Setup custom framebuffer
                 Hud.prepareExtraFramebuffer();
             } else {
-                MatrixStack matrixStack = RenderSystem.getModelViewStack();
-                Hud.preInject(matrixStack, Component.Hotbar);
+                Hud.preInject(matrices, Component.Hotbar);
                 RenderSystem.applyModelViewMatrix();
             }
         }
 
         // Have the original call draw onto the custom framebuffer
-        original.call(instance, x, y, tickDelta, player, stack, seed);
+        original.call(instance, matrices, x, y, tickDelta, player, stack, seed);
 
         if (AutoHud.targetHotbar) {
             if (AutoHud.config.animationFade()) {
@@ -111,8 +110,7 @@ public class InGameHudMixin extends DrawableHelper {
                 Hud.drawExtraFramebuffer(matrices);
                 Hud.postInjectFade();
             } else {
-                MatrixStack matrixStack = RenderSystem.getModelViewStack();
-                Hud.postInject(matrixStack);
+                Hud.postInject(matrices);
                 RenderSystem.applyModelViewMatrix();
             }
         }
@@ -279,7 +277,7 @@ public class InGameHudMixin extends DrawableHelper {
         }
     }
     @Inject(method = "method_18620", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;drawSprite(Lnet/minecraft/client/util/math/MatrixStack;IIIIILnet/minecraft/client/texture/Sprite;)V"))
-    private void autoHud$preSprite(Sprite sprite, float g, MatrixStack matrices, int n, int o, CallbackInfo ci) {
+    private static void autoHud$preSprite(Sprite sprite, float g, MatrixStack matrices, int n, int o, CallbackInfo ci) {
         if (AutoHud.targetStatusEffects) {
             Component component = Component.findBySprite(sprite);
             if (component != null) {
@@ -290,7 +288,7 @@ public class InGameHudMixin extends DrawableHelper {
         }
     }
     @Inject(method = "method_18620", at = @At(value = "RETURN"))
-    private void autoHud$postSprite(Sprite sprite, float g, MatrixStack matrices, int n, int o, CallbackInfo ci) {
+    private static void autoHud$postSprite(Sprite sprite, float g, MatrixStack matrices, int n, int o, CallbackInfo ci) {
         if (AutoHud.targetStatusEffects) {
             Hud.postInject(matrices);
         }

@@ -56,7 +56,7 @@ public class Hud {
 
     public static void tick() {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        if (player != null) {
+        if (player != null && MinecraftClient.getInstance().world != null) {
             if (state == null) {
                 state = new State(player);
                 wasPeeking = false;

@@ -38,6 +38,7 @@
 
   "depends": {
     "fabric-key-binding-api-v1": "*",
+    "cloth-config": ">=9.0.0",
 
     "fabricloader": "*",
     "fabric": "*",

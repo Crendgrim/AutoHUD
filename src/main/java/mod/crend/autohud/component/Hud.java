@@ -67,12 +67,6 @@ public class Hud {
         }
     }
 
-    public static void render(float tickDelta) {
-        if (state != null) {
-            state.render(tickDelta);
-        }
-    }
-
     public static boolean shouldShowIcon(StatusEffectInstance instance) {
         if (instance.shouldShowIcon()) {
             Component component = Component.get(instance.getEffectType());
@@ -82,6 +76,7 @@ public class Hud {
     }
 
     public static boolean inRender;
+    public static float tickDelta = 0.0f;
     public static float alpha = 1.0f;
 
     public static void preInjectFade(Component component) {
@@ -89,21 +84,21 @@ public class Hud {
     }
     public static void preInjectFade(Component component, float minAlpha) {
         if (AutoHud.config.animationFade()) {
-            alpha = Math.max(component.getAlpha(), minAlpha);
+            alpha = Math.max(component.getAlpha(tickDelta), minAlpha);
             RenderSystem.enableBlend();
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
         }
     }
     public static void preInject(MatrixStack matrixStack, Component component) {
         if (AutoHud.config.animationFade()) {
-            alpha = component.getAlpha();
+            alpha = component.getAlpha(tickDelta);
             RenderSystem.enableBlend();
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
         }
         if (AutoHud.config.animationMove() || !AutoHud.config.animationFade()) {
             matrixStack.push();
             if (component.isHidden()) {
-                matrixStack.translate(component.getDeltaX(), component.getDeltaY(), 0);
+                matrixStack.translate(component.getOffsetX(tickDelta), component.getOffsetY(tickDelta), 0);
             }
         }
     }

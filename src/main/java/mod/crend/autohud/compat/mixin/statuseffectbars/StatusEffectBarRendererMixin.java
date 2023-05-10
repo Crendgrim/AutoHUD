@@ -18,7 +18,7 @@ public class StatusEffectBarRendererMixin {
 			argsOnly = true)
 	private static int autoHud$renderWithOffset(int y, MatrixStack matrices, StatusEffectInstance effect) {
 		if (Hud.inRender) {
-			return y + (int) Component.get(effect.getEffectType()).getDeltaY();
+			return y + (int) Component.get(effect.getEffectType()).getOffsetY(Hud.tickDelta);
 		}
 		return y;
 	}

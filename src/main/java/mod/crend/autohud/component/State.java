@@ -132,8 +132,4 @@ public class State {
 
         AutoHud.apis.forEach(api -> api.tickState(player));
     }
-    public void render(float tickDelta) {
-        Component.getComponents().forEach(c -> c.render(tickDelta));
-        Component.getStatusEffectComponents().forEach(c -> c.render(tickDelta));
-    }
 }

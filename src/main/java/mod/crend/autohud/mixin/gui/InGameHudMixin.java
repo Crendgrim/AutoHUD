@@ -34,6 +34,7 @@ public class InGameHudMixin extends DrawableHelper {
     @Inject(method="render", at=@At("HEAD"))
     private void autoHud$preRender(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
         Hud.inRender = true;
+        Hud.tickDelta = tickDelta;
     }
     @Inject(method="render", at=@At("RETURN"))
     private void autoHud$postRender(MatrixStack matrices, float tickDelta, CallbackInfo ci) {

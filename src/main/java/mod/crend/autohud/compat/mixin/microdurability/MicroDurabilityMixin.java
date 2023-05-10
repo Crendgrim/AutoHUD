@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 public class MicroDurabilityMixin {
     @ModifyArg(method = "onHudRender", at=@At(value = "INVOKE", target = "Lcom/github/reviversmc/microdurability/RendererBase;renderBar(Lnet/minecraft/item/ItemStack;II)V"), index = 2)
     private int autoHud$offsetRenderBar(int y) {
-        return y + (int) MicroDurabilityCompat.MicroDurabilityComponent.getDeltaY();
+        return y + (int) MicroDurabilityCompat.MicroDurabilityComponent.getOffsetY(Hud.tickDelta);
     }
 
     @ModifyArg(
@@ -23,7 +23,7 @@ public class MicroDurabilityMixin {
     int autoHud$injectAlpha(int alpha) {
         if (Hud.inRender) {
             RenderSystem.enableBlend();
-            return Math.round(MicroDurabilityCompat.MicroDurabilityComponent.getAlpha() * alpha);
+            return Math.round(MicroDurabilityCompat.MicroDurabilityComponent.getAlpha(Hud.tickDelta) * alpha);
         }
         return alpha;
     }

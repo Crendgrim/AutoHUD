@@ -13,8 +13,7 @@
     "TeamMixinAccessor",
     "gui.InGameHudMixin",
     "gui.MinecraftClientMixin",
-    "gui.StatusEffectTimerMixin",
-    "gui.TextRendererMixin"
+    "gui.StatusEffectTimerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

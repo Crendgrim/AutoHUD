@@ -273,15 +273,15 @@ public class Component {
      * Speeds up until half way, then slows down.
      * This causes the animation to feel smoother.
      */
-    private double speedDelta(double speed, double animationSpeed, float direction) {
-        if (offset > 0.5) speed -= animationSpeed * config.speedMultiplier() * direction * 0.005;
-        else speed += animationSpeed * config.speedMultiplier() * direction * 0.005;
-        return Math.min(0.5, Math.max(0.0125, speed));
+    private double speedDelta(double speed, double animationSpeed) {
+        double max = animationSpeed / 10;
+        double poly = (2 * speed - 1) * (2 * speed - 1);
+        return Math.min(max, Math.max(0.001, max - max * poly));
     }
     private void moveIn() {
         // use negative multiplier in argument to reverse speed curve
-        offsetSpeed = speedDelta(offsetSpeed, AutoHud.config.animationSpeedMoveIn(), -1);
-        alphaSpeed = speedDelta(alphaSpeed, AutoHud.config.animationSpeedFadeIn(), -1);
+        offsetSpeed = speedDelta(offset, AutoHud.config.animationSpeedMoveIn());
+        alphaSpeed = speedDelta(alpha, AutoHud.config.animationSpeedFadeIn());
         double newOffset = Math.max(0, offset - offsetSpeed);
         offsetDelta = offset - newOffset;
         offset = newOffset;
@@ -290,8 +290,8 @@ public class Component {
         alpha = newAlpha;
     }
     private void moveOut() {
-        offsetSpeed = speedDelta(offsetSpeed, AutoHud.config.animationSpeedMoveOut(), 1);
-        alphaSpeed = speedDelta(alphaSpeed, AutoHud.config.animationSpeedFadeOut(), 1);
+        offsetSpeed = speedDelta(offset, AutoHud.config.animationSpeedMoveOut());
+        alphaSpeed = speedDelta(alpha, AutoHud.config.animationSpeedFadeOut());
         double newOffset = Math.min(1, offset + offsetSpeed);
         offsetDelta = offset - newOffset;
         offset = newOffset;

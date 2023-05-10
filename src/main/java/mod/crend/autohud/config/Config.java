@@ -12,19 +12,19 @@ public class Config implements Cloneable {
     @ConfigEntry public int ticksRevealed = 40;
     @ConfigEntry public boolean animationMove = true;
     @ConfigEntry public boolean animationFade = true;
-    @DoubleRange(min = 0.1, max = 10.0, interval = 0.1)
-    @ConfigEntry public double animationSpeed = 5.0;
+    @DoubleRange(min = 1, max = 4.0, interval = 0.25)
+    @ConfigEntry public double animationSpeed = 2.0;
 
     public static class AnimationSpeeds {
         AnimationSpeeds() { }
 
-        @DoubleRange(min = 0.1, max = 10.0, interval = 0.1)
+        @DoubleRange(min = 1, max = 4.0, interval = 0.25)
         @ConfigEntry public double moveIn = 0;
-        @DoubleRange(min = 0.1, max = 10.0, interval = 0.1)
+        @DoubleRange(min = 1, max = 4.0, interval = 0.25)
         @ConfigEntry public double moveOut = 0;
-        @DoubleRange(min = 0.1, max = 10.0, interval = 0.1)
+        @DoubleRange(min = 1, max = 4.0, interval = 0.25)
         @ConfigEntry public double fadeIn = 0;
-        @DoubleRange(min = 0.1, max = 10.0, interval = 0.1)
+        @DoubleRange(min = 1, max = 4.0, interval = 0.25)
         @ConfigEntry public double fadeOut = 0;
     }
     @ConfigEntry public AnimationSpeeds animationSpeeds = new AnimationSpeeds();

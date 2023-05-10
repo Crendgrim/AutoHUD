@@ -2,6 +2,7 @@ package mod.crend.autohud.mixin.gui;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Hud;
@@ -91,6 +92,7 @@ public class InGameHudMixin extends DrawableHelper {
     )
     private void autoHud$transparentHotbarItems(InGameHud instance, MatrixStack matrices, int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed, Operation<Void> original) {
         if (AutoHud.targetHotbar && AutoHud.config.animationFade()) {
+            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
             // Setup custom framebuffer
             Hud.prepareExtraFramebuffer();
         }

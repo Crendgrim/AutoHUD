@@ -51,20 +51,20 @@ public class ConfigValidator {
 		if (field.isAnnotationPresent(ConfigEntry.class)) {
 			if (!Objects.equals(field.get(config), field.get(defaults))) {
 				IntegerRange intRange = field.getAnnotation(IntegerRange.class);
-				if (intRange != null && validateRange(config, field, intRange.min(), intRange.max())) {
-					return false;
+				if (intRange != null) {
+					return validateRange(config, field, intRange.min(), intRange.max());
 				}
 				LongRange longRange = field.getAnnotation(LongRange.class);
-				if (longRange != null && validateRange(config, field, longRange.min(), longRange.max())) {
-					return false;
+				if (longRange != null) {
+					return validateRange(config, field, longRange.min(), longRange.max());
 				}
 				DoubleRange doubleRange = field.getAnnotation(DoubleRange.class);
-				if (doubleRange != null && validateRange(config, field, doubleRange.min(), doubleRange.max())) {
-					return false;
+				if (doubleRange != null) {
+					return validateRange(config, field, doubleRange.min(), doubleRange.max());
 				}
 				FloatRange floatRange = field.getAnnotation(FloatRange.class);
-				if (floatRange != null && validateRange(config, field, floatRange.min(), floatRange.max())) {
-					return false;
+				if (floatRange != null) {
+					return validateRange(config, field, floatRange.min(), floatRange.max());
 				}
 				boolean configValid = true;
 				for (Field innerField : field.getType().getFields()) {

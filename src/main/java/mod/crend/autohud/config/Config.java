@@ -8,12 +8,12 @@ public class Config implements Cloneable {
 
     /* MAIN OPTIONS */
     @ConfigEntry public boolean dynamicOnLoad = true;
-    @IntegerRange(min = 20, max = 400, interval = 10)
-    @ConfigEntry public int ticksRevealed = 150;
+    @IntegerRange(min = 10, max = 200, interval = 10)
+    @ConfigEntry public int ticksRevealed = 40;
     @ConfigEntry public boolean animationMove = true;
     @ConfigEntry public boolean animationFade = true;
     @DoubleRange(min = 0.1, max = 10.0, interval = 0.1)
-    @ConfigEntry public double animationSpeed = 1.0;
+    @ConfigEntry public double animationSpeed = 5.0;
 
     public static class AnimationSpeeds {
         AnimationSpeeds() { }

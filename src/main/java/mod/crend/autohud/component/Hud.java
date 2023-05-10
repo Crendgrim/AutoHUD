@@ -89,6 +89,15 @@ public class Hud {
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
         }
     }
+    public static void preInjectFade(MatrixStack matrixStack, Component component, float minAlpha) {
+        preInjectFade(component, minAlpha);
+        if (AutoHud.config.animationFade() && AutoHud.config.animationMove()) {
+            matrixStack.push();
+            if (component.isHidden()) {
+                matrixStack.translate(-component.getOffsetX(tickDelta), -component.getOffsetY(tickDelta), 0);
+            }
+        }
+    }
     public static void preInject(MatrixStack matrixStack, Component component) {
         if (AutoHud.config.animationFade()) {
             alpha = component.getAlpha(tickDelta);
@@ -107,6 +116,12 @@ public class Hud {
         if (AutoHud.config.animationFade()) {
             alpha = 1.0f;
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
+        }
+    }
+    public static void postInjectFade(MatrixStack matrixStack) {
+        postInjectFade();
+        if (AutoHud.config.animationMove() || !AutoHud.config.animationFade()) {
+            matrixStack.pop();
         }
     }
     public static void postInject(MatrixStack matrixStack) {

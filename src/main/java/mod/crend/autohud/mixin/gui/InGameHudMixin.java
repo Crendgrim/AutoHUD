@@ -2,7 +2,6 @@ package mod.crend.autohud.mixin.gui;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.mojang.blaze3d.systems.RenderSystem;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Hud;
@@ -91,29 +90,19 @@ public class InGameHudMixin extends DrawableHelper {
             )
     )
     private void autoHud$transparentHotbarItems(InGameHud instance, MatrixStack matrices, int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed, Operation<Void> original) {
-        if (AutoHud.targetHotbar) {
-            if (AutoHud.config.animationFade()) {
-                // Setup custom framebuffer
-                Hud.prepareExtraFramebuffer();
-            } else {
-                Hud.preInject(matrices, Component.Hotbar);
-                RenderSystem.applyModelViewMatrix();
-            }
+        if (AutoHud.targetHotbar && AutoHud.config.animationFade()) {
+            // Setup custom framebuffer
+            Hud.prepareExtraFramebuffer();
         }
 
         // Have the original call draw onto the custom framebuffer
         original.call(instance, matrices, x, y, tickDelta, player, stack, seed);
 
-        if (AutoHud.targetHotbar) {
-            if (AutoHud.config.animationFade()) {
-                // Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
-                Hud.preInjectFade(Component.Hotbar, AutoHud.config.getHotbarItemsMaximumFade());
-                Hud.drawExtraFramebuffer(matrices);
-                Hud.postInjectFade();
-            } else {
-                Hud.postInject(matrices);
-                RenderSystem.applyModelViewMatrix();
-            }
+        if (AutoHud.targetHotbar && AutoHud.config.animationFade()) {
+            // Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
+            Hud.preInjectFade(matrices, Component.Hotbar, AutoHud.config.getHotbarItemsMaximumFade());
+            Hud.drawExtraFramebuffer(matrices);
+            Hud.postInjectFade(matrices);
         }
     }
 

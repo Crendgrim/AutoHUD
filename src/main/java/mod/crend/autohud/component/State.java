@@ -28,8 +28,8 @@ public class State {
         previousItemStack = player.getMainHandStack().copy();
     }
    public void initStates(ClientPlayerEntity player) {
-        Component.Hotbar.state = new ValueComponentState<>(Component.Hotbar, player::getMainHandStack, true);
-        Component.Tooltip.state = new ValueComponentState<>(Component.Tooltip, player::getMainHandStack, true);
+        Component.Hotbar.state = new ItemStackComponentState(Component.Hotbar, player::getMainHandStack, true);
+        Component.Tooltip.state = new ItemStackComponentState(Component.Tooltip, player::getMainHandStack, true);
         Component.Health.state = new EnhancedPolicyComponentState(Component.Health,
                 () -> (int) player.getHealth(),
                 () -> (int) player.getMaxHealth(),

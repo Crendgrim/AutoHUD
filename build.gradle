@@ -18,6 +18,10 @@ repositories {
 	maven { url "https://maven.shedaniel.me/" }
 	maven { url "https://maven.terraformersmc.com/" }
 	maven {
+		name 'Xander Maven'
+		url 'https://maven.isxander.dev/releases'
+	}
+	maven {
 		name = "Modrinth"
 		url = "https://api.modrinth.com/maven"
 		content {
@@ -45,14 +49,12 @@ dependencies {
 	implementation include("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
 	annotationProcessor("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
 
-	modImplementation include(fabricApi.module("fabric-api-base", project.fabric_api_version))
-	modImplementation include(fabricApi.module("fabric-lifecycle-events-v1", project.fabric_api_version))
-	modImplementation include(fabricApi.module("fabric-key-binding-api-v1", project.fabric_api_version))
-	modImplementation include(fabricApi.module("fabric-rendering-v1", project.fabric_api_version))
+	modImplementation(fabricApi.module("fabric-api-base", project.fabric_api_version))
+	modImplementation(fabricApi.module("fabric-lifecycle-events-v1", project.fabric_api_version))
+	modImplementation(fabricApi.module("fabric-key-binding-api-v1", project.fabric_api_version))
+	modImplementation(fabricApi.module("fabric-rendering-v1", project.fabric_api_version))
 
-	modApi("me.shedaniel.cloth:cloth-config-fabric:${project.clothconfig_version}") {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
+	modImplementation "dev.isxander.yacl:yet-another-config-lib-fabric:${project.yacl_version}"
 	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
 	modCompileOnly("maven.modrinth:appleskin:${project.appleskin_version}") { transitive = false }
@@ -114,7 +116,7 @@ modrinth {
 	loaders = ['fabric']
 	dependencies {
 		required.project 'P7dR8mSH' // Fabric API
-		required.project '9s6osm5g' // Cloth Config
+		optional.project '1eAoo2KR' // YetAnotherConfigLib
 		optional.project 'mOgUt4GM' // Mod Menu
 	}
 }
@@ -134,7 +136,7 @@ curseforge {
 			displayName = "${project.mod_name} ${project.version}"
 			relations {
 				requiredDependency "fabric-api"
-				requiredDependency "cloth-config"
+				optionalDependency "yacl"
 				optionalDependency "modmenu"
 			}
 		}

@@ -124,8 +124,6 @@ public class Component {
     private double alphaDelta = 0;
     private double offset = 0;
     private double offsetDelta = 0;
-    private double alphaSpeed = 0;
-    private double offsetSpeed = 0;
     private final String name;
     private final boolean inMainHud;
     private float visibleTime = 1;
@@ -134,21 +132,21 @@ public class Component {
         if (!AutoHud.config.animationMove() && AutoHud.config.animationFade()) return 0;
         return switch (config.direction()) {
             case Up, Down -> 0;
-            case Left -> -(offset + (1.0f - tickDelta) * offsetDelta) * config.distance();
-            case Right -> (offset + (1.0f - tickDelta) * offsetDelta) * config.distance();
+            case Left -> -(offset + tickDelta * offsetDelta) * config.distance();
+            case Right -> (offset + tickDelta * offsetDelta) * config.distance();
         };
     }
     public double getOffsetY(float tickDelta) {
         if (!AutoHud.config.animationMove() && AutoHud.config.animationFade()) return 0;
         return switch (config.direction()) {
-            case Up -> -(offset + (1.0f - tickDelta) * offsetDelta) * config.distance();
-            case Down -> (offset + (1.0f - tickDelta) * offsetDelta) * config.distance();
+            case Up -> -(offset + tickDelta * offsetDelta) * config.distance();
+            case Down -> (offset + tickDelta * offsetDelta) * config.distance();
             case Left, Right -> 0;
         };
     }
     public float getAlpha(float tickDelta) {
         if (!AutoHud.config.animationFade()) return 1.0f;
-        return (float) ((1.0d - config.maximumFade()) * (alpha + (1.0f - tickDelta) * alphaDelta) + config.maximumFade());
+        return (float) ((1.0d - config.maximumFade()) * (alpha + tickDelta * alphaDelta) + config.maximumFade());
     }
 
     public boolean isHidden() {
@@ -263,42 +261,49 @@ public class Component {
 
     public void synchronizeFrom(Component other) {
         offset = Math.min(offset, other.offset);
-        offsetDelta = 0;
         alpha = Math.max(alpha, other.alpha);
-        alphaDelta = 0;
+        if (other.offsetDelta < 0) {
+            offsetDelta = Math.min(offsetDelta, other.offsetDelta);
+            alphaDelta = Math.max(alphaDelta, other.alphaDelta);
+        } else {
+            offsetDelta = Math.max(offsetDelta, other.offsetDelta);
+            alphaDelta = Math.min(alphaDelta, other.alphaDelta);
+        }
         visibleTime = Math.max(visibleTime, other.visibleTime);
     }
-
-    /* Maths to ensure a more visually interesting speed curve for the animation.
-     * Speeds up until half way, then slows down.
-     * This causes the animation to feel smoother.
-     */
-    private double speedDelta(double speed, double animationSpeed) {
-        double max = animationSpeed / 10;
-        double poly = (2 * speed - 1) * (2 * speed - 1);
-        return Math.min(max, Math.max(0.001, max - max * poly));
-    }
     private void moveIn() {
-        // use negative multiplier in argument to reverse speed curve
-        offsetSpeed = speedDelta(offset, AutoHud.config.animationSpeedMoveIn());
-        alphaSpeed = speedDelta(alpha, AutoHud.config.animationSpeedFadeIn());
-        double newOffset = Math.max(0, offset - offsetSpeed);
-        offsetDelta = offset - newOffset;
-        offset = newOffset;
-        double newAlpha = Math.min(1, alpha + alphaSpeed);
-        alphaDelta = alpha - newAlpha;
-        alpha = newAlpha;
+        offset = Math.max(0, offset + offsetDelta);
+        alpha = Math.min(1, alpha + alphaDelta);
+        double offsetSpeed = Math.sqrt(0.01 + offset) * 0.1 * AutoHud.config.animationSpeedMoveIn();
+        double alphaSpeed = 0.05 * AutoHud.config.animationSpeedFadeIn();
+        if (offset - offsetSpeed <= 0) {
+            offsetDelta = -offset;
+        } else {
+            offsetDelta = -offsetSpeed;
+        }
+        if (alpha + alphaSpeed >= 1) {
+            alphaDelta = 1 - alpha;
+        } else {
+            alphaDelta = alphaSpeed;
+        }
     }
     private void moveOut() {
-        offsetSpeed = speedDelta(offset, AutoHud.config.animationSpeedMoveOut());
-        alphaSpeed = speedDelta(alpha, AutoHud.config.animationSpeedFadeOut());
-        double newOffset = Math.min(1, offset + offsetSpeed);
-        offsetDelta = offset - newOffset;
-        offset = newOffset;
-        double newAlpha = Math.max(0, alpha - alphaSpeed);
-        alphaDelta = alpha - newAlpha;
-        alpha = newAlpha;
+        offset = Math.min(1, offset + offsetDelta);
+        alpha = Math.max(0, alpha + alphaDelta);
+        double offsetSpeed = Math.sqrt(0.01 + offset) * 0.1 * AutoHud.config.animationSpeedMoveOut();
+        double alphaSpeed = 0.05 * AutoHud.config.animationSpeedFadeOut();
+        if (offset + offsetSpeed >= 1) {
+            offsetDelta = 1 - offset;
+        } else {
+            offsetDelta = offsetSpeed;
+        }
+        if (alpha - alphaSpeed <= 0) {
+            alphaDelta = -alpha;
+        } else {
+            alphaDelta = -alphaSpeed;
+        }
     }
+
     public void revealIf(boolean trigger) {
         if (!config.active() || config.onChange() && trigger) {
             revealCombined();
@@ -313,24 +318,33 @@ public class Component {
 
     public void tick() {
         if (visibleTime == 0) { // hide component
-            if (fullyHidden()) { // component is fully hidden, keep it in place
-                alphaSpeed = 0;
-                offsetSpeed = 0;
-            } else if (state == null || !state.scheduledUpdate()) { // component is not yet fully hidden, animate unless update scheduled
-                if (AutoHud.config.animationNone()) {
-                    hideNow();
-                } else {
-                    moveOut();
+            if (!fullyHidden()) {
+                if (state == null || !state.scheduledUpdate()) { // component is not yet fully hidden, animate unless update scheduled
+                    if (AutoHud.config.animationNone()) {
+                        hideNow();
+                    } else {
+                        moveOut();
+                    }
                 }
             }
-        } else if (fullyRevealed()) { // show component, fully revealed, keep it in place
-            alphaSpeed = 0;
-            offsetSpeed = 0;
-        } else { // show component, not yet fully revealed, animate
+            if (offset == 1) {
+                offsetDelta = 0;
+            }
+            if (alpha == 0) {
+                alphaDelta = 0;
+            }
+        } else if (!fullyRevealed()) { // show component, not yet fully revealed, animate
             if (AutoHud.config.animationNone()) {
                 revealNow();
             } else {
                 moveIn();
+            }
+        } else {
+            if (offset == 0) {
+                offsetDelta = 0;
+            }
+            if (alpha == 1) {
+                alphaDelta = 0;
             }
         }
         if (config.active() && Hud.actDynamic() && visibleTime > 0) {

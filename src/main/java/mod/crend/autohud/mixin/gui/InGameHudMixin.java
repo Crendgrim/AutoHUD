@@ -7,6 +7,7 @@ import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Hud;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.StatusEffectSpriteManager;
 import net.minecraft.client.util.math.MatrixStack;
@@ -256,12 +257,31 @@ public class InGameHudMixin extends DrawableHelper {
 
 
     // Status Effects
+
+    // Vanilla
+//    @Inject(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;getEffectType()Lnet/minecraft/entity/effect/StatusEffect;", ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT)
+//    private void autoHud$preEffect(MatrixStack matrices, CallbackInfo ci, Collection<StatusEffectInstance> collection, int i, int j, StatusEffectSpriteManager statusEffectSpriteManager, List<Runnable> list, Iterator<StatusEffectInstance> var7, StatusEffectInstance statusEffectInstance) {
+//        if (AutoHud.targetStatusEffects && Hud.shouldShowIcon(statusEffectInstance)) {
+//            Hud.preInject(matrices, Component.get(statusEffectInstance.getEffectType()));
+//        }
+//    }
+
+    // Optifabric
     @Inject(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;getEffectType()Lnet/minecraft/entity/effect/StatusEffect;", ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void autoHud$preEffect(MatrixStack matrices, CallbackInfo ci, Collection<StatusEffectInstance> collection, int i, int j, StatusEffectSpriteManager statusEffectSpriteManager, List<Runnable> list, Iterator<StatusEffectInstance> var7, StatusEffectInstance statusEffectInstance) {
+    private void autoHud$preEffect(MatrixStack matrices, CallbackInfo ci, Collection<StatusEffectInstance> collection, Screen screen, int i, int j, StatusEffectSpriteManager statusEffectSpriteManager, List<Runnable> list, Iterator<StatusEffectInstance> var7, StatusEffectInstance statusEffectInstance) {
         if (AutoHud.targetStatusEffects && Hud.shouldShowIcon(statusEffectInstance)) {
             Hud.preInject(matrices, Component.get(statusEffectInstance.getEffectType()));
         }
     }
+
+    // hmm... It has crash when player get potion effect
+//    @Inject(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;getEffectType()Lnet/minecraft/entity/effect/StatusEffect;", ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT)
+//    private void autoHud$preEffect(MatrixStack matrices, CallbackInfo ci, StatusEffectInstance statusEffectInstance) {
+//        if (AutoHud.targetStatusEffects && Hud.shouldShowIcon(statusEffectInstance)) {
+//            Hud.preInject(matrices, Component.get(statusEffectInstance.getEffectType()));
+//        }
+//    }
+
     @Inject(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/StatusEffectSpriteManager;getSprite(Lnet/minecraft/entity/effect/StatusEffect;)Lnet/minecraft/client/texture/Sprite;"))
     private void autoHud$postEffect(MatrixStack matrices, CallbackInfo ci) {
         if (AutoHud.targetStatusEffects) {

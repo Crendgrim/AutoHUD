@@ -52,6 +52,7 @@ public class InGameHudMixin extends DrawableHelper {
     private void autoHud$wrapHotbar(InGameHud instance, float tickDelta, MatrixStack matrixStack, Operation<Void> original) {
         if (AutoHud.targetHotbar) {
             Hud.preInject(matrixStack, Component.Hotbar);
+
         }
         original.call(instance, tickDelta, matrixStack);
         if (AutoHud.targetHotbar) {

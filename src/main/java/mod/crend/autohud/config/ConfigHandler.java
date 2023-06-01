@@ -1,6 +1,6 @@
 package mod.crend.autohud.config;
 
-import mod.crend.autoyacl.ConfigStore;
+import mod.crend.yaclx.opt.ConfigStore;
 
 public class ConfigHandler {
 

@@ -1,9 +1,6 @@
-package mod.crend.autoyacl;
+package mod.crend.yaclx.auto;
 
-import mod.crend.autoyacl.annotation.DoubleRange;
-import mod.crend.autoyacl.annotation.FloatRange;
-import mod.crend.autoyacl.annotation.IntegerRange;
-import mod.crend.autoyacl.annotation.LongRange;
+import mod.crend.yaclx.auto.annotation.*;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
@@ -21,6 +18,16 @@ public class ConfigValidator {
 			return false;
 		}
 		return true;
+	}
+
+	private static <T> boolean validateOptions(T config, Field field, String[] options, boolean allowEmpty) throws IllegalAccessException {
+		String value = (String) field.get(config);
+		for (String option : options) {
+			if (option.equals(value)) return true;
+		}
+		if (allowEmpty) field.set(config, "");
+		else field.set(config, options[0]);
+		return false;
 	}
 
 	/**
@@ -63,6 +70,10 @@ public class ConfigValidator {
 			FloatRange floatRange = field.getAnnotation(FloatRange.class);
 			if (floatRange != null) {
 				return validateRange(config, field, floatRange.min(), floatRange.max());
+			}
+			StringOptions stringOptions = field.getAnnotation(StringOptions.class);
+			if (stringOptions != null) {
+				return validateOptions(config, field, stringOptions.options(), stringOptions.allowEmpty());
 			}
 			boolean configValid = true;
 			for (Field innerField : field.getType().getFields()) {

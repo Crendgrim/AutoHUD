@@ -1,6 +1,6 @@
 package mod.crend.autohud.mixin.gui;
 
-import mod.crend.autohud.component.Hud;
+import mod.crend.autohud.render.CustomFramebufferRenderer;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MinecraftClientMixin {
 	@Inject(method = "onResolutionChanged", at=@At("TAIL"))
 	private void autoHud$onResolutionChanged(CallbackInfo ci) {
-		Hud.resizeFramebuffer();
+		CustomFramebufferRenderer.resizeFramebuffer();
 	}
 
 }

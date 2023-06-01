@@ -7,9 +7,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ThirstManager.class)
+@Mixin(value = ThirstManager.class, remap = false)
 public class ThirstManagerMixin {
-    @Inject(method="setThirstLevel", at=@At("TAIL"), remap=false)
+    @Inject(method="setThirstLevel", at=@At("TAIL"))
     private void autoHud$setThirstLevel(int thirstLevel, CallbackInfo ci) {
         DehydrationCompat.Thirst.updateState();
     }

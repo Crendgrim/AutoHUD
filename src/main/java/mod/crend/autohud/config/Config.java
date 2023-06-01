@@ -1,7 +1,7 @@
 package mod.crend.autohud.config;
 
 import dev.isxander.yacl.config.ConfigEntry;
-import mod.crend.autoyacl.annotation.*;
+import mod.crend.yaclx.auto.annotation.*;
 
 @AutoYaclConfig(modid = "autohud", translationKey = "autohud.title", filename = "autohud.json5")
 public class Config implements Cloneable {
@@ -19,20 +19,22 @@ public class Config implements Cloneable {
         AnimationSpeeds() { }
 
         @DoubleRange(min = 1, max = 4.0, interval = 0.25)
+        @EnableIf(field = "animationMove", value = EnableIf.BooleanPredicate.class)
         @ConfigEntry public double moveIn = 0;
         @DoubleRange(min = 1, max = 4.0, interval = 0.25)
+        @EnableIf(field = "animationMove", value = EnableIf.BooleanPredicate.class)
         @ConfigEntry public double moveOut = 0;
         @DoubleRange(min = 1, max = 4.0, interval = 0.25)
+        @EnableIf(field = "animationFade", value = EnableIf.BooleanPredicate.class)
         @ConfigEntry public double fadeIn = 0;
         @DoubleRange(min = 1, max = 4.0, interval = 0.25)
+        @EnableIf(field = "animationFade", value = EnableIf.BooleanPredicate.class)
         @ConfigEntry public double fadeOut = 0;
     }
     @ConfigEntry public AnimationSpeeds animationSpeeds = new AnimationSpeeds();
 
-    @Tooltip
     @ConfigEntry public RevealType revealType = RevealType.Stacked;
     @Category(name = "components", group = "statusEffects")
-    @Tooltip
     @ConfigEntry public boolean statusEffectTimer = true;
 
     /* COMPONENTS */
@@ -78,6 +80,7 @@ public class Config implements Cloneable {
     public static class BooleanComponent extends IComponent {
         private BooleanComponent() { }
         @ConfigEntry public boolean active = true;
+        @EnableIf(field = "active", value = EnableIf.BooleanPredicate.class)
         @ConfigEntry public boolean onChange = true;
     }
 
@@ -98,7 +101,6 @@ public class Config implements Cloneable {
     @Category(name = "components", group = "statusEffects")
     @ConfigEntry public BooleanComponent statusEffects = new BooleanComponent();
     @Category(name = "components", group = "statusEffects")
-    @Tooltip
     @ConfigEntry public boolean hidePersistentStatusEffects = true;
 
     @Category(name = "components")
@@ -113,19 +115,27 @@ public class Config implements Cloneable {
     
     public static class HotbarComponents {
         @ConfigEntry public BooleanComponent hotbar = new BooleanComponent();
+        @EnableIf(field = "hotbar.active", value = EnableIf.BooleanPredicate.class)
         @ConfigEntry public boolean onSlotChange = true;
+        @EnableIf(field = "hotbar.active", value = EnableIf.BooleanPredicate.class)
         @ConfigEntry public boolean onLowDurability = true;
         @IntegerRange(min = 0, max = 100, interval = 1)
+        @EnableIf(field = "hotbar.active", value = EnableIf.BooleanPredicate.class)
+        @EnableIf(field = "onLowDurability", value = EnableIf.BooleanPredicate.class)
         @ConfigEntry public int durabilityPercentage = 10;
+        @EnableIf(field = "hotbar.active", value = EnableIf.BooleanPredicate.class)
+        @EnableIf(field = "onLowDurability", value = EnableIf.BooleanPredicate.class)
         @ConfigEntry public int durabilityTotal = 20;
+        @EnableIf(field = "hotbar.active", value = EnableIf.BooleanPredicate.class)
         @FloatRange(min = 0.0f, max = 1.0f, interval = 0.1f)
         @ConfigEntry public float maximumFadeHotbarItems = 0.0f;
     }
     
     public static class ScoreboardComponents {
         @ConfigEntry public BooleanComponent scoreboard = new BooleanComponent();
+        @EnableIf(field = "scoreboard.active", value = EnableIf.BooleanPredicate.class)
         @ConfigEntry public boolean onScoreChange = true;
-        @Tooltip
+        @EnableIf(field = "scoreboard.active", value = EnableIf.BooleanPredicate.class)
         @ConfigEntry public boolean onTeamChange = true;
     }
     

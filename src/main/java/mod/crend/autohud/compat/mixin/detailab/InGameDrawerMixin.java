@@ -1,7 +1,7 @@
 package mod.crend.autohud.compat.mixin.detailab;
 
 import com.redlimerl.detailab.render.InGameDrawer;
-import mod.crend.autohud.component.Hud;
+import mod.crend.autohud.render.AutoHudRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -14,6 +14,6 @@ public class InGameDrawerMixin {
 			index = 3
 	)
 	private static float autoHud$injectAlpha(float alpha) {
-		return (Hud.inRender ? Hud.alpha * alpha : alpha);
+		return (AutoHudRenderer.inRender ? AutoHudRenderer.alpha * alpha : alpha);
 	}
 }

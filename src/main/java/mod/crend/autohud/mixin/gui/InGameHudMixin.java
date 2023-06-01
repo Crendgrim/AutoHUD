@@ -5,11 +5,12 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Hud;
-import net.minecraft.client.gui.DrawableHelper;
+import mod.crend.autohud.render.AutoHudRenderer;
+import mod.crend.autohud.render.CustomFramebufferRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.StatusEffectSpriteManager;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.JumpingMount;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,16 +29,16 @@ import java.util.Iterator;
 import java.util.List;
 
 @Mixin(value = InGameHud.class, priority = 800)
-public class InGameHudMixin extends DrawableHelper {
+public class InGameHudMixin {
 
     @Inject(method="render", at=@At("HEAD"))
-    private void autoHud$preRender(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
-        Hud.inRender = true;
-        Hud.tickDelta = tickDelta;
+    private void autoHud$preRender(DrawContext context, float tickDelta, CallbackInfo ci) {
+        AutoHudRenderer.inRender = true;
+        AutoHudRenderer.tickDelta = tickDelta;
     }
     @Inject(method="render", at=@At("RETURN"))
-    private void autoHud$postRender(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
-        Hud.inRender = false;
+    private void autoHud$postRender(DrawContext context, float tickDelta, CallbackInfo ci) {
+        AutoHudRenderer.inRender = false;
     }
 
 
@@ -46,22 +47,21 @@ public class InGameHudMixin extends DrawableHelper {
             method = "render",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbar(FLnet/minecraft/client/util/math/MatrixStack;)V"
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbar(FLnet/minecraft/client/gui/DrawContext;)V"
             )
     )
-    private void autoHud$wrapHotbar(InGameHud instance, float tickDelta, MatrixStack matrixStack, Operation<Void> original) {
+    private void autoHud$wrapHotbar(InGameHud instance, float tickDelta, DrawContext context, Operation<Void> original) {
         if (AutoHud.targetHotbar) {
-            Hud.preInject(matrixStack, Component.Hotbar);
-
+            AutoHudRenderer.preInject(context, Component.Hotbar);
         }
-        original.call(instance, tickDelta, matrixStack);
+        original.call(instance, tickDelta, context);
         if (AutoHud.targetHotbar) {
-            Hud.postInject(matrixStack);
+            AutoHudRenderer.postInject(context);
         }
     }
-    @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderTexture(ILnet/minecraft/util/Identifier;)V", ordinal = 0))
-    private void autoHud$preHotbar(float f, MatrixStack matrixStack, CallbackInfo ci) {
-        Hud.injectTransparency();
+    @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;getMatrices()Lnet/minecraft/client/util/math/MatrixStack;", ordinal = 0))
+    private void autoHud$preHotbar(float tickDelta, DrawContext context, CallbackInfo ci) {
+        AutoHudRenderer.injectTransparency();
     }
 
     // Tooltip
@@ -69,16 +69,16 @@ public class InGameHudMixin extends DrawableHelper {
             method = "render",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHeldItemTooltip(Lnet/minecraft/client/util/math/MatrixStack;)V"
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHeldItemTooltip(Lnet/minecraft/client/gui/DrawContext;)V"
             )
     )
-    private void autoHud$wrapTooltip(InGameHud instance, MatrixStack matrixStack, Operation<Void> original) {
+    private void autoHud$wrapTooltip(InGameHud instance, DrawContext context, Operation<Void> original) {
         if (AutoHud.targetHotbar) {
-            Hud.preInject(matrixStack, Component.Tooltip);
+            AutoHudRenderer.preInject(context, Component.Tooltip);
         }
-        original.call(instance, matrixStack);
+        original.call(instance, context);
         if (AutoHud.targetHotbar) {
-            Hud.postInject(matrixStack);
+            AutoHudRenderer.postInject(context);
         }
     }
 
@@ -87,25 +87,25 @@ public class InGameHudMixin extends DrawableHelper {
             method = "renderHotbar",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/util/math/MatrixStack;IIFLnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V"
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/gui/DrawContext;IIFLnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V"
             )
     )
-    private void autoHud$transparentHotbarItems(InGameHud instance, MatrixStack matrices, int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed, Operation<Void> original) {
+    private void autoHud$transparentHotbarItems(InGameHud instance, DrawContext context, int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed, Operation<Void> original) {
         if (AutoHud.targetHotbar && AutoHud.config.animationFade()) {
             // We need to reset the renderer because otherwise the first item gets drawn with double alpha
-            Hud.postInjectFade();
+            AutoHudRenderer.postInjectFade();
             // Setup custom framebuffer
-            Hud.prepareExtraFramebuffer();
+            CustomFramebufferRenderer.init();
         }
 
         // Have the original call draw onto the custom framebuffer
-        original.call(instance, matrices, x, y, tickDelta, player, stack, seed);
+        original.call(instance, context, x, y, tickDelta, player, stack, seed);
 
         if (AutoHud.targetHotbar && AutoHud.config.animationFade()) {
             // Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
-            Hud.preInjectFade(matrices, Component.Hotbar, AutoHud.config.getHotbarItemsMaximumFade());
-            Hud.drawExtraFramebuffer(matrices);
-            Hud.postInjectFade(matrices);
+            AutoHudRenderer.preInjectFade(context, Component.Hotbar, AutoHud.config.getHotbarItemsMaximumFade());
+            CustomFramebufferRenderer.draw(context);
+            AutoHudRenderer.postInjectFade(context);
         }
     }
 
@@ -114,25 +114,25 @@ public class InGameHudMixin extends DrawableHelper {
             method = "render",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderExperienceBar(Lnet/minecraft/client/util/math/MatrixStack;I)V"
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderExperienceBar(Lnet/minecraft/client/gui/DrawContext;I)V"
             )
     )
-    private void autoHud$wrapExperienceBar(InGameHud instance, MatrixStack matrixStack, int x, Operation<Void> original) {
+    private void autoHud$wrapExperienceBar(InGameHud instance, DrawContext context, int x, Operation<Void> original) {
         if (AutoHud.targetExperienceBar) {
-            Hud.preInject(matrixStack, Component.ExperienceBar);
+            AutoHudRenderer.preInject(context, Component.ExperienceBar);
         }
-        original.call(instance, matrixStack, x);
+        original.call(instance, context, x);
         if (AutoHud.targetExperienceBar) {
-            Hud.postInject(matrixStack);
+            AutoHudRenderer.postInject(context);
         }
     }
 
-    @ModifyArg(method = "renderExperienceBar", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/client/util/math/MatrixStack;Ljava/lang/String;FFI)I"))
-    private int autoHud$experienceText(int alpha) {
-        if (Hud.inRender) {
-            return Hud.modifyArgb(alpha);
+    @ModifyArg(method = "renderExperienceBar", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;IIIZ)I"), index = 4)
+    private int autoHud$experienceText(int color) {
+        if (AutoHudRenderer.inRender) {
+            return AutoHudRenderer.modifyArgb(color);
         }
-        return alpha;
+        return color;
     }
 
 
@@ -141,41 +141,41 @@ public class InGameHudMixin extends DrawableHelper {
             method = "render",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderStatusBars(Lnet/minecraft/client/util/math/MatrixStack;)V"
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderStatusBars(Lnet/minecraft/client/gui/DrawContext;)V"
             )
     )
-    private void autoHud$wrapStatusBars(InGameHud instance, MatrixStack matrixStack, Operation<Void> original) {
+    private void autoHud$wrapStatusBars(InGameHud instance, DrawContext context, Operation<Void> original) {
         if (AutoHud.targetStatusBars) {
             // Armor is the first rendered status bar in the vanilla renderer
-            Hud.preInject(matrixStack, Component.Armor);
+            AutoHudRenderer.preInject(context, Component.Armor);
         }
-        original.call(instance, matrixStack);
+        original.call(instance, context);
         if (AutoHud.targetStatusBars) {
-            Hud.postInject(matrixStack);
+            AutoHudRenderer.postInject(context);
         }
     }
 
     @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;getProfiler()Lnet/minecraft/util/profiler/Profiler;", ordinal = 1))
-    private void autoHud$postArmorBar(final MatrixStack matrixStack, final CallbackInfo ci) {
+    private void autoHud$postArmorBar(final DrawContext context, final CallbackInfo ci) {
         if (AutoHud.targetStatusBars) {
-            Hud.postInject(matrixStack);
-            Hud.preInject(matrixStack, Component.Health);
+            AutoHudRenderer.postInject(context);
+            AutoHudRenderer.preInject(context, Component.Health);
         }
     }
 
     @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;getProfiler()Lnet/minecraft/util/profiler/Profiler;", ordinal = 2))
-    private void autoHud$postHealthBar(final MatrixStack matrixStack, final CallbackInfo ci) {
+    private void autoHud$postHealthBar(final DrawContext context, final CallbackInfo ci) {
         if (AutoHud.targetStatusBars) {
-            Hud.postInject(matrixStack);
-            Hud.preInject(matrixStack, Component.Hunger);
+            AutoHudRenderer.postInject(context);
+            AutoHudRenderer.preInject(context, Component.Hunger);
         }
     }
 
     @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;getProfiler()Lnet/minecraft/util/profiler/Profiler;", ordinal = 3))
-    private void autoHud$postFoodBar(final MatrixStack matrixStack, final CallbackInfo ci) {
+    private void autoHud$postFoodBar(final DrawContext context, final CallbackInfo ci) {
         if (AutoHud.targetStatusBars) {
-            Hud.postInject(matrixStack);
-            Hud.preInject(matrixStack, Component.Air);
+            AutoHudRenderer.postInject(context);
+            AutoHudRenderer.preInject(context, Component.Air);
         }
     }
 
@@ -184,16 +184,16 @@ public class InGameHudMixin extends DrawableHelper {
             method = "render",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMountHealth(Lnet/minecraft/client/util/math/MatrixStack;)V"
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMountHealth(Lnet/minecraft/client/gui/DrawContext;)V"
             )
     )
-    private void autoHud$wrapMountHealth(InGameHud instance, MatrixStack matrixStack, Operation<Void> original) {
+    private void autoHud$wrapMountHealth(InGameHud instance, DrawContext context, Operation<Void> original) {
         if (AutoHud.targetStatusBars) {
-            Hud.preInject(matrixStack, Component.MountHealth);
+            AutoHudRenderer.preInject(context, Component.MountHealth);
         }
-        original.call(instance, matrixStack);
+        original.call(instance, context);
         if (AutoHud.targetStatusBars) {
-            Hud.postInject(matrixStack);
+            AutoHudRenderer.postInject(context);
         }
     }
 
@@ -202,16 +202,16 @@ public class InGameHudMixin extends DrawableHelper {
             method = "render",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMountJumpBar(Lnet/minecraft/entity/JumpingMount;Lnet/minecraft/client/util/math/MatrixStack;I)V"
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMountJumpBar(Lnet/minecraft/entity/JumpingMount;Lnet/minecraft/client/gui/DrawContext;I)V"
             )
     )
-    private void autoHud$wrapMountJumpBar(InGameHud instance, JumpingMount mount, MatrixStack matrixStack, int x, Operation<Void> original) {
+    private void autoHud$wrapMountJumpBar(InGameHud instance, JumpingMount mount, DrawContext context, int x, Operation<Void> original) {
         if (AutoHud.targetStatusBars) {
-            Hud.preInject(matrixStack, Component.MountJumpBar);
+            AutoHudRenderer.preInject(context, Component.MountJumpBar);
         }
-        original.call(instance, mount, matrixStack, x);
+        original.call(instance, mount, context, x);
         if (AutoHud.targetStatusBars) {
-            Hud.postInject(matrixStack);
+            AutoHudRenderer.postInject(context);
         }
     }
 
@@ -220,37 +220,37 @@ public class InGameHudMixin extends DrawableHelper {
             method = "render",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderScoreboardSidebar(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/scoreboard/ScoreboardObjective;)V"
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/scoreboard/ScoreboardObjective;)V"
             )
     )
-    private void autoHud$wrapScoreboardSidebar(InGameHud instance, MatrixStack matrixStack, ScoreboardObjective objective, Operation<Void> original) {
+    private void autoHud$wrapScoreboardSidebar(InGameHud instance, DrawContext context, ScoreboardObjective objective, Operation<Void> original) {
         if (AutoHud.targetScoreboard) {
-            Hud.preInject(matrixStack, Component.Scoreboard);
+            AutoHudRenderer.preInject(context, Component.Scoreboard);
         }
-        original.call(instance, matrixStack, objective);
+        original.call(instance, context, objective);
         if (AutoHud.targetScoreboard) {
-            Hud.postInject(matrixStack);
+            AutoHudRenderer.postInject(context);
         }
     }
 
-    @ModifyArg(method = "renderScoreboardSidebar", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/client/util/math/MatrixStack;Ljava/lang/String;FFI)I"))
+    @ModifyArg(method = "renderScoreboardSidebar", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;IIIZ)I"), index = 4)
     private int autoHud$scoreboardSidebarString(int color) {
-        if (Hud.inRender) {
-            return Hud.getArgb() | 0xFFFFFF;
+        if (AutoHudRenderer.inRender) {
+            return AutoHudRenderer.getArgb() | 0xFFFFFF;
         }
         return color;
     }
-    @ModifyArg(method = "renderScoreboardSidebar", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/text/Text;FFI)I"))
+    @ModifyArg(method = "renderScoreboardSidebar", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;IIIZ)I"), index = 4)
     private int autoHud$scoreboardSidebarText(int color) {
-        if (Hud.inRender) {
-            return Hud.getArgb() | 0xFFFFFF;
+        if (AutoHudRenderer.inRender) {
+            return AutoHudRenderer.getArgb() | 0xFFFFFF;
         }
         return color;
     }
-    @ModifyArg(method = "renderScoreboardSidebar", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;fill(Lnet/minecraft/client/util/math/MatrixStack;IIIII)V"), index=5)
+    @ModifyArg(method = "renderScoreboardSidebar", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V"), index=4)
     private int autoHud$scoreboardSidebarFill(int color) {
-        if (Hud.inRender) {
-            return Hud.modifyArgb(color);
+        if (AutoHudRenderer.inRender) {
+            return AutoHudRenderer.modifyArgb(color);
         }
         return color;
     }
@@ -258,32 +258,32 @@ public class InGameHudMixin extends DrawableHelper {
 
     // Status Effects
     @Inject(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;getEffectType()Lnet/minecraft/entity/effect/StatusEffect;", ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void autoHud$preEffect(MatrixStack matrices, CallbackInfo ci, Collection<StatusEffectInstance> collection, int i, int j, StatusEffectSpriteManager statusEffectSpriteManager, List<Runnable> list, Iterator<StatusEffectInstance> var7, StatusEffectInstance statusEffectInstance) {
+    private void autoHud$preEffect(DrawContext context, CallbackInfo ci, Collection<StatusEffectInstance> collection, int i, int j, StatusEffectSpriteManager statusEffectSpriteManager, List<Runnable> list, Iterator<StatusEffectInstance> var7, StatusEffectInstance statusEffectInstance) {
         if (AutoHud.targetStatusEffects && Hud.shouldShowIcon(statusEffectInstance)) {
-            Hud.preInject(matrices, Component.get(statusEffectInstance.getEffectType()));
+            AutoHudRenderer.preInject(context, Component.get(statusEffectInstance.getEffectType()));
         }
     }
     @Inject(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/StatusEffectSpriteManager;getSprite(Lnet/minecraft/entity/effect/StatusEffect;)Lnet/minecraft/client/texture/Sprite;"))
-    private void autoHud$postEffect(MatrixStack matrices, CallbackInfo ci) {
+    private void autoHud$postEffect(DrawContext context, CallbackInfo ci) {
         if (AutoHud.targetStatusEffects) {
-            Hud.postInject(matrices);
+            AutoHudRenderer.postInject(context);
         }
     }
-    @Inject(method = "method_18620", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;drawSprite(Lnet/minecraft/client/util/math/MatrixStack;IIIIILnet/minecraft/client/texture/Sprite;)V"))
-    private static void autoHud$preSprite(Sprite sprite, float g, MatrixStack matrices, int n, int o, CallbackInfo ci) {
+    @Inject(method = "method_18620", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawSprite(IIIIILnet/minecraft/client/texture/Sprite;)V"))
+    private static void autoHud$preSprite(DrawContext context, float f, int i, int j, Sprite sprite, CallbackInfo ci) {
         if (AutoHud.targetStatusEffects) {
             Component component = Component.findBySprite(sprite);
             if (component != null) {
-                Hud.preInject(matrices, component);
+                AutoHudRenderer.preInject(context, component);
             } else {
-                matrices.push();
+                context.getMatrices().push();
             }
         }
     }
     @Inject(method = "method_18620", at = @At(value = "RETURN"))
-    private static void autoHud$postSprite(Sprite sprite, float g, MatrixStack matrices, int n, int o, CallbackInfo ci) {
+    private static void autoHud$postSprite(DrawContext drawContext, float f, int i, int j, Sprite sprite, CallbackInfo ci) {
         if (AutoHud.targetStatusEffects) {
-            Hud.postInject(matrices);
+            AutoHudRenderer.postInject(drawContext);
         }
     }
 

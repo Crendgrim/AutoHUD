@@ -128,6 +128,20 @@ public class State {
             }
         } else {
             Component.getStatusEffectComponents().forEach(Component::reveal);
+            if (AutoHud.config.hidePersistentStatusEffects()) {
+                Map<StatusEffect, StatusEffectInstance> newStatusEffects = new HashMap<>();
+                Map<StatusEffect, StatusEffectInstance> effects = player.getActiveStatusEffects();
+                for (StatusEffect effect : effects.keySet()) {
+                    StatusEffectInstance effectInstance = effects.get(effect);
+                    if (effectInstance.shouldShowIcon()) {
+                        if (previousStatusEffects.containsKey(effect) && previousStatusEffects.get(effect).equals(effectInstance)) {
+                            Component.get(effect).hideNow();
+                        }
+                        newStatusEffects.put(effect, new StatusEffectInstance(effectInstance));
+                    }
+                }
+                previousStatusEffects = newStatusEffects;
+            }
         }
 
         AutoHud.apis.forEach(api -> api.tickState(player));

@@ -1,33 +1,34 @@
 package mod.crend.autohud.config;
 
-import dev.isxander.yacl.config.ConfigEntry;
+import dev.isxander.yacl3.config.ConfigEntry;
+import mod.crend.autohud.AutoHud;
 import mod.crend.yaclx.auto.annotation.*;
 
-@AutoYaclConfig(modid = "autohud", translationKey = "autohud.title", filename = "autohud.json5")
+@AutoYaclConfig(modid = AutoHud.MOD_ID, filename = "autohud.json5")
 public class Config implements Cloneable {
 
     /* MAIN OPTIONS */
     @ConfigEntry public boolean dynamicOnLoad = true;
-    @IntegerRange(min = 10, max = 200, interval = 10)
+    @NumericRange(min = 10, max = 200, interval = 10)
     @ConfigEntry public int ticksRevealed = 40;
     @ConfigEntry public boolean animationMove = true;
     @ConfigEntry public boolean animationFade = true;
-    @DoubleRange(min = 1, max = 4.0, interval = 0.25)
+    @FloatingPointRange(min = 1, max = 4.0, interval = 0.25)
     @ConfigEntry public double animationSpeed = 2.0;
 
     public static class AnimationSpeeds {
         AnimationSpeeds() { }
 
-        @DoubleRange(min = 1, max = 4.0, interval = 0.25)
+        @FloatingPointRange(min = 1, max = 4.0, interval = 0.25)
         @EnableIf(field = "animationMove", value = EnableIf.BooleanPredicate.class)
         @ConfigEntry public double moveIn = 0;
-        @DoubleRange(min = 1, max = 4.0, interval = 0.25)
+        @FloatingPointRange(min = 1, max = 4.0, interval = 0.25)
         @EnableIf(field = "animationMove", value = EnableIf.BooleanPredicate.class)
         @ConfigEntry public double moveOut = 0;
-        @DoubleRange(min = 1, max = 4.0, interval = 0.25)
+        @FloatingPointRange(min = 1, max = 4.0, interval = 0.25)
         @EnableIf(field = "animationFade", value = EnableIf.BooleanPredicate.class)
         @ConfigEntry public double fadeIn = 0;
-        @DoubleRange(min = 1, max = 4.0, interval = 0.25)
+        @FloatingPointRange(min = 1, max = 4.0, interval = 0.25)
         @EnableIf(field = "animationFade", value = EnableIf.BooleanPredicate.class)
         @ConfigEntry public double fadeOut = 0;
     }
@@ -41,11 +42,11 @@ public class Config implements Cloneable {
     public static class DefaultValues {
         DefaultValues() { }
 
-        @DoubleRange(min = 0.1, max = 3.0, interval = 0.1)
+        @FloatingPointRange(min = 0.1, max = 3.0, interval = 0.1)
         @ConfigEntry public double speedMultiplier = 1.0;
-        @IntegerRange(min = 0, max = 200, interval = 5)
+        @NumericRange(min = 0, max = 200, interval = 5)
         @ConfigEntry public int distance = 60;
-        @DoubleRange(min = 0.0, max = 1.0, interval = 0.1)
+        @FloatingPointRange(min = 0.0, max = 1.0, interval = 0.1)
         @ConfigEntry public double maximumFade = 0.0d;
     }
     @Category(name = "advanced")
@@ -58,13 +59,13 @@ public class Config implements Cloneable {
         @Translation(key = "autohud.option.advanced.direction")
         @ConfigEntry public ScrollDirection direction = ScrollDirection.Down;
         @Translation(key = "autohud.option.advanced.speedMultiplier")
-        @DoubleRange(min = 0.1, max = 3.0, interval = 0.1)
+        @FloatingPointRange(min = 0.1, max = 3.0, interval = 0.1)
         @ConfigEntry public double speedMultiplier = -1;
         @Translation(key = "autohud.option.advanced.distance")
-        @IntegerRange(min = 0, max = 200, interval = 5)
+        @NumericRange(min = 0, max = 200, interval = 5)
         @ConfigEntry public int distance = -1;
         @Translation(key = "autohud.option.advanced.maximumFade")
-        @DoubleRange(min = 0.0, max = 1.0, interval = 0.1)
+        @FloatingPointRange(min = 0.0, max = 1.0, interval = 0.1)
         @ConfigEntry public double maximumFade = -1d;
     }
     public static class IComponent {
@@ -119,7 +120,7 @@ public class Config implements Cloneable {
         @ConfigEntry public boolean onSlotChange = true;
         @EnableIf(field = "hotbar.active", value = EnableIf.BooleanPredicate.class)
         @ConfigEntry public boolean onLowDurability = true;
-        @IntegerRange(min = 0, max = 100, interval = 1)
+        @NumericRange(min = 0, max = 100, interval = 1)
         @EnableIf(field = "hotbar.active", value = EnableIf.BooleanPredicate.class)
         @EnableIf(field = "onLowDurability", value = EnableIf.BooleanPredicate.class)
         @ConfigEntry public int durabilityPercentage = 10;
@@ -127,7 +128,7 @@ public class Config implements Cloneable {
         @EnableIf(field = "onLowDurability", value = EnableIf.BooleanPredicate.class)
         @ConfigEntry public int durabilityTotal = 20;
         @EnableIf(field = "hotbar.active", value = EnableIf.BooleanPredicate.class)
-        @FloatRange(min = 0.0f, max = 1.0f, interval = 0.1f)
+        @FloatingPointRange(min = 0.0f, max = 1.0f, interval = 0.1f)
         @ConfigEntry public float maximumFadeHotbarItems = 0.0f;
     }
     

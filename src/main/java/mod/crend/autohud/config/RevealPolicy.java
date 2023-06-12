@@ -1,8 +1,9 @@
 package mod.crend.autohud.config;
 
+import mod.crend.yaclx.type.NameableEnum;
 import net.minecraft.text.Text;
 
-public enum RevealPolicy {
+public enum RevealPolicy implements NameableEnum {
     Always,
     Disabled,
     Changing,
@@ -11,6 +12,7 @@ public enum RevealPolicy {
     NotFull,
     Low;
 
+    @Override
     public Text getDisplayName() {
         return switch (this) {
             case Always -> Text.translatable("autohud.revealPolicy.Always");

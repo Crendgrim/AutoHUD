@@ -48,7 +48,6 @@
   "autohud.option.mountHealth.policy": "Reveal mount health when",
   "autohud.option.mountHealth.policy.description": "Always: always visible\nDisabled: do not automatically reveal\nChanging: reveal when health changes\nIncreasing: reveal when healing\nDecreasing: reveal when hurting\nNot Full: reveal when not at full health\nLow: reveal when at low health",
   "autohud.group.hotbar": "Hotbar",
-  "autohud.group.hotbar.description": "Hotbar",
   "autohud.option.hotbar.hotbar.active": "Hide",
   "autohud.option.hotbar.hotbar.active.description": "Dynamically hide the hotbar",
   "autohud.option.hotbar.hotbar.onChange": "Reveal on hand change",
@@ -97,19 +96,12 @@
   "autohud.option.advanced.maximumFade": "Fade-out limit",
   "autohud.option.advanced.maximumFade.description": "Controls how far the opacity of this element can be reduced. Set to -1 to use default.",
   "autohud.group.health": "Health",
-  "autohud.group.health.description": "Health",
   "autohud.group.armor": "Armor",
-  "autohud.group.armor.description": "Armor",
   "autohud.group.hunger": "Hunger",
-  "autohud.group.hunger.description": "Hunger",
   "autohud.group.air": "Air",
-  "autohud.group.air.description": "Air",
   "autohud.group.experience": "Experience",
-  "autohud.group.experience.description": "Experience",
   "autohud.group.mountJumpBar": "Mount Jump Bar",
-  "autohud.group.mountJumpBar.description": "Mount Jump Bar",
   "autohud.group.mountHealth": "Mount Health",
-  "autohud.group.mountHealth.description": "Mount Health",
 
   "autohud.scrollDirection.Up": "Up",
   "autohud.scrollDirection.Down": "Down",
@@ -133,6 +125,5 @@
   "key.autohud.peek-hud": "Toggle HUD while held",
 
   "modmenu.summaryTranslation.autohud": "Dynamically hide interface elements",
-  "modmenu.descriptionTranslation.autohud": "Dynamic HUD that hides interface elements while they are not needed.",
-  "autohud.requireYaclForConfigScreen": "To configure AutoHUD through ModMenu, please install YetAnotherConfigLib!"
+  "modmenu.descriptionTranslation.autohud": "Dynamic HUD that hides interface elements while they are not needed."
 }

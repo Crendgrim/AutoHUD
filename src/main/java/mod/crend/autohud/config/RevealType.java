@@ -1,14 +1,16 @@
 package mod.crend.autohud.config;
 
+import mod.crend.yaclx.type.NameableEnum;
 import net.minecraft.text.Text;
 
-public enum RevealType {
+public enum RevealType implements NameableEnum {
     Individual,
     Stacked,
     Grouped,
     HideCombined,
     Combined;
 
+    @Override
     public Text getDisplayName() {
         return switch (this) {
             case Individual -> Text.translatable("autohud.revealType.Individual");

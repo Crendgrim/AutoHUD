@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "id": "autohud",
+  "version": "${version}",
+
+  "name": "Auto HUD",
+  "description": "Dynamic HUD that hides interface elements while they are not needed.",
+  "authors": [
+    "Crendgrim"
+  ],
+  "contributors": [
+    "JuggleStruggle"
+  ],
+  "contact": {
+    "sources": "https://github.com/Crendgrim/AutoHUD",
+    "issues": "https://github.com/Crendgrim/AutoHUD/issues"
+  },
+
+  "license": "LGPL-3.0",
+  "icon": "assets/autohud/icon.png",
+
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "mod.crend.autohud.fabric.AutoHudFabric"
+    ],
+    "preLaunch": [
+      "com.llamalad7.mixinextras.MixinExtrasBootstrap::init"
+    ],
+    "modmenu": [
+      "mod.crend.autohud.fabric.screen.ModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "autohud-common.mixins.json",
+    "autohud-fabric.mixins.json",
+    "autohud.compat.mixins.json"
+  ],
+
+  "depends": {
+    "fabric-key-binding-api-v1": "*",
+
+    "fabricloader": "*",
+    "minecraft": "${supported_version_pattern}",
+    "java": "*"
+  },
+  "suggests": {
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "mod.crend.autohud.forge.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "gui.ForgeGuiMixin",
+    "gui.InGameHudMixin",
+    "gui.VanillaGuiOverlayMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

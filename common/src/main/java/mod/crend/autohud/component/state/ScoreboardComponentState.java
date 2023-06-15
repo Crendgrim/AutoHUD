@@ -1,7 +1,8 @@
-package mod.crend.autohud.component;
+package mod.crend.autohud.component.state;
 
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectIntMutablePair;
+import mod.crend.autohud.component.Component;
 import mod.crend.autohud.mixin.TeamMixinAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.scoreboard.Scoreboard;

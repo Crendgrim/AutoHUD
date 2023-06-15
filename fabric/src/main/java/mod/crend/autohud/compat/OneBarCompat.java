@@ -3,7 +3,7 @@ package mod.crend.autohud.compat;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.component.Component;
-import mod.crend.autohud.component.ComponentState;
+import mod.crend.autohud.component.state.ComponentState;
 import net.minecraft.client.network.ClientPlayerEntity;
 
 public class OneBarCompat implements AutoHudApi {

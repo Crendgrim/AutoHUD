@@ -1,6 +1,7 @@
 package mod.crend.autohud.component;
 
 import mod.crend.autohud.AutoHud;
+import mod.crend.autohud.component.state.ScoreboardComponentState;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.scoreboard.Team;

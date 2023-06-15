@@ -3,7 +3,7 @@ package mod.crend.autohud.mixin;
 import com.mojang.authlib.GameProfile;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
-import mod.crend.autohud.component.PolicyComponentState;
+import mod.crend.autohud.component.state.PolicyComponentState;
 import mod.crend.autohud.config.RevealPolicy;
 import net.minecraft.client.input.Input;
 import net.minecraft.client.network.AbstractClientPlayerEntity;

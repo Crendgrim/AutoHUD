@@ -1,5 +1,7 @@
-package mod.crend.autohud.component;
+package mod.crend.autohud.component.state;
 
+import mod.crend.autohud.component.Component;
+import mod.crend.autohud.component.Hud;
 import mod.crend.autohud.config.ConfigHandler;
 
 import java.util.function.Supplier;

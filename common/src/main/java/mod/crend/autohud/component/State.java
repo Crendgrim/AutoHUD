@@ -2,6 +2,7 @@ package mod.crend.autohud.component;
 
 import com.mojang.datafixers.util.Pair;
 import mod.crend.autohud.AutoHud;
+import mod.crend.autohud.component.state.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.effect.StatusEffect;

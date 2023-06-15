@@ -1,5 +1,7 @@
-package mod.crend.autohud.component;
+package mod.crend.autohud.component.state;
 
+
+import mod.crend.autohud.component.Component;
 
 public class ComponentState {
     Component component;

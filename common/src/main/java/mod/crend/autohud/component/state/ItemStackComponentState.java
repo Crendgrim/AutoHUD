@@ -1,5 +1,6 @@
-package mod.crend.autohud.component;
+package mod.crend.autohud.component.state;
 
+import mod.crend.autohud.component.Component;
 import net.minecraft.item.ItemStack;
 
 import java.util.function.Supplier;

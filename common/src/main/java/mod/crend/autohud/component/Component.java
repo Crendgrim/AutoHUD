@@ -2,6 +2,7 @@ package mod.crend.autohud.component;
 
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.config.ConfigHandler;
+import mod.crend.autohud.component.state.ComponentState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.StatusEffectSpriteManager;
@@ -117,7 +118,7 @@ public class Component {
         return null;
     }
 
-    protected final ConfigHandler.IComponent config;
+    public final ConfigHandler.IComponent config;
     public ComponentState state = null;
     private final List<Component> stackComponents;
     private double alpha = 1;

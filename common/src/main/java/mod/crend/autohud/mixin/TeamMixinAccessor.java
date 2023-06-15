@@ -1,6 +1,6 @@
 package mod.crend.autohud.mixin;
 
-import mod.crend.autohud.component.ScoreboardComponentState;
+import mod.crend.autohud.component.state.ScoreboardComponentState;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;

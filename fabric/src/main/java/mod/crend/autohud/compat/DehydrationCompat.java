@@ -3,7 +3,7 @@ package mod.crend.autohud.compat;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.component.Component;
-import mod.crend.autohud.component.PolicyComponentState;
+import mod.crend.autohud.component.state.PolicyComponentState;
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.thirst.ThirstManager;
 import net.minecraft.client.network.ClientPlayerEntity;

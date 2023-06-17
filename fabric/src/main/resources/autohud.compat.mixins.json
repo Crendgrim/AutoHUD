@@ -6,12 +6,12 @@
   "client": [
     "appleskin.HUDOverlayHandlerMixin",
     "armor_hud.ArmorHudMixin",
+    "armorchroma.GuiArmorMixin",
     "dehydration.DehydrationMixin$EarlyMixin",
     "dehydration.DehydrationMixin$LateMixin",
     "dehydration.ThirstManagerMixin",
     "detailab.ArmorBarRendererMixin",
     "detailab.InGameDrawerMixin",
-    "inventoryprofilesnext.LockSlotsHandlerMixin",
     "microdurability.MicroDurabilityMixin",
     "onebar.OneBarElementsMixin",
     "statuseffectbars.StatusEffectBarRendererMixin"

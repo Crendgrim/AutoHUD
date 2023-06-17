@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 @Mixin(value = InGameDrawer.class)
 public class InGameDrawerMixin {
 	@ModifyArg(
-			method = "drawTexture(Lnet/minecraft/client/util/math/MatrixStack;IIFFIIIILjava/awt/Color;Z)V",
+			method = "drawTexture(Lnet/minecraft/client/gui/DrawContext;IIFFIIIILjava/awt/Color;Z)V",
 			at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderColor(FFFF)V"),
 			index = 3
 	)

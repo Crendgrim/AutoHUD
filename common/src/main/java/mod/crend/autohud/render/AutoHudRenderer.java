@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
 
 public class AutoHudRenderer {
 	public static boolean inRender;
@@ -31,19 +30,15 @@ public class AutoHudRenderer {
 		}
 	}
 	public static void preInject(DrawContext context, Component component) {
-		preInject(context.getMatrices(), component);
-	}
-	@Deprecated
-	public static void preInject(MatrixStack matrices, Component component) {
 		if (AutoHud.config.animationFade()) {
 			alpha = component.getAlpha(tickDelta);
 			RenderSystem.enableBlend();
 			RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
 		}
 		if (AutoHud.config.animationMove() || !AutoHud.config.animationFade()) {
-			matrices.push();
+			context.getMatrices().push();
 			if (component.isHidden()) {
-				matrices.translate(component.getOffsetX(tickDelta), component.getOffsetY(tickDelta), 0);
+				context.getMatrices().translate(component.getOffsetX(tickDelta), component.getOffsetY(tickDelta), 0);
 			}
 		}
 	}
@@ -61,16 +56,12 @@ public class AutoHudRenderer {
 		}
 	}
 	public static void postInject(DrawContext context) {
-		postInject(context.getMatrices());
-	}
-	@Deprecated
-	public static void postInject(MatrixStack matrices) {
 		if (AutoHud.config.animationFade()) {
 			alpha = 1.0f;
 			RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
 		}
 		if (AutoHud.config.animationMove() || !AutoHud.config.animationFade()) {
-			matrices.pop();
+			context.getMatrices().pop();
 		}
 	}
 

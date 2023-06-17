@@ -14,6 +14,7 @@
     "inventoryprofilesnext.LockSlotsHandlerMixin",
     "microdurability.MicroDurabilityMixin",
     "onebar.OneBarElementsMixin",
+    "overflowingbars.ArmorBarRendererMixin",
     "statuseffectbars.StatusEffectBarRendererMixin"
   ],
   "injectors": {

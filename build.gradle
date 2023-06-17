@@ -63,6 +63,7 @@ dependencies {
 	modCompileOnly("maven.modrinth:inventory-profiles-next:${project.inventory_profiles_next_version}") { transitive = false }
 	modCompileOnly("curse.maven:onebar-${project.onebar_version}") { transitive = false }
 	modCompileOnly("curse.maven:status-effect-bars-${project.status_effect_bars_version}") { transitive = false }
+	modCompileOnly("maven.modrinth:overflowing-bars:${project.overflowingbars_version}") { transitive = false }
 	jijArchive "maven.modrinth:microdurability:${project.microdurability_version}"
 	modCompileOnly fileTree(dir: "${extractedDir}", include: '*.jar')
 }

@@ -1,0 +1,22 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "mod.crend.autohud.fabric.compat.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "appleskin.HUDOverlayHandlerMixin",
+    "armor_hud.ArmorHudMixin",
+    "dehydration.DehydrationMixin$EarlyMixin",
+    "dehydration.DehydrationMixin$LateMixin",
+    "dehydration.ThirstManagerMixin",
+    "detailab.ArmorBarRendererMixin",
+    "detailab.InGameDrawerMixin",
+    "microdurability.MicroDurabilityMixin",
+    "onebar.OneBarElementsMixin",
+    "statuseffectbars.StatusEffectBarRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  },
+  "plugin": "mod.crend.autohud.AutoHudCompatMixinPlugin"
+}

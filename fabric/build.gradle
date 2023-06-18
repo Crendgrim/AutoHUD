@@ -1,0 +1,158 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "me.shedaniel.unified-publishing" version "0.1.+"
+}
+
+architectury {
+    platformSetupLoomIde()
+    fabric()
+}
+
+def extractedDir = "$buildDir/dependencies/extractedDir"
+
+configurations {
+    common
+    shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
+    jijArchive
+}
+
+repositories {
+    maven { url "https://maven.terraformersmc.com/" }
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+}
+
+dependencies {
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+
+    modImplementation fabricApi.module("fabric-api-base", project.fabric_api_version)
+    modImplementation fabricApi.module("fabric-convention-tags-v1", project.fabric_api_version)
+    modImplementation fabricApi.module("fabric-client-tags-api-v1", project.fabric_api_version)
+    modImplementation(fabricApi.module("fabric-lifecycle-events-v1", project.fabric_api_version))
+    modImplementation fabricApi.module("fabric-key-binding-api-v1", project.fabric_api_version)
+    modImplementation fabricApi.module("fabric-transfer-api-v1", project.fabric_api_version)
+
+    include("com.github.LlamaLad7.MixinExtras:mixinextras-fabric:${project.mixin_extras_version}")
+    //modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
+
+    modImplementation "dev.isxander.yacl:yet-another-config-lib-fabric:${project.yacl_version}"
+    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+
+    modCompileOnly("maven.modrinth:appleskin:${project.appleskin_version}") { transitive = false }
+    modCompileOnly("maven.modrinth:detail-armor-bar:${project.detailab_version}") { transitive = false }
+    modCompileOnly("curse.maven:dehydration-${project.dehydration_version}") { transitive = false }
+    modCompileOnly("maven.modrinth:inventory-profiles-next:${project.inventory_profiles_next_version}") { transitive = false }
+    modCompileOnly("curse.maven:onebar-${project.onebar_version}") { transitive = false }
+    modCompileOnly("curse.maven:status-effect-bars-${project.status_effect_bars_version}") { transitive = false }
+    modCompileOnly("maven.modrinth:overflowing-bars:${project.overflowingbars_version}") { transitive = false }
+    jijArchive "maven.modrinth:microdurability:${project.microdurability_version}"
+
+    modCompileOnly fileTree(dir: "${extractedDir}", include: '*.jar')
+
+    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand(project.properties)
+    }
+}
+
+// Special magic to extract a jar-in-jar archive and add it to the include path
+tasks.register('extractJij', Copy) {
+    configurations.jijArchive.asFileTree.each {
+        zipTree(it).each { it2 ->
+            if (it2.name.endsWith(".jar")) {
+                from(it2)
+                compileJava.classpath += files("${extractedDir}/${it2.getName()}")
+            }
+        }
+    }
+    into extractedDir
+}
+compileJava.dependsOn extractJij
+
+shadowJar {
+    exclude "architectury.common.json"
+
+    configurations = [project.configurations.shadowCommon]
+    archiveClassifier.set("dev-shadow")
+}
+
+remapJar {
+    injectAccessWidener = true
+    inputFile.set shadowJar.archiveFile
+    dependsOn shadowJar
+    archiveClassifier.set("fabric")
+}
+
+jar {
+    archiveClassifier.set("dev")
+}
+
+sourcesJar {
+    def commonSources = project(":common").sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+components.java {
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+        skip()
+    }
+}
+
+unifiedPublishing {
+    project {
+        displayName = "[Fabric ${rootProject.supported_versions_string}] ${rootProject.mod_name} ${rootProject.mod_version}"
+        version = "${rootProject.mod_version}+${rootProject.minecraft_version}"
+        changelog = "${rootProject.changelog}"
+        releaseType = "${rootProject.release_type}"
+        gameVersions = List.of(project.supported_versions.split(';'))
+        gameLoaders = ["fabric"]
+
+        mainPublication tasks.remapJar
+
+        relations {
+            depends {
+                curseforge = "fabric-api"
+                modrinth = "fabric-api"
+            }
+            optional {
+                curseforge = "yacl"
+                modrinth = "yacl"
+            }
+            optional {
+                curseforge = "modmenu"
+                modrinth = "modmenu"
+            }
+
+        }
+
+        if (System.getenv("CURSEFORGE_TOKEN")) {
+            curseforge {
+                token = System.getenv("CURSEFORGE_TOKEN")
+                id = rootProject.curseforge_id
+            }
+        }
+
+        if (System.getenv("MODRINTH_TOKEN")) {
+            modrinth {
+                token = System.getenv("MODRINTH_TOKEN")
+                id = rootProject.modrinth_id
+            }
+        }
+    }
+}
+
+//rootProject.tasks.getByName("publishMod").dependsOn tasks.getByName("publishUnified")

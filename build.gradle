@@ -1,148 +1,70 @@
 plugins {
-	id 'fabric-loom' version '1.1-SNAPSHOT'
-	id 'com.modrinth.minotaur' version '2.+'
-	id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id "architectury-plugin" version "3.4-SNAPSHOT"
+    id "dev.architectury.loom" version "1.2-SNAPSHOT" apply false
+    id 'io.github.juuxel.loom-quiltflower' version '1.10.0' apply false
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
-
-archivesBaseName = project.archives_base_name
-version = "${project.mod_version}+${project.minecraft_version}"
-group = project.maven_group
-
-def extractedDir = "$buildDir/dependencies/extractedDir"
-
-repositories {
-	maven { url "https://jitpack.io" }
-	maven { url "https://maven.shedaniel.me/" }
-	maven { url "https://maven.terraformersmc.com/" }
-	maven {
-		name 'Xander Maven'
-		url 'https://maven.isxander.dev/releases'
-	}
-	maven {
-		name = "Modrinth"
-		url = "https://api.modrinth.com/maven"
-		content {
-			includeGroup "maven.modrinth"
-		}
-	}
-	maven {
-		url "https://cursemaven.com"
-		content {
-			includeGroup "curse.maven"
-		}
-	}
+architectury {
+    minecraft = rootProject.minecraft_version
 }
 
-configurations {
-	jijArchive
+subprojects {
+    apply plugin: "dev.architectury.loom"
+    apply plugin: "io.github.juuxel.loom-quiltflower"
+
+    loom {
+        silentMojangMappingsLicense()
+    }
+
+    dependencies {
+        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+        mappings "net.fabricmc:yarn:${rootProject.yarn_mappings}:v2"
+
+        implementation annotationProcessor("com.github.LlamaLad7.MixinExtras:mixinextras-common:${project.mixin_extras_version}")
+    }
 }
 
-dependencies {
-	// To change the versions see the gradle.properties file
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
+allprojects {
+    apply plugin: "java"
+    apply plugin: "architectury-plugin"
 
-	implementation include("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
-	annotationProcessor("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
+    archivesBaseName = rootProject.archives_base_name
+    version = "${rootProject.mod_version}+${rootProject.minecraft_version}"
+    group = rootProject.maven_group
 
-	modImplementation(fabricApi.module("fabric-api-base", project.fabric_api_version))
-	modImplementation(fabricApi.module("fabric-lifecycle-events-v1", project.fabric_api_version))
-	modImplementation(fabricApi.module("fabric-key-binding-api-v1", project.fabric_api_version))
-	modImplementation(fabricApi.module("fabric-rendering-v1", project.fabric_api_version))
+    repositories {
+        // Add repositories to retrieve artifacts from in here.
+        // You should only use this when depending on other mods because
+        // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+        // See https://docs.gradle.org/current/userguide/declaring_repositories.html
+        // for more information about repositories.
+        maven { url "https://jitpack.io" }
+        maven { url "https://maven.isxander.dev/releases" }
+        maven { url "https://maven.shedaniel.me/" }
+        maven { url "https://maven.terraformersmc.com/" }
+        maven {
+            name = "Modrinth"
+            url = "https://api.modrinth.com/maven"
+            content {
+                includeGroup "maven.modrinth"
+            }
+        }
+        maven {
+            url "https://cursemaven.com"
+            content {
+                includeGroup "curse.maven"
+            }
+        }
+    }
 
-	modImplementation "dev.isxander.yacl:yet-another-config-lib-fabric:${project.yacl_version}"
-	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+        options.release = 17
+    }
 
-	modCompileOnly("maven.modrinth:appleskin:${project.appleskin_version}") { transitive = false }
-	modCompileOnly("maven.modrinth:detail-armor-bar:${project.detailab_version}") { transitive = false }
-	modCompileOnly("curse.maven:dehydration-${project.dehydration_version}") { transitive = false }
-	modCompileOnly("maven.modrinth:inventory-profiles-next:${project.inventory_profiles_next_version}") { transitive = false }
-	modCompileOnly("curse.maven:onebar-${project.onebar_version}") { transitive = false }
-	modCompileOnly("curse.maven:status-effect-bars-${project.status_effect_bars_version}") { transitive = false }
-	modCompileOnly("maven.modrinth:overflowing-bars:${project.overflowingbars_version}") { transitive = false }
-	jijArchive "maven.modrinth:microdurability:${project.microdurability_version}"
-	modCompileOnly fileTree(dir: "${extractedDir}", include: '*.jar')
+    java {
+        withSourcesJar()
+    }
 }
 
-// Special magic to extract a jar-in-jar archive and add it to the include path
-task extractJij(type: Copy) {
-	configurations.jijArchive.asFileTree.each {
-		zipTree(it).each { it2 ->
-			if (it2.name.endsWith(".jar")) {
-				from(it2)
-				compileJava.classpath += files("${extractedDir}/${it2.getName()}")
-			}
-		}
-	}
-	into extractedDir
-}
-compileJava.dependsOn extractJij
-
-processResources {
-	inputs.property "version", project.version
-	filesMatching("fabric.mod.json") {
-		expand(project.properties)
-	}
-}
-
-tasks.withType(JavaCompile).configureEach {
-	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
-	it.options.release = 17
-}
-
-java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
-	withSourcesJar()
-}
-
-jar {
-	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
-	}
-}
-
-modrinth {
-	token = System.getenv("MODRINTH_TOKEN")
-	projectId = project.modrinth_id
-	uploadFile = remapJar
-	versionType = project.version_type
-	changelog = project.changelog
-	gameVersions = List.of(project.supported_versions.split(';'))
-	loaders = ['fabric']
-	dependencies {
-		required.project 'P7dR8mSH' // Fabric API
-		optional.project '1eAoo2KR' // YetAnotherConfigLib
-		optional.project 'mOgUt4GM' // Mod Menu
-	}
-}
-
-curseforge {
-	apiKey = "${System.getenv("CURSEFORGE_TOKEN")}"
-	project {
-		id = project.curseforge_id
-		changelog = project.changelog
-		releaseType = project.version_type
-		addGameVersion "Fabric"
-		project.supported_versions.split(';').each {
-			addGameVersion it
-		}
-
-		mainArtifact(remapJar) {
-			displayName = "${project.mod_name} ${project.version}"
-			relations {
-				requiredDependency "fabric-api"
-				optionalDependency "yacl"
-				optionalDependency "modmenu"
-			}
-		}
-	}
-	options {
-		forgeGradleIntegration = false
-	}
-}
+task publishMod { }

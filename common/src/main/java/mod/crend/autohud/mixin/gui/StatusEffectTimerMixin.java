@@ -13,6 +13,7 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
@@ -38,7 +39,8 @@ import java.util.Collection;
 @Environment(EnvType.CLIENT)
 @Mixin(value = InGameHud.class, priority = 500)
 public abstract class StatusEffectTimerMixin extends DrawableHelper {
-    @Shadow @Final
+    @Shadow
+    @Final
     private MinecraftClient client;
 
     @Inject(method = "renderStatusEffectOverlay", at = @At("TAIL"))
@@ -74,14 +76,14 @@ public abstract class StatusEffectTimerMixin extends DrawableHelper {
 
                     String duration = getDurationAsString(statusEffectInstance);
                     int durationLength = client.textRenderer.getWidth(duration);
-                    drawTextWithShadow(matrices, client.textRenderer, duration, x + 13 - (durationLength / 2), y + 14, 0x99FFFFFF);
+                    drawTextWithShadow(matrices, client.textRenderer, Text.literal(duration), x + 13 - (durationLength / 2), y + 14, 0x99FFFFFF);
 
                     int amplifier = statusEffectInstance.getAmplifier();
                     if (amplifier > 0) {
                         // Most langages has "translations" for amplifier 1-5, converting to roman numerals
                         String amplifierString = (amplifier < 6) ? I18n.translate("potion.potency." + amplifier) : "**";
                         int amplifierLength = client.textRenderer.getWidth(amplifierString);
-                        drawTextWithShadow(matrices, client.textRenderer, amplifierString, x + 22 - amplifierLength, y + 3, 0x99FFFFFF);
+                        drawTextWithShadow(matrices, client.textRenderer, Text.literal(amplifierString), x + 22 - amplifierLength, y + 3, 0x99FFFFFF);
                     }
                     Hud.postInject(matrices);
                 }

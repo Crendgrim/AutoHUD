@@ -10,6 +10,7 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.network.encryption.PlayerPublicKey;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,30 +20,32 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientPlayerEntity.class)
 public class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
 
-    public ClientPlayerEntityMixin(ClientWorld world, GameProfile profile) {
-        super(world, profile);
+    public ClientPlayerEntityMixin(ClientWorld world, GameProfile profile, PlayerPublicKey playerPublicKey) {
+        super(world, profile, playerPublicKey);
     }
 
     @Inject(method = "updateHealth", at = @At("TAIL"))
     private void autoHud$updateHealth(float health, CallbackInfo ci) {
         Component.Health.updateState();
     }
+
     @Inject(method = "setExperience", at = @At("TAIL"))
     private void autoHud$setExperience(float progress, int total, int level, CallbackInfo ci) {
         Component.ExperienceBar.updateState();
     }
 
-
     // Jumpbar
-    @Shadow public Input input;
+    @Shadow
+    public Input input;
+
     @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getVehicle()Lnet/minecraft/entity/Entity;"))
-    private void autoHud$jumpBarChanged(CallbackInfo ci){
+    private void autoHud$jumpBarChanged(CallbackInfo ci) {
         if (this.input.jumping && AutoHud.config.mountJumpBar().onChange()) Component.MountJumpBar.revealNow();
     }
 
     // Mount health
     @Inject(method = "tickRiding", at = @At("RETURN"))
-    private void autoHud$mountHealthChange(CallbackInfo ci){
+    private void autoHud$mountHealthChange(CallbackInfo ci) {
         ClientPlayerEntity thisPlayer = (ClientPlayerEntity) (Object) this;
         if (AutoHud.config.mountHealth().policy() != RevealPolicy.Disabled && thisPlayer.getVehicle() instanceof LivingEntity vehicle) {
             if (Component.MountHealth.state == null) {

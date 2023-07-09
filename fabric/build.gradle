@@ -42,7 +42,7 @@ dependencies {
     include("com.github.LlamaLad7.MixinExtras:mixinextras-fabric:${project.mixin_extras_version}")
     //modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
 
-    modImplementation "dev.isxander.yacl:yet-another-config-lib-fabric:${project.yacl_version}"
+    modImplementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
     modCompileOnly("maven.modrinth:appleskin:${project.appleskin_version}") { transitive = false }

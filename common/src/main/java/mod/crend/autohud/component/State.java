@@ -4,10 +4,11 @@ import com.mojang.datafixers.util.Pair;
 import mod.crend.autohud.AutoHud;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.item.Equipment;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PotionItem;
 import net.minecraft.potion.Potion;
@@ -27,21 +28,22 @@ public class State {
         previousStatusEffects = new HashMap<>();
         previousItemStack = player.getMainHandStack().copy();
     }
-   public void initStates(ClientPlayerEntity player) {
+
+    public void initStates(ClientPlayerEntity player) {
         Component.Hotbar.state = new ItemStackComponentState(Component.Hotbar, player::getMainHandStack, true);
         Component.Tooltip.state = new ItemStackComponentState(Component.Tooltip, player::getMainHandStack, true);
         Component.Health.state = new EnhancedPolicyComponentState(Component.Health,
-                () -> (int) player.getHealth(),
-                () -> (int) player.getMaxHealth(),
-                this::canHeal);
+            () -> (int) player.getHealth(),
+            () -> (int) player.getMaxHealth(),
+            this::canHeal);
         Component.Hunger.state = new EnhancedPolicyComponentState(Component.Hunger,
-                () -> player.getHungerManager().getFoodLevel(),
-                20,
-                () -> player.getHungerManager().getFoodLevel() < 20 && player.getMainHandStack().isFood());
+            () -> player.getHungerManager().getFoodLevel(),
+            20,
+            () -> player.getHungerManager().getFoodLevel() < 20 && player.getMainHandStack().isFood());
         Component.Armor.state = new EnhancedPolicyComponentState(Component.Armor,
-                player::getArmor,
-                20,
-                () -> player.getMainHandStack().getItem() instanceof Equipment equipment && equipment.getSlotType().isArmorSlot() && player.canEquip(player.getMainHandStack()), true);
+            player::getArmor,
+            20,
+            () -> player.getMainHandStack().getItem() instanceof ArmorItem equipment && equipment.getSlotType().getType() == EquipmentSlot.Type.ARMOR && player.canEquip(player.getMainHandStack()), true);
         Component.Air.state = new PolicyComponentState(Component.Air, player::getAir, player::getMaxAir);
         Component.ExperienceBar.state = new ValueComponentState<>(Component.ExperienceBar, () -> player.totalExperience, true);
         Component.Scoreboard.state = new ScoreboardComponentState(Component.Scoreboard);
@@ -51,11 +53,11 @@ public class State {
 
     private boolean isHealEffect(StatusEffectInstance effect) {
         return (effect.getEffectType() == StatusEffects.REGENERATION
-                || effect.getEffectType() == StatusEffects.INSTANT_HEALTH
-                || effect.getEffectType() == StatusEffects.HEALTH_BOOST
-                || effect.getEffectType() == StatusEffects.ABSORPTION);
-
+            || effect.getEffectType() == StatusEffects.INSTANT_HEALTH
+            || effect.getEffectType() == StatusEffects.HEALTH_BOOST
+            || effect.getEffectType() == StatusEffects.ABSORPTION);
     }
+
     private boolean canHeal() {
         ItemStack itemStack = MinecraftClient.getInstance().player.getMainHandStack();
         if (itemStack.isFood()) {

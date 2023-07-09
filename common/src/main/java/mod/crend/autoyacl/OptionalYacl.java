@@ -6,39 +6,36 @@ import dev.isxander.yacl.config.GsonConfigInstance;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
-import java.awt.Color;
+import java.awt.*;
 import java.nio.file.Path;
 
 /**
  * Config wrapper for YACL. This class should only be referenced in a context where it is ensured that YACL has been
  * loaded, such as your ConfigScreenFactory. Use YaclHelper and ConfigStore to get a safe wrapper.
  */
-public class OptionalYacl <T> {
-	public GsonConfigInstance<T> instance;
+public class OptionalYacl<T> {
+    public GsonConfigInstance<T> instance;
 
-	public OptionalYacl(Class<T> configClass, Path path) {
-		GsonBuilder gsonBuilder = new GsonBuilder()
-				.setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
-				.setPrettyPrinting()
-				.registerTypeHierarchyAdapter(Text.class, new Text.Serializer())
-				.registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
-				.registerTypeHierarchyAdapter(Color.class, new GsonConfigInstance.ColorTypeAdapter())
-				.serializeNulls();
-		instance = GsonConfigInstance.createBuilder(configClass)
-				.setPath(path)
-				//.appendGsonBuilder(GsonBuilder::setPrettyPrinting)
-				//.appendGsonBuilder(builder -> builder.setFieldNamingPolicy(FieldNamingPolicy.IDENTITY))
-				.overrideGsonBuilder(gsonBuilder)
-				.build();
+    public OptionalYacl(Class<T> configClass, Path path) {
+        GsonBuilder gsonBuilder = new GsonBuilder()
+            .setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
+            .setPrettyPrinting()
+            .registerTypeHierarchyAdapter(Text.class, new Text.Serializer())
+            .registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
+            .registerTypeHierarchyAdapter(Color.class, new GsonConfigInstance.ColorTypeAdapter())
+            .serializeNulls();
+        instance = new GsonConfigInstance<>(configClass, path, gsonBuilder);
+        //.appendGsonBuilder(GsonBuilder::setPrettyPrinting)
+        //.appendGsonBuilder(builder -> builder.setFieldNamingPolicy(FieldNamingPolicy.IDENTITY))
 
-		instance.load();
-	}
+        instance.load();
+    }
 
-	public T getConfig() {
-		return instance.getConfig();
-	}
+    public T getConfig() {
+        return instance.getConfig();
+    }
 
-	public void save() {
-		instance.save();
-	}
+    public void save() {
+        instance.save();
+    }
 }

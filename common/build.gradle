@@ -8,5 +8,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     //modApi "dev.architectury:architectury:${rootProject.architectury_version}"
 
-    modImplementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
+    modApi("me.shedaniel.cloth:cloth-config:${project.clothconfig_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
 }

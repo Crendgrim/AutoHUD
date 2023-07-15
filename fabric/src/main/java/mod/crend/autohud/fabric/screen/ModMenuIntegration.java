@@ -1,7 +1,7 @@
 package mod.crend.autohud.fabric.screen;
 
 import com.terraformersmc.modmenu.api.ModMenuApi;
-import mod.crend.autohud.screen.ConfigScreenWrapper;
+import mod.crend.autohud.screen.ConfigScreenFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -9,6 +9,6 @@ import net.fabricmc.api.Environment;
 public class ModMenuIntegration implements ModMenuApi {
     @Override
     public com.terraformersmc.modmenu.api.ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return ConfigScreenWrapper::getScreen;
+        return ConfigScreenFactory::makeScreen;
     }
 }

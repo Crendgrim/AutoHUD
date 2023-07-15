@@ -29,7 +29,7 @@ dependencies {
     //modApi "dev.architectury:architectury-forge:${rootProject.architectury_version}"
     implementation(include("com.github.LlamaLad7.MixinExtras:mixinextras-forge:${project.mixin_extras_version}"))
 
-    modImplementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
+    modApi("me.shedaniel.cloth:cloth-config-forge:${project.clothconfig_version}")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
@@ -85,9 +85,9 @@ unifiedPublishing {
         mainPublication tasks.remapJar
 
         relations {
-            optional {
-                curseforge = "yacl"
-                modrinth = "yacl"
+            depends {
+                curseforge = "cloth-config"
+                modrinth = "cloth-config"
             }
         }
 

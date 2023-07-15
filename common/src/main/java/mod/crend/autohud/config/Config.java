@@ -1,155 +1,149 @@
 package mod.crend.autohud.config;
 
-import dev.isxander.yacl.config.ConfigEntry;
-import mod.crend.autoyacl.annotation.*;
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
-@AutoYaclConfig(modid = "autohud", translationKey = "autohud.title", filename = "autohud.json5")
-public class Config implements Cloneable {
-
+@me.shedaniel.autoconfig.annotation.Config(name = "autohud")
+public class Config implements ConfigData {
     /* MAIN OPTIONS */
-    @ConfigEntry public boolean dynamicOnLoad = true;
-    @IntegerRange(min = 10, max = 200, interval = 10)
-    @ConfigEntry public int ticksRevealed = 40;
-    @ConfigEntry public boolean animationMove = true;
-    @ConfigEntry public boolean animationFade = true;
-    @DoubleRange(min = 1, max = 4.0, interval = 0.25)
-    @ConfigEntry public double animationSpeed = 2.0;
-
+    boolean dynamicOnLoad = true;
+    int ticksRevealed = 40;
+    boolean animationMove = true;
+    boolean animationFade = true;
+    double animationSpeed = 2.0;
     public static class AnimationSpeeds {
         AnimationSpeeds() { }
 
-        @DoubleRange(min = 1, max = 4.0, interval = 0.25)
-        @ConfigEntry public double moveIn = 0;
-        @DoubleRange(min = 1, max = 4.0, interval = 0.25)
-        @ConfigEntry public double moveOut = 0;
-        @DoubleRange(min = 1, max = 4.0, interval = 0.25)
-        @ConfigEntry public double fadeIn = 0;
-        @DoubleRange(min = 1, max = 4.0, interval = 0.25)
-        @ConfigEntry public double fadeOut = 0;
+        double moveIn = 0;
+        double moveOut = 0;
+        double fadeIn = 0;
+        double fadeOut = 0;
     }
-    @ConfigEntry public AnimationSpeeds animationSpeeds = new AnimationSpeeds();
+    @ConfigEntry.Gui.CollapsibleObject
+    AnimationSpeeds animationSpeeds = new AnimationSpeeds();
 
-    @Tooltip
-    @ConfigEntry public RevealType revealType = RevealType.Stacked;
-    @Category(name = "components", group = "statusEffects")
-    @Tooltip
-    @ConfigEntry public boolean statusEffectTimer = true;
+    @ConfigEntry.Gui.Tooltip(count = 5)
+    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+    RevealType revealType = RevealType.Stacked;
+    boolean statusEffectTimer = true;
 
     /* COMPONENTS */
     public static class DefaultValues {
         DefaultValues() { }
 
-        @DoubleRange(min = 0.1, max = 3.0, interval = 0.1)
-        @ConfigEntry public double speedMultiplier = 1.0;
-        @IntegerRange(min = 0, max = 200, interval = 5)
-        @ConfigEntry public int distance = 60;
-        @DoubleRange(min = 0.0, max = 1.0, interval = 0.1)
-        @ConfigEntry public double maximumFade = 0.0d;
+        double speedMultiplier = 1.0;
+        int distance = 60;
+        double maximumFade = 0.0d;
     }
-    @Category(name = "advanced")
-    @TransitiveObject
-    @ConfigEntry public DefaultValues defaultValues = new DefaultValues();
+    @ConfigEntry.Gui.TransitiveObject
+    @ConfigEntry.Category("components")
+    DefaultValues defaultValues = new DefaultValues();
 
     public static class AdvancedComponent {
         AdvancedComponent() { }
 
-        @Translation(key = "autohud.option.advanced.direction")
-        @ConfigEntry public ScrollDirection direction = ScrollDirection.Down;
-        @Translation(key = "autohud.option.advanced.speedMultiplier")
-        @DoubleRange(min = 0.1, max = 3.0, interval = 0.1)
-        @ConfigEntry public double speedMultiplier = -1;
-        @Translation(key = "autohud.option.advanced.distance")
-        @IntegerRange(min = 0, max = 200, interval = 5)
-        @ConfigEntry public int distance = -1;
-        @Translation(key = "autohud.option.advanced.maximumFade")
-        @DoubleRange(min = 0.0, max = 1.0, interval = 0.1)
-        @ConfigEntry public double maximumFade = -1d;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        ScrollDirection direction = ScrollDirection.Down;
+        double speedMultiplier = -1;
+        int distance = -1;
+        double maximumFade = -1d;
     }
     public static class IComponent {
     }
     public static class SimpleComponent extends IComponent {
         private SimpleComponent() { }
-        @ConfigEntry public boolean active = true;
+        boolean active = true;
     }
     public static class PolicyComponent extends IComponent {
         private PolicyComponent() { }
-        @ConfigEntry public RevealPolicy policy = RevealPolicy.Changing;
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        RevealPolicy policy = RevealPolicy.Changing;
     }
     public static class BooleanComponent extends IComponent {
         private BooleanComponent() { }
-        @ConfigEntry public boolean active = true;
-        @ConfigEntry public boolean onChange = true;
+        boolean active = true;
+        boolean onChange = true;
     }
 
-    @Category(name = "components", group = "statusBars")
-    @ConfigEntry public PolicyComponent health = new PolicyComponent();
-    @Category(name = "components", group = "statusBars")
-    @ConfigEntry public PolicyComponent hunger = new PolicyComponent();
-    @Category(name = "components", group = "statusBars")
-    @ConfigEntry public PolicyComponent air = new PolicyComponent();
-    @Category(name = "components", group = "statusBars")
-    @ConfigEntry public PolicyComponent armor = new PolicyComponent();
-    @Category(name = "components", group = "statusBars")
-    @ConfigEntry public BooleanComponent experience = new BooleanComponent();
-    @Category(name = "components", group = "statusBars")
-    @ConfigEntry public BooleanComponent mountJumpBar = new BooleanComponent();
-    @Category(name = "components", group = "statusBars")
-    @ConfigEntry public PolicyComponent mountHealth = new PolicyComponent();
-    @Category(name = "components", group = "statusEffects")
-    @ConfigEntry public BooleanComponent statusEffects = new BooleanComponent();
-    @Category(name = "components", group = "statusEffects")
-    @Tooltip
-    @ConfigEntry public boolean hidePersistentStatusEffects = true;
+    @ConfigEntry.Gui.TransitiveObject
+    @ConfigEntry.Category("components")
+    PolicyComponent health = new PolicyComponent();
+    @ConfigEntry.Gui.TransitiveObject
+    @ConfigEntry.Category("components")
+    PolicyComponent hunger = new PolicyComponent();
+    @ConfigEntry.Gui.TransitiveObject
+    @ConfigEntry.Category("components")
+    PolicyComponent air = new PolicyComponent();
+    @ConfigEntry.Gui.TransitiveObject
+    @ConfigEntry.Category("components")
+    PolicyComponent armor = new PolicyComponent();
+    @ConfigEntry.Gui.TransitiveObject
+    @ConfigEntry.Category("components")
+    BooleanComponent experience = new BooleanComponent();
+    @ConfigEntry.Gui.TransitiveObject
+    @ConfigEntry.Category("components")
+    BooleanComponent mountJumpBar = new BooleanComponent();
+    @ConfigEntry.Gui.TransitiveObject
+    @ConfigEntry.Category("components")
+    PolicyComponent mountHealth = new PolicyComponent();
+    @ConfigEntry.Gui.TransitiveObject
+    @ConfigEntry.Category("components")
+    BooleanComponent statusEffects = new BooleanComponent();
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Category("components")
+    boolean hidePersistentStatusEffects = true;
 
-    @Category(name = "components")
-    @ConfigEntry public HotbarComponents hotbar = new HotbarComponents();
-    @Category(name = "components")
-    @ConfigEntry public ScoreboardComponents scoreboard = new ScoreboardComponents();
-    @Category(name = "advanced")
-    @Label(key = "autohud.option.advanced.label")
-    @TransitiveObject
-    @ConfigEntry public AdvancedComponents advanced = new AdvancedComponents();
+    @ConfigEntry.Category("components")
+    @ConfigEntry.Gui.CollapsibleObject(startExpanded=true)
+    HotbarComponents hotbar = new HotbarComponents();
+    @ConfigEntry.Category("components")
+    @ConfigEntry.Gui.CollapsibleObject(startExpanded=true)
+    ScoreboardComponents scoreboard = new ScoreboardComponents();
+    @ConfigEntry.Category("components")
+    @ConfigEntry.Gui.CollapsibleObject()
+    AdvancedComponents advanced = new AdvancedComponents();
 
-    
+
     public static class HotbarComponents {
-        @ConfigEntry public BooleanComponent hotbar = new BooleanComponent();
-        @ConfigEntry public boolean onSlotChange = true;
-        @ConfigEntry public boolean onLowDurability = true;
-        @IntegerRange(min = 0, max = 100, interval = 1)
-        @ConfigEntry public int durabilityPercentage = 10;
-        @ConfigEntry public int durabilityTotal = 20;
-        @FloatRange(min = 0.0f, max = 1.0f, interval = 0.1f)
-        @ConfigEntry public float maximumFadeHotbarItems = 0.0f;
+        @ConfigEntry.Gui.TransitiveObject
+        BooleanComponent hotbar = new BooleanComponent();
+        boolean onSlotChange = true;
+        boolean onLowDurability = true;
+        @ConfigEntry.BoundedDiscrete(max=100)
+        int durabilityPercentage = 10;
+        int durabilityTotal = 20;
+        float maximumFadeHotbarItems = 0.0f;
     }
-    
+
     public static class ScoreboardComponents {
-        @ConfigEntry public BooleanComponent scoreboard = new BooleanComponent();
-        @ConfigEntry public boolean onScoreChange = true;
-        @Tooltip
-        @ConfigEntry public boolean onTeamChange = true;
+        @ConfigEntry.Gui.TransitiveObject
+        BooleanComponent scoreboard = new BooleanComponent();
+        boolean onScoreChange = true;
+        @ConfigEntry.Gui.Tooltip
+        boolean onTeamChange = true;
     }
-    
+
     public static class AdvancedComponents {
-        @Translation(key = "autohud.group.hotbar")
-        @ConfigEntry public AdvancedComponent hotbar = new AdvancedComponent();
-        @Translation(key = "autohud.group.health")
-        @ConfigEntry public AdvancedComponent health = new AdvancedComponent();
-        @Translation(key = "autohud.group.armor")
-        @ConfigEntry public AdvancedComponent armor = new AdvancedComponent();
-        @Translation(key = "autohud.group.hunger")
-        @ConfigEntry public AdvancedComponent hunger = new AdvancedComponent();
-        @Translation(key = "autohud.group.air")
-        @ConfigEntry public AdvancedComponent air = new AdvancedComponent();
-        @Translation(key = "autohud.group.experience")
-        @ConfigEntry public AdvancedComponent experience = new AdvancedComponent();
-        @Translation(key = "autohud.group.mountJumpBar")
-        @ConfigEntry public AdvancedComponent mountJumpBar = new AdvancedComponent();
-        @Translation(key = "autohud.group.mountHealth")
-        @ConfigEntry public AdvancedComponent mountHealth = new AdvancedComponent();
-        @Translation(key = "autohud.group.statusEffects")
-        @ConfigEntry public AdvancedComponent statusEffects = new AdvancedComponent();
-        @Translation(key = "autohud.group.scoreboard")
-        @ConfigEntry public AdvancedComponent scoreboard = new AdvancedComponent();
+        @ConfigEntry.Gui.TransitiveObject
+        AdvancedComponent hotbar = new AdvancedComponent();
+        @ConfigEntry.Gui.TransitiveObject
+        AdvancedComponent health = new AdvancedComponent();
+        @ConfigEntry.Gui.TransitiveObject
+        AdvancedComponent armor = new AdvancedComponent();
+        @ConfigEntry.Gui.TransitiveObject
+        AdvancedComponent hunger = new AdvancedComponent();
+        @ConfigEntry.Gui.TransitiveObject
+        AdvancedComponent air = new AdvancedComponent();
+        @ConfigEntry.Gui.TransitiveObject
+        AdvancedComponent experience = new AdvancedComponent();
+        @ConfigEntry.Gui.TransitiveObject
+        AdvancedComponent mountJumpBar = new AdvancedComponent();
+        @ConfigEntry.Gui.TransitiveObject
+        AdvancedComponent mountHealth = new AdvancedComponent();
+        @ConfigEntry.Gui.TransitiveObject
+        AdvancedComponent statusEffects = new AdvancedComponent();
+        @ConfigEntry.Gui.TransitiveObject
+        AdvancedComponent scoreboard = new AdvancedComponent();
         private AdvancedComponents() {
             statusEffects.direction = ScrollDirection.Up;
             scoreboard.direction = ScrollDirection.Right;
@@ -158,12 +152,18 @@ public class Config implements Cloneable {
     }
 
     /* DEFAULT OVERRIDES */
-    public Config() {
+    private Config() {
         hunger.policy = RevealPolicy.Low;
         air.policy = RevealPolicy.NotFull;
     }
 
     /* OPTIONS END */
 
-    public Object clone() throws CloneNotSupportedException { return super.clone(); }
+    @Override
+    public void validatePostLoad() throws ValidationException {
+        ConfigData.super.validatePostLoad();
+        if (ticksRevealed < 20) ticksRevealed = 20;
+        animationSpeed = Math.min(10.0, Math.max(0.1, animationSpeed));
+    }
+
 }

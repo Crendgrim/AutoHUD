@@ -4,8 +4,7 @@ import com.llamalad7.mixinextras.MixinExtrasBootstrap;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.ModKeyBindings;
 import mod.crend.autohud.api.AutoHudApi;
-import mod.crend.autohud.screen.ConfigScreenWrapper;
-import mod.crend.autoyacl.YaclHelper;
+import mod.crend.autohud.screen.ConfigScreenFactory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
@@ -24,14 +23,12 @@ public class AutoHudModEvents {
 	static void onClientSetup(FMLClientSetupEvent event) {
 		MixinExtrasBootstrap.init();
 		AutoHud.init();
-		if (YaclHelper.HAS_YACL) {
-			ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
-					() -> new ConfigScreenHandler.ConfigScreenFactory(
-							(minecraft, screen) -> ConfigScreenWrapper.getScreen(screen)
-					)
-			);
-		}
-	}
+		ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
+				() -> new ConfigScreenHandler.ConfigScreenFactory(
+						(minecraft, screen) -> ConfigScreenFactory.makeScreen(screen)
+				)
+		);
+}
 
 	@SubscribeEvent
 	static void onInterModProcess(InterModProcessEvent event) {

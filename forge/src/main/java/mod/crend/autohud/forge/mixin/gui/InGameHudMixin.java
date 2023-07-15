@@ -15,6 +15,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -28,7 +29,9 @@ import java.util.List;
 
 @Mixin(InGameHud.class)
 @Debug(export = true)
-public class InGameHudMixin {
+public abstract class InGameHudMixin {
+    @Shadow public abstract void tick(boolean paused);
+
     // Hotbar
     @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;setZOffset(I)V", ordinal = 0))
     private void autoHud$preHotbar(float tickDelta, MatrixStack matrixStack, CallbackInfo ci) {
@@ -44,19 +47,29 @@ public class InGameHudMixin {
         )
     )
     private void autoHud$transparentHotbarItems(InGameHud instance, int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed, Operation<Void> original, float tickDelta2, MatrixStack matrixStack) {
-        if (AutoHud.targetHotbar && AutoHud.config.animationFade()) {
+        if (AutoHud.targetHotbar) {
             // Don't render items if they're fully invisible anyway
-            if (!Component.Hotbar.fullyHidden() || AutoHud.config.getHotbarItemsMaximumFade() > 0.0f) {
-                // We need to reset the renderer because otherwise the first item gets drawn with double alpha
-                Hud.postInjectFade();
-                // Setup custom framebuffer
-                Hud.prepareExtraFramebuffer();
-                // Have the original call draw onto the custom framebuffer
-                original.call(instance, x, y, tickDelta, player, stack, seed);
-                // Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
-                Hud.preInjectFade(matrixStack, Component.Hotbar, AutoHud.config.getHotbarItemsMaximumFade());
-                Hud.drawExtraFramebuffer(matrixStack);
-                Hud.postInjectFade(matrixStack);
+            if (!Component.Hotbar.fullyHidden() || (AutoHud.config.animationFade() && AutoHud.config.getHotbarItemsMaximumFade() > 0.0f)) {
+                if (AutoHud.config.animationFade()) {
+                    // We need to reset the renderer because otherwise the first item gets drawn with double alpha
+                    Hud.postInjectFade();
+                    // Setup custom framebuffer
+                    Hud.prepareExtraFramebuffer();
+                    // Have the original call draw onto the custom framebuffer
+                    if (AutoHud.config.animationMove()) {
+                        original.call(instance, x + (int) Component.Hotbar.getOffsetX(tickDelta), y + (int) Component.Hotbar.getOffsetY(tickDelta), tickDelta, player, stack, seed);
+                    } else {
+                        original.call(instance, x, y, tickDelta, player, stack, seed);
+                    }
+                    // Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
+                    Hud.preInjectFade(matrixStack, Component.Hotbar, AutoHud.config.getHotbarItemsMaximumFade());
+                    Hud.drawExtraFramebuffer(matrixStack);
+                    Hud.postInjectFade(matrixStack);
+                } else if (AutoHud.config.animationMove()) {
+                    original.call(instance, x + (int) Component.Hotbar.getOffsetX(tickDelta), y + (int) Component.Hotbar.getOffsetY(tickDelta), tickDelta, player, stack, seed);
+                } else {
+                    original.call(instance, x, y, tickDelta, player, stack, seed);
+                }
             }
         } else {
             original.call(instance, x, y, tickDelta, player, stack, seed);

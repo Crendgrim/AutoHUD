@@ -90,21 +90,31 @@ public class InGameHudMixin extends DrawableHelper {
         )
     )
     private void autoHud$transparentHotbarItems(InGameHud instance, int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed, Operation<Void> original, float tickDelta2, MatrixStack matrices) {
-        if (AutoHud.targetHotbar && AutoHud.config.animationFade()) {
-            // We need to reset the renderer because otherwise the first item gets drawn with double alpha
-            Hud.postInjectFade();
-            // Setup custom framebuffer
-            Hud.prepareExtraFramebuffer();
-        }
+        if (AutoHud.targetHotbar) {
+            if (AutoHud.config.animationFade()) {
+                // We need to reset the renderer because otherwise the first item gets drawn with double alpha
+                Hud.postInjectFade();
+                // Setup custom framebuffer
+                Hud.prepareExtraFramebuffer();
+            }
+            Hud.preInject(matrices, Component.Hotbar);
 
-        // Have the original call draw onto the custom framebuffer
-        original.call(instance, x, y, tickDelta, player, stack, seed);
+            // Have the original call draw onto the custom framebuffer
+            if (AutoHud.config.animationMove()) {
+                original.call(instance, x + (int) Component.Hotbar.getOffsetX(tickDelta), y + (int) Component.Hotbar.getOffsetY(tickDelta), tickDelta, player, stack, seed);
+            } else if (!Component.Hotbar.fullyHidden() || (AutoHud.config.animationFade() && AutoHud.config.getHotbarItemsMaximumFade() > 0.0)) {
+                original.call(instance, x, y, tickDelta, player, stack, seed);
+            }
 
-        if (AutoHud.targetHotbar && AutoHud.config.animationFade()) {
-            // Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
-            Hud.preInjectFade(matrices, Component.Hotbar, AutoHud.config.getHotbarItemsMaximumFade());
-            Hud.drawExtraFramebuffer(matrices);
-            Hud.postInjectFade(matrices);
+            Hud.postInject(matrices);
+            if (AutoHud.config.animationFade()) {
+                // Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
+                Hud.preInjectFade(matrices, Component.Hotbar, AutoHud.config.getHotbarItemsMaximumFade());
+                Hud.drawExtraFramebuffer(matrices);
+                Hud.postInjectFade(matrices);
+            }
+        } else {
+            original.call(instance, x, y, tickDelta, player, stack, seed);
         }
     }
 

@@ -2,9 +2,9 @@ package mod.crend.autohud.forge.mixin.gui;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Hud;
-import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.render.AutoHudRenderer;
 import mod.crend.autohud.render.CustomFramebufferRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -36,6 +36,24 @@ public class InGameHudMixin {
 	@Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;getMatrices()Lnet/minecraft/client/util/math/MatrixStack;", ordinal = 0))
 	private void autoHud$preHotbar(float tickDelta, DrawContext context, CallbackInfo ci) {
 		AutoHudRenderer.injectTransparency();
+	}
+
+	// Tooltip
+	@WrapOperation(
+			method = "renderHeldItemTooltip",
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/client/gui/hud/InGameHud;renderSelectedItemName(Lnet/minecraft/client/gui/DrawContext;I)V"
+			)
+	)
+	private static void autoHud$wrapTooltip(InGameHud instance, DrawContext context, int yShift, Operation<Void> original) {
+		if (AutoHud.targetHotbar) {
+			AutoHudRenderer.preInject(context, Component.Tooltip);
+		}
+		original.call(instance, context, yShift);
+		if (AutoHud.targetStatusBars) {
+			AutoHudRenderer.postInject(context);
+		}
 	}
 
 	// Hotbar items

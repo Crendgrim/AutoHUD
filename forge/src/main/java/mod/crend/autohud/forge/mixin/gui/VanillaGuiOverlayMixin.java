@@ -84,23 +84,6 @@ public class VanillaGuiOverlayMixin {
 	}
 
 	@WrapOperation(
-			method = "lambda$static$15(Lnet/minecraftforge/client/gui/overlay/ForgeGui;Lnet/minecraft/client/gui/DrawContext;FII)V",
-			at = @At(
-					value = "INVOKE",
-					target = "Lnet/minecraftforge/client/gui/overlay/ForgeGui;renderHeldItemTooltip(Lnet/minecraft/client/gui/DrawContext;)V"
-			)
-	)
-	private static void autoHud$wrapTooltip(ForgeGui instance, DrawContext context, Operation<Void> original) {
-		if (AutoHud.targetHotbar) {
-			AutoHudRenderer.preInject(context, Component.Tooltip);
-		}
-		original.call(instance, context);
-		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.postInject(context);
-		}
-	}
-
-	@WrapOperation(
 			method = "lambda$static$23(Lnet/minecraftforge/client/gui/overlay/ForgeGui;Lnet/minecraft/client/gui/DrawContext;FII)V",
 			at = @At(
 					value = "INVOKE",

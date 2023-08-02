@@ -8,6 +8,7 @@ import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.scoreboard.Team;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 import java.util.HashMap;
@@ -321,10 +322,10 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
     }
 
     private static void teamSetPrefix(Team copiedTeam, Text prefix) {
-        ((TeamMixinAccessor) copiedTeam).autohud$setPrefix(prefix == null ? Text.empty() : prefix.copy());
+        ((TeamMixinAccessor) copiedTeam).autohud$setPrefix(prefix == null ? LiteralText.EMPTY : prefix.copy());
     }
 
     private static void teamSetSuffix(Team copiedTeam, Text suffix) {
-        ((TeamMixinAccessor) copiedTeam).autohud$setSuffix(suffix == null ? Text.empty() : suffix.copy());
+        ((TeamMixinAccessor) copiedTeam).autohud$setSuffix(suffix == null ? LiteralText.EMPTY : suffix.copy());
     }
 }

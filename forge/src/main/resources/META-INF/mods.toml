@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[43,)"
+loaderVersion = "[40,)"
 issueTrackerURL = "https://github.com/Crendgrim/AutoHUD/issues"
 license = "LGPL-3.0"
 
@@ -17,20 +17,20 @@ displayTest = "IGNORE_ALL_VERSION"
 [[dependencies.autohud]]
 modId = "forge"
 mandatory = true
-versionRange = "[43,)"
+versionRange = "[40,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.autohud]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.19.2,)"
+versionRange = "[1.18.2,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.autohud]]
-modId = "yet_another_config_lib"
-mandatory = false
-versionRange = "[2.5,)"
+modId = "cloth_config"
+mandatory = true
+versionRange = "[6.5.102,)"
 ordering = "NONE"
-side = "BOTH"
+side = "CLIENT"

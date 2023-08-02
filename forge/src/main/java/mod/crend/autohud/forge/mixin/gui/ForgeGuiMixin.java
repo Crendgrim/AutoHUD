@@ -4,13 +4,13 @@ import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Hud;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.ForgeIngameGui;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ForgeGui.class)
+@Mixin(ForgeIngameGui.class)
 public class ForgeGuiMixin {
 
 	@Inject(method = "render", at = @At("HEAD"))

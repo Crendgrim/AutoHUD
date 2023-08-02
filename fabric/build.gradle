@@ -34,7 +34,6 @@ dependencies {
 
     modImplementation fabricApi.module("fabric-api-base", project.fabric_api_version)
     modImplementation fabricApi.module("fabric-convention-tags-v1", project.fabric_api_version)
-    modImplementation fabricApi.module("fabric-client-tags-api-v1", project.fabric_api_version)
     modImplementation(fabricApi.module("fabric-lifecycle-events-v1", project.fabric_api_version))
     modImplementation fabricApi.module("fabric-key-binding-api-v1", project.fabric_api_version)
     modImplementation fabricApi.module("fabric-transfer-api-v1", project.fabric_api_version)
@@ -53,7 +52,8 @@ dependencies {
     modCompileOnly("maven.modrinth:inventory-profiles-next:${project.inventory_profiles_next_version}") { transitive = false }
     modCompileOnly("curse.maven:onebar-${project.onebar_version}") { transitive = false }
     modCompileOnly("curse.maven:status-effect-bars-${project.status_effect_bars_version}") { transitive = false }
-    modCompileOnly("maven.modrinth:overflowing-bars:${project.overflowingbars_version}") { transitive = false }
+    // Not available for 1.18.2
+    // modCompileOnly("maven.modrinth:overflowing-bars:${project.overflowingbars_version}") { transitive = false }
     jijArchive "maven.modrinth:microdurability:${project.microdurability_version}"
 
     modCompileOnly fileTree(dir: "${extractedDir}", include: '*.jar')

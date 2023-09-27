@@ -5,10 +5,7 @@ import it.unimi.dsi.fastutil.objects.ObjectIntMutablePair;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.mixin.TeamMixinAccessor;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.scoreboard.ScoreboardObjective;
-import net.minecraft.scoreboard.ScoreboardPlayerScore;
-import net.minecraft.scoreboard.Team;
+import net.minecraft.scoreboard.*;
 import net.minecraft.text.Text;
 
 import java.util.HashMap;
@@ -51,19 +48,13 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
 
     private static ScoreboardObjective createObjective() {
         Scoreboard scoreboard = MinecraftClient.getInstance().world.getScoreboard();
-        ScoreboardObjective objectiveToUse = null;
-        int teamColorIndex;
 
         Team playerTeam = scoreboard.getPlayerTeam(MinecraftClient.getInstance().player.getEntityName());
-        if (playerTeam != null && (teamColorIndex = playerTeam.getColor().getColorIndex()) >= 0) {
-            objectiveToUse = scoreboard.getObjectiveForSlot(Scoreboard.MIN_SIDEBAR_TEAM_DISPLAY_SLOT_ID + teamColorIndex);
+        if (playerTeam != null && playerTeam.getColor().isColor()) {
+            return scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.fromFormatting(playerTeam.getColor()));
         }
 
-        if (objectiveToUse == null) {
-            objectiveToUse = scoreboard.getObjectiveForSlot(Scoreboard.SIDEBAR_DISPLAY_SLOT_ID);
-        }
-
-        return objectiveToUse;
+        return scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.SIDEBAR);
     }
 
     @Override

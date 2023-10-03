@@ -16,7 +16,6 @@ configurations {
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentFabric.extendsFrom common
-    jijArchive
 }
 
 repositories {
@@ -53,8 +52,7 @@ dependencies {
     modCompileOnly("maven.modrinth:inventory-profiles-next:${project.inventory_profiles_next_version}") { transitive = false }
     modCompileOnly("maven.modrinth:onebar:${project.onebar_version}") { transitive = false }
     modCompileOnly("maven.modrinth:status-effect-bars:${project.status_effect_bars_version}") { transitive = false }
-    jijArchive "maven.modrinth:microdurability:${project.microdurability_version}"
-    modCompileOnly fileTree(dir: "${extractedDir}", include: '*.jar')
+    modCompileOnly("maven.modrinth:microdurability:${project.microdurability_version}") { transitive = false }
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
@@ -67,20 +65,6 @@ processResources {
         expand(project.properties)
     }
 }
-
-// Special magic to extract a jar-in-jar archive and add it to the include path
-tasks.register('extractJij', Copy) {
-    configurations.jijArchive.asFileTree.each {
-        zipTree(it).each { it2 ->
-            if (it2.name.endsWith(".jar")) {
-                from(it2)
-                compileJava.classpath += files("${extractedDir}/${it2.getName()}")
-            }
-        }
-    }
-    into extractedDir
-}
-compileJava.dependsOn extractJij
 
 shadowJar {
     exclude "architectury.common.json"

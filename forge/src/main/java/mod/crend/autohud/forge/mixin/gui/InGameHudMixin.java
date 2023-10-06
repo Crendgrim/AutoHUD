@@ -31,13 +31,12 @@ import java.util.Iterator;
 import java.util.List;
 
 @Mixin(InGameHud.class)
-@Debug(export = true)
 public class InGameHudMixin {
 	// Hotbar
 	@Inject(method = "renderHotbar", at = @At("HEAD"))
 	private void autoHud$preHotbar(float tickDelta, DrawContext context, CallbackInfo ci) {
 		if (AutoHud.targetHotbar) {
-			AutoHudRenderer.preInject(context, Component.Hotbar);
+			AutoHudRenderer.preInjectFade(Component.Hotbar);
 		}
 	}
 
@@ -46,28 +45,11 @@ public class InGameHudMixin {
 		AutoHudRenderer.injectTransparency();
 	}
 
-	@Inject(method = "renderHotbar", at = @At("RETURN"))
-	private void autoHud$postHotbar(float tickDelta, DrawContext context, CallbackInfo ci) {
-		if (AutoHud.targetHotbar) {
-			AutoHudRenderer.postInject(context);
-		}
-	}
-
 	// Tooltip
-	@WrapOperation(
-			method = "renderHeldItemTooltip",
-			at = @At(
-					value = "INVOKE",
-					target = "Lnet/minecraft/client/gui/hud/InGameHud;renderSelectedItemName(Lnet/minecraft/client/gui/DrawContext;I)V"
-			)
-	)
-	private static void autoHud$wrapTooltip(InGameHud instance, DrawContext context, int yShift, Operation<Void> original) {
+	@Inject(method = "renderHeldItemTooltip", at = @At("HEAD"))
+	private void autoHud$preTooltip(DrawContext context, CallbackInfo ci) {
 		if (AutoHud.targetHotbar) {
-			AutoHudRenderer.preInject(context, Component.Tooltip);
-		}
-		original.call(instance, context, yShift);
-		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.postInject(context);
+			AutoHudRenderer.preInjectFade(Component.Tooltip);
 		}
 	}
 
@@ -103,13 +85,7 @@ public class InGameHudMixin {
 	@Inject(method = "renderScoreboardSidebar", at=@At("HEAD"))
 	private void autoHud$preScoreboardSidebar(DrawContext context, ScoreboardObjective objective, CallbackInfo ci) {
 		if (AutoHud.targetScoreboard) {
-			AutoHudRenderer.preInject(context, Component.Scoreboard);
-		}
-	}
-	@Inject(method = "renderScoreboardSidebar", at=@At("RETURN"))
-	private void autoHud$postScoreboardSidebar(DrawContext context, ScoreboardObjective objective, CallbackInfo ci) {
-		if (AutoHud.targetScoreboard) {
-			AutoHudRenderer.postInject(context);
+			AutoHudRenderer.preInjectFade(Component.Scoreboard);
 		}
 	}
 	@ModifyArg(method = "renderScoreboardSidebar", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;IIIZ)I"), index = 4)
@@ -138,13 +114,7 @@ public class InGameHudMixin {
 	@Inject(method = "renderMountJumpBar", at=@At("HEAD"))
 	private void autoHud$preMountJumpBar(JumpingMount mount, DrawContext context, int x, CallbackInfo ci) {
 		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.preInject(context, Component.MountJumpBar);
-		}
-	}
-	@Inject(method = "renderMountJumpBar", at=@At("RETURN"))
-	private void autoHud$postMountJumpBar(JumpingMount mount, DrawContext context, int x, CallbackInfo ci) {
-		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.postInject(context);
+			AutoHudRenderer.preInjectFade(Component.MountJumpBar);
 		}
 	}
 
@@ -152,13 +122,7 @@ public class InGameHudMixin {
 	@Inject(method = "renderExperienceBar", at=@At("HEAD"))
 	private void autoHud$preExperienceBar(DrawContext context, int x, CallbackInfo ci) {
 		if (AutoHud.targetExperienceBar) {
-			AutoHudRenderer.preInject(context, Component.ExperienceBar);
-		}
-	}
-	@Inject(method = "renderExperienceBar", at=@At("RETURN"))
-	private void autoHud$postExperienceBar(DrawContext context, int x, CallbackInfo ci) {
-		if (AutoHud.targetExperienceBar) {
-			AutoHudRenderer.postInject(context);
+			AutoHudRenderer.preInjectFade(Component.ExperienceBar);
 		}
 	}
 

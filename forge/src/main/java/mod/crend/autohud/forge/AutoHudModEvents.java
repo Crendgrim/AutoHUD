@@ -8,6 +8,7 @@ import mod.crend.autohud.config.ConfigHandler;
 import mod.crend.yaclx.forge.ConfigScreen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
@@ -23,6 +24,7 @@ public class AutoHudModEvents {
 		MixinExtrasBootstrap.init();
 		AutoHud.init();
 		ConfigScreen.register(ConfigHandler.CONFIG_STORE);
+		MinecraftForge.EVENT_BUS.register(new AutoHudGui());
 	}
 
 	@SubscribeEvent

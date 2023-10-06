@@ -1,7 +1,7 @@
 package mod.crend.autohud.forge.mixin.gui;
 
-import mod.crend.autohud.component.Component;
 import mod.crend.autohud.AutoHud;
+import mod.crend.autohud.component.Component;
 import mod.crend.autohud.render.AutoHudRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
@@ -26,65 +26,35 @@ public class ForgeGuiMixin {
 	@Inject(method = "renderHealth", at = @At("HEAD"))
 	private void autoHud$preHealth(int width, int height, DrawContext context, CallbackInfo ci) {
 		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.preInject(context, Component.Health);
-		}
-	}
-	@Inject(method = "renderHealth", at = @At("RETURN"))
-	private void autoHud$postHealth(int width, int height, DrawContext context, CallbackInfo ci) {
-		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.postInject(context);
+			AutoHudRenderer.preInjectFade(Component.Health);
 		}
 	}
 
 	@Inject(method = "renderArmor", at = @At("HEAD"))
 	private void autoHud$preArmor(DrawContext context, int width, int height, CallbackInfo ci) {
 		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.preInject(context, Component.Armor);
-		}
-	}
-	@Inject(method = "renderArmor", at = @At("RETURN"))
-	private void autoHud$postArmor(DrawContext context, int width, int height, CallbackInfo ci) {
-		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.postInject(context);
+			AutoHudRenderer.preInjectFade(Component.Armor);
 		}
 	}
 
 	@Inject(method = "renderFood", at = @At("HEAD"))
 	private void autoHud$preFood(int width, int height, DrawContext context, CallbackInfo ci) {
 		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.preInject(context, Component.Hunger);
-		}
-	}
-	@Inject(method = "renderFood", at = @At("RETURN"))
-	private void autoHud$postFood(int width, int height, DrawContext context, CallbackInfo ci) {
-		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.postInject(context);
+			AutoHudRenderer.preInjectFade(Component.Hunger);
 		}
 	}
 
 	@Inject(method = "renderAir", at  = @At("HEAD"))
 	private void autoHud$preAir(int width, int height, DrawContext context, CallbackInfo ci) {
 		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.preInject(context, Component.Air);
-		}
-	}
-	@Inject(method = "renderAir", at  = @At("RETURN"))
-	private void autoHud$postAir(int width, int height, DrawContext context, CallbackInfo ci) {
-		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.postInject(context);
+			AutoHudRenderer.preInjectFade(Component.Air);
 		}
 	}
 
 	@Inject(method = "renderHealthMount", at  = @At("HEAD"))
 	private void autoHud$preRenderHealthMount(int width, int height, DrawContext context, CallbackInfo ci) {
 		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.preInject(context, Component.MountHealth);
-		}
-	}
-	@Inject(method = "renderHealthMount", at  = @At("RETURN"))
-	private void autoHud$postRenderHealthMount(int width, int height, DrawContext context, CallbackInfo ci) {
-		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.postInject(context);
+			AutoHudRenderer.preInjectFade(Component.MountHealth);
 		}
 	}
 

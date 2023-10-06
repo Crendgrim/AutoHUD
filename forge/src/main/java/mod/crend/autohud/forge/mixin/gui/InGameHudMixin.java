@@ -16,6 +16,7 @@ import net.minecraft.entity.JumpingMount;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.scoreboard.ScoreboardObjective;
 import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,9 +34,23 @@ import java.util.List;
 @Debug(export = true)
 public class InGameHudMixin {
 	// Hotbar
-	@Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;getMatrices()Lnet/minecraft/client/util/math/MatrixStack;", ordinal = 0))
+	@Inject(method = "renderHotbar", at = @At("HEAD"))
 	private void autoHud$preHotbar(float tickDelta, DrawContext context, CallbackInfo ci) {
+		if (AutoHud.targetHotbar) {
+			AutoHudRenderer.preInject(context, Component.Hotbar);
+		}
+	}
+
+	@Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;getMatrices()Lnet/minecraft/client/util/math/MatrixStack;", ordinal = 0))
+	private void autoHud$hotbarTransparency(float tickDelta, DrawContext context, CallbackInfo ci) {
 		AutoHudRenderer.injectTransparency();
+	}
+
+	@Inject(method = "renderHotbar", at = @At("RETURN"))
+	private void autoHud$postHotbar(float tickDelta, DrawContext context, CallbackInfo ci) {
+		if (AutoHud.targetHotbar) {
+			AutoHudRenderer.postInject(context);
+		}
 	}
 
 	// Tooltip
@@ -85,6 +100,18 @@ public class InGameHudMixin {
 	}
 
 	// Scoreboard
+	@Inject(method = "renderScoreboardSidebar", at=@At("HEAD"))
+	private void autoHud$preScoreboardSidebar(DrawContext context, ScoreboardObjective objective, CallbackInfo ci) {
+		if (AutoHud.targetScoreboard) {
+			AutoHudRenderer.preInject(context, Component.Scoreboard);
+		}
+	}
+	@Inject(method = "renderScoreboardSidebar", at=@At("RETURN"))
+	private void autoHud$postScoreboardSidebar(DrawContext context, ScoreboardObjective objective, CallbackInfo ci) {
+		if (AutoHud.targetScoreboard) {
+			AutoHudRenderer.postInject(context);
+		}
+	}
 	@ModifyArg(method = "renderScoreboardSidebar", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;IIIZ)I"), index = 4)
 	private int autoHud$scoreboardSidebarString(int color) {
 		if (AutoHudRenderer.inRender) {

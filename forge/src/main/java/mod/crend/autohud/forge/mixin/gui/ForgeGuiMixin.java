@@ -18,10 +18,48 @@ public class ForgeGuiMixin {
 		AutoHudRenderer.inRender = true;
 		AutoHudRenderer.tickDelta = tickDelta;
 	}
-
 	@Inject(method = "render", at = @At("RETURN"))
 	private void autoHud$postRender(DrawContext context, float tickDelta, CallbackInfo ci) {
 		AutoHudRenderer.inRender = false;
+	}
+
+	@Inject(method = "renderHealth", at = @At("HEAD"))
+	private void autoHud$preHealth(int width, int height, DrawContext context, CallbackInfo ci) {
+		if (AutoHud.targetStatusBars) {
+			AutoHudRenderer.preInject(context, Component.Health);
+		}
+	}
+	@Inject(method = "renderHealth", at = @At("RETURN"))
+	private void autoHud$postHealth(int width, int height, DrawContext context, CallbackInfo ci) {
+		if (AutoHud.targetStatusBars) {
+			AutoHudRenderer.postInject(context);
+		}
+	}
+
+	@Inject(method = "renderArmor", at = @At("HEAD"))
+	private void autoHud$preArmor(DrawContext context, int width, int height, CallbackInfo ci) {
+		if (AutoHud.targetStatusBars) {
+			AutoHudRenderer.preInject(context, Component.Armor);
+		}
+	}
+	@Inject(method = "renderArmor", at = @At("RETURN"))
+	private void autoHud$postArmor(DrawContext context, int width, int height, CallbackInfo ci) {
+		if (AutoHud.targetStatusBars) {
+			AutoHudRenderer.postInject(context);
+		}
+	}
+
+	@Inject(method = "renderFood", at = @At("HEAD"))
+	private void autoHud$preFood(int width, int height, DrawContext context, CallbackInfo ci) {
+		if (AutoHud.targetStatusBars) {
+			AutoHudRenderer.preInject(context, Component.Hunger);
+		}
+	}
+	@Inject(method = "renderFood", at = @At("RETURN"))
+	private void autoHud$postFood(int width, int height, DrawContext context, CallbackInfo ci) {
+		if (AutoHud.targetStatusBars) {
+			AutoHudRenderer.postInject(context);
+		}
 	}
 
 	@Inject(method = "renderAir", at  = @At("HEAD"))

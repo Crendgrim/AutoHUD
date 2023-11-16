@@ -80,6 +80,12 @@
   "autohud.option.scoreboard.onScoreChange.description": "Reveal when score changes",
   "autohud.option.scoreboard.onTeamChange": "Reveal when team changes",
   "autohud.option.scoreboard.onTeamChange.description": "If the team is part of the player score, update it; otherwise any team can update and still provide no actual visibility",
+  "autohud.group.various": "Various",
+  "autohud.group.bossBar": "Boss bar",
+  "autohud.group.actionBar": "Action bar",
+  "autohud.option.bossBar.active": "Hide boss bar",
+  "autohud.option.actionBar.active": "Hide action bar",
+
   "autohud.option.defaultValues.speedMultiplier": "Default speed multiplier",
   "autohud.option.defaultValues.speedMultiplier.description": "Speed multiplier that gets added onto the animation speed.",
   "autohud.option.defaultValues.distance": "Default distance",

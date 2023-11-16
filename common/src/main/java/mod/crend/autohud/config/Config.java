@@ -109,6 +109,12 @@ public class Config implements Cloneable {
     @SerialEntry public HotbarComponents hotbar = new HotbarComponents();
     @Category(name = "components")
     @SerialEntry public ScoreboardComponents scoreboard = new ScoreboardComponents();
+
+    @Category(name = "components", group = "various")
+    @SerialEntry public SimpleComponent actionBar = new SimpleComponent();
+    @Category(name = "components", group = "various")
+    @SerialEntry public SimpleComponent bossBar = new SimpleComponent();
+
     @Category(name = "advanced")
     @Label(key = "autohud.option.advanced.label")
     @TransitiveObject
@@ -162,8 +168,13 @@ public class Config implements Cloneable {
         @SerialEntry public AdvancedComponent statusEffects = new AdvancedComponent();
         @Translation(key = "autohud.group.scoreboard")
         @SerialEntry public AdvancedComponent scoreboard = new AdvancedComponent();
+        @Translation(key = "autohud.group.actionBar")
+        @SerialEntry public AdvancedComponent actionBar = new AdvancedComponent();
+        @Translation(key = "autohud.group.bossBar")
+        @SerialEntry public AdvancedComponent bossBar = new AdvancedComponent();
         private AdvancedComponents() {
             statusEffects.direction = ScrollDirection.Up;
+            bossBar.direction = ScrollDirection.Up;
             scoreboard.direction = ScrollDirection.Right;
             scoreboard.distance = 100;
         }
@@ -173,6 +184,8 @@ public class Config implements Cloneable {
     public Config() {
         hunger.policy = RevealPolicy.Low;
         air.policy = RevealPolicy.NotFull;
+        actionBar.active = false;
+        bossBar.active = false;
     }
 
     /* OPTIONS END */

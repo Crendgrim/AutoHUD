@@ -8,6 +8,7 @@ import mod.crend.autohud.component.Hud;
 import mod.crend.autohud.render.AutoHudRenderer;
 import mod.crend.autohud.render.CustomFramebufferRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.hud.BossBarHud;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.StatusEffectSpriteManager;
@@ -17,10 +18,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -292,6 +290,34 @@ public class InGameHudMixin {
     private boolean autoHud$shouldShowIconProxy(StatusEffectInstance instance) {
         return Hud.shouldShowIcon(instance);
     }
+
+
+    // Boss Bar
+    @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/BossBarHud;render(Lnet/minecraft/client/gui/DrawContext;)V"))
+    private void autoHud$wrapBossBar(BossBarHud instance, DrawContext context, Operation<Void> original) {
+        if (Component.BossBar.config.active()) {
+            AutoHudRenderer.preInject(context, Component.BossBar);
+        }
+        original.call(instance, context);
+        if (Component.BossBar.config.active()) {
+            AutoHudRenderer.postInject(context);
+        }
+    }
+
+    // Action Bar
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;push()V", ordinal = 0, shift = At.Shift.AFTER))
+    private void autoHud$preActionBar(DrawContext context, float tickDelta, CallbackInfo ci) {
+        if (Component.ActionBar.config.active()) {
+            AutoHudRenderer.preInject(context, Component.ActionBar);
+        }
+    }
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;pop()V", ordinal = 0, shift = At.Shift.BEFORE))
+    private void autoHud$postActionBar(DrawContext context, float tickDelta, CallbackInfo ci) {
+        if (Component.ActionBar.config.active()) {
+            AutoHudRenderer.postInject(context);
+        }
+    }
+
 
     @Inject(method = "tick()V", at = @At(value = "TAIL"))
     private void autoHud$tickAutoHud(CallbackInfo ci) {

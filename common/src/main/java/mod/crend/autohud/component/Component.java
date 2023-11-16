@@ -23,6 +23,8 @@ public class Component {
     public static Component Hotbar = new Component("Hotbar", AutoHud.config.hotbar(), List.of(ExperienceBar), true);
     public static Component Tooltip = new Component("Tooltip", AutoHud.config.hotbar(), true);
     public static Component Scoreboard = new Component("Scoreboard", AutoHud.config.scoreboard());
+    public static Component ActionBar = new Component("ActionBar", AutoHud.config.actionBar());
+    public static Component BossBar = new Component("BossBar", AutoHud.config.bossBar());
 
     private static final Map<StatusEffect, Component> statusEffectComponents = new HashMap<>();
     private static final List<Component> components = new ArrayList<>(List.of(
@@ -35,7 +37,9 @@ public class Component {
             Air,
             MountHealth,
             MountJumpBar,
-            Scoreboard
+            Scoreboard,
+            ActionBar,
+            BossBar
     ));
     public static void registerComponent(Component component) {
         components.add(component);

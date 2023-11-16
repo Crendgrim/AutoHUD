@@ -45,11 +45,10 @@ public class ConfigHandler {
         private SimpleComponent(Config.SimpleComponent config, Config.AdvancedComponent values, Config.DefaultValues defaultValues) {
             super(config, values, defaultValues);
         }
-        boolean active = true;
 
         @Override
         public boolean active() {
-            return active;
+            return ((Config.SimpleComponent) config).active;
         }
     }
 

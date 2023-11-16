@@ -7,6 +7,7 @@
     "appleskin.HUDOverlayHandlerMixin",
     "armor_hud.ArmorHudMixin",
     "armorchroma.GuiArmorMixin",
+    "backslot.BackSlotSpritesMixin",
     "dehydration.DehydrationMixin$EarlyMixin",
     "dehydration.DehydrationMixin$LateMixin",
     "dehydration.ThirstManagerMixin",

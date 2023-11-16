@@ -87,12 +87,9 @@ public class ConfigHandler {
             return ((Config.BooleanComponent) config).onChange;
         }
     }
-    public static final IComponent None = new IComponent(new Config.IComponent(), new Config.AdvancedComponent(), new Config.DefaultValues()) {
-        @Override
-        public boolean active() {
-            return true;
-        }
-    };
+    public static final IComponent None = new SimpleComponent(new Config.SimpleComponent(), new Config.AdvancedComponent(), new Config.DefaultValues());
+    public static final IComponent DummyPolicyComponent = new PolicyComponent(new Config.PolicyComponent(), new Config.AdvancedComponent(), new Config.DefaultValues());
+    public static final IComponent DummyBooleanComponent = new BooleanComponent(new Config.BooleanComponent(), new Config.AdvancedComponent(), new Config.DefaultValues());
 
     PolicyComponent health;
     PolicyComponent armor;

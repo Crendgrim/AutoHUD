@@ -72,15 +72,15 @@ public class Config implements Cloneable {
     public static class IComponent {
     }
     public static class SimpleComponent extends IComponent {
-        private SimpleComponent() { }
+        SimpleComponent() { }
         @SerialEntry public boolean active = true;
     }
     public static class PolicyComponent extends IComponent {
-        private PolicyComponent() { }
+        PolicyComponent() { }
         @SerialEntry public RevealPolicy policy = RevealPolicy.Changing;
     }
     public static class BooleanComponent extends IComponent {
-        private BooleanComponent() { }
+        BooleanComponent() { }
         @SerialEntry public boolean active = true;
         @EnableIf(field = "active", value = EnableIf.BooleanPredicate.class)
         @SerialEntry public boolean onChange = true;

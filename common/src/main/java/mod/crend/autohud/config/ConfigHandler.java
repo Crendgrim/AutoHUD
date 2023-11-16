@@ -100,6 +100,7 @@ public class ConfigHandler {
     BooleanComponent hotbar;
     BooleanComponent statusEffects;
     BooleanComponent scoreboard;
+    SimpleComponent chat;
     SimpleComponent actionBar;
     SimpleComponent bossBar;
 
@@ -122,6 +123,7 @@ public class ConfigHandler {
     public boolean shouldRevealScoreboardOnTitleChange() { return CONFIG_STORE.config().scoreboard.scoreboard.onChange; }
     public boolean shouldRevealScoreboardOnScoreChange() { return CONFIG_STORE.config().scoreboard.onScoreChange; }
     public boolean shouldRevealScoreboardOnTeamChange() { return CONFIG_STORE.config().scoreboard.onTeamChange; }
+    public SimpleComponent chat() { return chat; }
     public SimpleComponent actionBar() { return actionBar; }
     public SimpleComponent bossBar() { return bossBar; }
 
@@ -136,6 +138,7 @@ public class ConfigHandler {
         hotbar = new BooleanComponent(CONFIG_STORE.config().hotbar.hotbar, CONFIG_STORE.config().advanced.hotbar, CONFIG_STORE.config().defaultValues);
         statusEffects = new BooleanComponent(CONFIG_STORE.config().statusEffects, CONFIG_STORE.config().advanced.statusEffects, CONFIG_STORE.config().defaultValues);
         scoreboard = new BooleanComponent(CONFIG_STORE.config().scoreboard.scoreboard, CONFIG_STORE.config().advanced.scoreboard, CONFIG_STORE.config().defaultValues);
+        chat = new SimpleComponent(CONFIG_STORE.config().chat, CONFIG_STORE.config().advanced.chat, CONFIG_STORE.config().defaultValues);
         actionBar = new SimpleComponent(CONFIG_STORE.config().actionBar, CONFIG_STORE.config().advanced.actionBar, CONFIG_STORE.config().defaultValues);
         bossBar = new SimpleComponent(CONFIG_STORE.config().bossBar, CONFIG_STORE.config().advanced.bossBar, CONFIG_STORE.config().defaultValues);
     }

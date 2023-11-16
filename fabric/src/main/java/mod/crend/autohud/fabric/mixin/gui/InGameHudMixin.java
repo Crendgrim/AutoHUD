@@ -9,6 +9,7 @@ import mod.crend.autohud.render.AutoHudRenderer;
 import mod.crend.autohud.render.CustomFramebufferRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.BossBarHud;
+import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.StatusEffectSpriteManager;
@@ -291,6 +292,17 @@ public class InGameHudMixin {
         return Hud.shouldShowIcon(instance);
     }
 
+    // Chat
+    @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;render(Lnet/minecraft/client/gui/DrawContext;III)V"))
+    private void autoHud$wrapChat(ChatHud instance, DrawContext context, int currentTick, int mouseX, int mouseY, Operation<Void> original) {
+        if (Component.Chat.config.active()) {
+            AutoHudRenderer.preInject(context, Component.Chat);
+        }
+        original.call(instance, context, currentTick, mouseX, mouseY);
+        if (Component.Chat.config.active()) {
+            AutoHudRenderer.postInject(context);
+        }
+    }
 
     // Boss Bar
     @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/BossBarHud;render(Lnet/minecraft/client/gui/DrawContext;)V"))

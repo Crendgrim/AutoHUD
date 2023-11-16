@@ -111,6 +111,8 @@ public class Config implements Cloneable {
     @SerialEntry public ScoreboardComponents scoreboard = new ScoreboardComponents();
 
     @Category(name = "components", group = "various")
+    @SerialEntry public SimpleComponent chat = new SimpleComponent();
+    @Category(name = "components", group = "various")
     @SerialEntry public SimpleComponent actionBar = new SimpleComponent();
     @Category(name = "components", group = "various")
     @SerialEntry public SimpleComponent bossBar = new SimpleComponent();
@@ -168,6 +170,8 @@ public class Config implements Cloneable {
         @SerialEntry public AdvancedComponent statusEffects = new AdvancedComponent();
         @Translation(key = "autohud.group.scoreboard")
         @SerialEntry public AdvancedComponent scoreboard = new AdvancedComponent();
+        @Translation(key = "autohud.group.chat")
+        @SerialEntry public AdvancedComponent chat = new AdvancedComponent();
         @Translation(key = "autohud.group.actionBar")
         @SerialEntry public AdvancedComponent actionBar = new AdvancedComponent();
         @Translation(key = "autohud.group.bossBar")
@@ -175,6 +179,8 @@ public class Config implements Cloneable {
         private AdvancedComponents() {
             statusEffects.direction = ScrollDirection.Up;
             bossBar.direction = ScrollDirection.Up;
+            chat.direction = ScrollDirection.Left;
+            chat.distance = 100;
             scoreboard.direction = ScrollDirection.Right;
             scoreboard.distance = 100;
         }
@@ -184,6 +190,7 @@ public class Config implements Cloneable {
     public Config() {
         hunger.policy = RevealPolicy.Low;
         air.policy = RevealPolicy.NotFull;
+        chat.active = false;
         actionBar.active = false;
         bossBar.active = false;
     }

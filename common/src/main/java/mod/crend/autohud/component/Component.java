@@ -23,6 +23,7 @@ public class Component {
     public static Component Hotbar = new Component("Hotbar", AutoHud.config.hotbar(), List.of(ExperienceBar), true);
     public static Component Tooltip = new Component("Tooltip", AutoHud.config.hotbar(), true);
     public static Component Scoreboard = new Component("Scoreboard", AutoHud.config.scoreboard());
+    public static Component Chat = new Component("Chat", AutoHud.config.chat());
     public static Component ActionBar = new Component("ActionBar", AutoHud.config.actionBar());
     public static Component BossBar = new Component("BossBar", AutoHud.config.bossBar());
 
@@ -38,6 +39,7 @@ public class Component {
             MountHealth,
             MountJumpBar,
             Scoreboard,
+            Chat,
             ActionBar,
             BossBar
     ));

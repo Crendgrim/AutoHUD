@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.state.*;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -47,6 +48,7 @@ public class State {
         Component.ExperienceBar.state = new ValueComponentState<>(Component.ExperienceBar, () -> player.totalExperience, true);
         Component.Scoreboard.state = new ScoreboardComponentState(Component.Scoreboard);
         Component.MountJumpBar.state = new ComponentState(Component.MountJumpBar);
+        Component.Chat.state = new ComponentState(Component.Chat);
         Component.ActionBar.state = new ComponentState(Component.ActionBar);
         Component.BossBar.state = new ComponentState(Component.BossBar);
 
@@ -109,6 +111,10 @@ public class State {
             if (!revealHotbarOnDurability(player.getMainHandStack())) {
                 revealHotbarOnDurability(player.getOffHandStack());
             }
+        }
+
+        if (MinecraftClient.getInstance().currentScreen instanceof ChatScreen) {
+            Component.Chat.revealNow();
         }
 
         if (AutoHud.config.statusEffects().active()) {

@@ -6,6 +6,7 @@ import mod.crend.autohud.render.AutoHudRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
+import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -55,6 +56,8 @@ public class AutoHudGui extends ForgeGui {
 			return Optional.of(Component.Hotbar);
 		} else if (AutoHud.targetHotbar && id.equals(ITEM_NAME.id())) {
 			return Optional.of(Component.Tooltip);
+		} else if (Component.Chat.config.active() && id.equals(CHAT_PANEL.id())) {
+			return Optional.of(Component.Chat);
 		}
 		return Optional.empty();
 	}
@@ -83,5 +86,12 @@ public class AutoHudGui extends ForgeGui {
 		getComponent(event.getOverlay().id()).ifPresent(
 				component -> postRender(event.getGuiGraphics(), component, event.getPartialTick())
 		);
+	}
+
+	@SubscribeEvent
+	public void preChat(CustomizeGuiOverlayEvent.Chat event) {
+		if (Component.Chat.config.active()) {
+			AutoHudRenderer.preInjectFade(Component.Chat);
+		}
 	}
 }

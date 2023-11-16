@@ -2,6 +2,7 @@ package mod.crend.autohud.forge;
 
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
+import mod.crend.autohud.render.AutoHudRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
@@ -37,6 +38,7 @@ public class AutoHudGui extends ForgeGui {
 		if (AutoHud.config.animationMove()) {
 			context.getMatrices().translate(component.getOffsetX(tickDelta), component.getOffsetY(tickDelta), 0);
 		}
+		AutoHudRenderer.preInjectFade(component);
 	}
 	public void postRender(DrawContext context, Component component, float tickDelta) {
 		if (AutoHud.config.animationMove()) {
@@ -60,7 +62,12 @@ public class AutoHudGui extends ForgeGui {
 	@SubscribeEvent(priority = EventPriority.HIGHEST, receiveCanceled = true)
 	public void preHudComponent(RenderGuiOverlayEvent.Pre event) {
 		getComponent(event.getOverlay().id()).ifPresent(
-				component -> preRender(event.getGuiGraphics(), component, event.getPartialTick())
+				component -> {
+					if (component.fullyHidden()) {
+						event.setCanceled(true);
+					}
+					preRender(event.getGuiGraphics(), component, event.getPartialTick());
+				}
 		);
 	}
 	@SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)

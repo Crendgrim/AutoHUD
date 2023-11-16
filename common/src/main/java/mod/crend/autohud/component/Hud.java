@@ -17,6 +17,7 @@ public class Hud {
     public static void disableDynamic() {
         dynamic = false;
         Component.revealAll();
+        Component.ChatIndicator.hide();
     }
 
     public static void enableDynamic() {
@@ -33,6 +34,7 @@ public class Hud {
 
         if (dynamic == doPeek) {
             Component.revealAll();
+            Component.ChatIndicator.hide();
         } else {
             Component.hideAll();
         }

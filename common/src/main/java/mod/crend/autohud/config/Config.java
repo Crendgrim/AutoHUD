@@ -110,8 +110,8 @@ public class Config implements Cloneable {
     @Category(name = "components")
     @SerialEntry public ScoreboardComponents scoreboard = new ScoreboardComponents();
 
-    @Category(name = "components", group = "various")
-    @SerialEntry public SimpleComponent chat = new SimpleComponent();
+    @Category(name = "components")
+    @SerialEntry public ChatComponent chat = new ChatComponent();
     @Category(name = "components", group = "various")
     @SerialEntry public SimpleComponent actionBar = new SimpleComponent();
     @Category(name = "components", group = "various")
@@ -147,6 +147,12 @@ public class Config implements Cloneable {
         @SerialEntry public boolean onScoreChange = true;
         @EnableIf(field = "scoreboard.active", value = EnableIf.BooleanPredicate.class)
         @SerialEntry public boolean onTeamChange = true;
+    }
+
+    public static class ChatComponent {
+        @SerialEntry public SimpleComponent chat = new SimpleComponent();
+        @EnableIf(field = "chat.active", value = EnableIf.BooleanPredicate.class)
+        @SerialEntry public boolean displayIndicator = true;
     }
     
     public static class AdvancedComponents {
@@ -190,7 +196,7 @@ public class Config implements Cloneable {
     public Config() {
         hunger.policy = RevealPolicy.Low;
         air.policy = RevealPolicy.NotFull;
-        chat.active = false;
+        chat.chat.active = false;
         actionBar.active = false;
         bossBar.active = false;
     }

@@ -49,6 +49,8 @@ public class State {
         Component.Scoreboard.state = new ScoreboardComponentState(Component.Scoreboard);
         Component.MountJumpBar.state = new ComponentState(Component.MountJumpBar);
         Component.Chat.state = new ComponentState(Component.Chat);
+        Component.ChatIndicator.state = new ComponentState(Component.ChatIndicator);
+        Component.ChatIndicator.hideNow();
         Component.ActionBar.state = new ComponentState(Component.ActionBar);
         Component.BossBar.state = new ComponentState(Component.BossBar);
 
@@ -115,6 +117,7 @@ public class State {
 
         if (MinecraftClient.getInstance().currentScreen instanceof ChatScreen) {
             Component.Chat.revealNow();
+            Component.ChatIndicator.hide();
         }
 
         if (AutoHud.config.statusEffects().active()) {

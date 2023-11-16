@@ -101,6 +101,7 @@ public class ConfigHandler {
     BooleanComponent statusEffects;
     BooleanComponent scoreboard;
     SimpleComponent chat;
+    IComponent chatIndicator;
     SimpleComponent actionBar;
     SimpleComponent bossBar;
 
@@ -124,6 +125,7 @@ public class ConfigHandler {
     public boolean shouldRevealScoreboardOnScoreChange() { return CONFIG_STORE.config().scoreboard.onScoreChange; }
     public boolean shouldRevealScoreboardOnTeamChange() { return CONFIG_STORE.config().scoreboard.onTeamChange; }
     public SimpleComponent chat() { return chat; }
+    public IComponent chatIndicator() { return chatIndicator; }
     public SimpleComponent actionBar() { return actionBar; }
     public SimpleComponent bossBar() { return bossBar; }
 
@@ -138,7 +140,13 @@ public class ConfigHandler {
         hotbar = new BooleanComponent(CONFIG_STORE.config().hotbar.hotbar, CONFIG_STORE.config().advanced.hotbar, CONFIG_STORE.config().defaultValues);
         statusEffects = new BooleanComponent(CONFIG_STORE.config().statusEffects, CONFIG_STORE.config().advanced.statusEffects, CONFIG_STORE.config().defaultValues);
         scoreboard = new BooleanComponent(CONFIG_STORE.config().scoreboard.scoreboard, CONFIG_STORE.config().advanced.scoreboard, CONFIG_STORE.config().defaultValues);
-        chat = new SimpleComponent(CONFIG_STORE.config().chat, CONFIG_STORE.config().advanced.chat, CONFIG_STORE.config().defaultValues);
+        chat = new SimpleComponent(CONFIG_STORE.config().chat.chat, CONFIG_STORE.config().advanced.chat, CONFIG_STORE.config().defaultValues);
+        chatIndicator = new IComponent(new Config.IComponent(), CONFIG_STORE.config().advanced.chat, CONFIG_STORE.config().defaultValues) {
+            @Override
+            public boolean active() {
+                return CONFIG_STORE.config().chat.displayIndicator;
+            }
+        };
         actionBar = new SimpleComponent(CONFIG_STORE.config().actionBar, CONFIG_STORE.config().advanced.actionBar, CONFIG_STORE.config().defaultValues);
         bossBar = new SimpleComponent(CONFIG_STORE.config().bossBar, CONFIG_STORE.config().advanced.bossBar, CONFIG_STORE.config().defaultValues);
     }

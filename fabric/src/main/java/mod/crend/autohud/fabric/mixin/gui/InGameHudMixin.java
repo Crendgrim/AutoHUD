@@ -6,6 +6,7 @@ import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Hud;
 import mod.crend.autohud.render.AutoHudRenderer;
+import mod.crend.autohud.render.ChatMessageIndicator;
 import mod.crend.autohud.render.CustomFramebufferRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.BossBarHud;
@@ -19,7 +20,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -34,6 +38,7 @@ public class InGameHudMixin {
     private void autoHud$preRender(DrawContext context, float tickDelta, CallbackInfo ci) {
         AutoHudRenderer.inRender = true;
         AutoHudRenderer.tickDelta = tickDelta;
+        ChatMessageIndicator.render(context);
     }
     @Inject(method="render", at=@At("RETURN"))
     private void autoHud$postRender(DrawContext context, float tickDelta, CallbackInfo ci) {

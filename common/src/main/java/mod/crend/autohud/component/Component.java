@@ -24,6 +24,7 @@ public class Component {
     public static Component Tooltip = new Component("Tooltip", AutoHud.config.hotbar(), true);
     public static Component Scoreboard = new Component("Scoreboard", AutoHud.config.scoreboard());
     public static Component Chat = new Component("Chat", AutoHud.config.chat());
+    public static Component ChatIndicator = new Component("ChatIndicator", AutoHud.config.chatIndicator());
     public static Component ActionBar = new Component("ActionBar", AutoHud.config.actionBar());
     public static Component BossBar = new Component("BossBar", AutoHud.config.bossBar());
 
@@ -63,6 +64,10 @@ public class Component {
             }
         });
         statusEffectComponents.values().forEach(Component::tick);
+        if (ChatIndicator.state != null) {
+            ChatIndicator.state.tick();
+            ChatIndicator.tick();
+        }
     }
 
     public Component(String name, ConfigHandler.IComponent config, final List<Component> stackComponents, boolean inMainHud) {

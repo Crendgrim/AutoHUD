@@ -5,8 +5,10 @@ import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.ModKeyBindings;
 import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.config.ConfigHandler;
+import mod.crend.autohud.render.ChatMessageIndicator;
 import mod.crend.yaclx.forge.ConfigScreen;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -37,6 +39,11 @@ public class AutoHudModEvents {
 	@SubscribeEvent
 	static void onKeyMappingsRegister(RegisterKeyMappingsEvent event) {
 		ModKeyBindings.ALL.forEach(event::register);
+	}
+
+	@SubscribeEvent
+	static void onRegisterOverlaysEvent(RegisterGuiOverlaysEvent event) {
+		event.registerAboveAll("autohud_new_chat_message_indicator", (forgeGui, context, f, i, j) -> ChatMessageIndicator.render(context));
 	}
 
 }

@@ -5,15 +5,7 @@ plugins {
 
 architectury {
     platformSetupLoomIde()
-    forge()
-}
-
-loom {
-
-    forge {
-        mixinConfig "autohud-common.mixins.json"
-        mixinConfig "autohud-forge.mixins.json"
-    }
+    neoForge()
 }
 
 configurations {
@@ -21,19 +13,26 @@ configurations {
     shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
-    developmentForge.extendsFrom common
+    developmentNeoForge.extendsFrom common
+}
+
+repositories {
+    maven { url "https://maven.neoforged.net/releases/" }
 }
 
 dependencies {
-    forge "net.minecraftforge:forge:${rootProject.forge_version}"
-    //modApi "dev.architectury:architectury-forge:${rootProject.architectury_version}"
-    implementation(include("io.github.llamalad7:mixinextras-forge:${project.mixin_extras_version}"))
+    neoForge "net.neoforged:neoforge:${rootProject.neoforge_version}"
 
-   // modImplementation "dev.isxander.yacl:yet-another-config-lib-forge:${project.yacl_version}"
-    modImplementation include(name: "yaclx", group: "mod.crend.yaclx", version:"${project.yaclx_version}-forge")
+    // FIXME MixinExtras is currently not being remapped on NeoForge.
+    // Re-enable & re-introduce WrapOperation mixins once this works again.
+    // ISSUE https://github.com/architectury/architectury-loom/issues/174
+    //implementation(include("io.github.llamalad7:mixinextras-neoforge:${project.mixin_extras_version}"))
+
+   // modImplementation "dev.isxander.yacl:yet-another-config-lib-neoforge:${project.yacl_version}"
+    modImplementation include(name: "yaclx", group: "mod.crend.yaclx", version:"${project.yaclx_version}-neoforge")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
+    shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
 }
 
 processResources {
@@ -55,7 +54,7 @@ shadowJar {
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    archiveClassifier.set("forge")
+    archiveClassifier.set("neoforge")
 }
 
 jar {
@@ -76,12 +75,12 @@ components.java {
 
 unifiedPublishing {
     project {
-        displayName = "[Forge ${rootProject.supported_versions_string}] ${rootProject.mod_name} ${rootProject.mod_version}"
-        version = "${rootProject.mod_version}+${rootProject.minecraft_version}-forge"
+        displayName = "[NeoForge ${rootProject.supported_versions_string}] ${rootProject.mod_name} ${rootProject.mod_version}"
+        version = "${rootProject.mod_version}+${rootProject.minecraft_version}-neoforge"
         changelog = "${rootProject.changelog}"
         releaseType = "${rootProject.release_type}"
         gameVersions = List.of(project.supported_versions.split(';'))
-        gameLoaders = ["forge"]
+        gameLoaders = ["neoForge"]
 
         mainPublication tasks.remapJar
 

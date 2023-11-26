@@ -17,7 +17,6 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.ScoreboardObjective;
-import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -72,9 +71,9 @@ public class InGameHudMixin {
 				// Have the original call draw onto the custom framebuffer
 				original.call(instance, context, x, y, tickDelta, player, stack, seed);
 				// Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
-				AutoHudRenderer.preInjectFade(context, Component.Hotbar, AutoHud.config.getHotbarItemsMaximumFade());
+				AutoHudRenderer.preInjectFadeWithReverseTranslation(context, Component.Hotbar, AutoHud.config.getHotbarItemsMaximumFade());
 				CustomFramebufferRenderer.draw(context);
-				AutoHudRenderer.postInjectFade(context);
+				AutoHudRenderer.postInjectFadeWithReverseTranslation(context);
 			}
 		} else {
 			original.call(instance, context, x, y, tickDelta, player, stack, seed);

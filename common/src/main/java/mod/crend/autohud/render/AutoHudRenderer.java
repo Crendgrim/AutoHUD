@@ -9,6 +9,8 @@ public class AutoHudRenderer {
 	public static boolean inRender;
 	public static float tickDelta = 0.0f;
 	public static float alpha = 1.0f;
+	public static float globalOffsetX = 0;
+	public static float globalOffsetY = 0;
 
 	public static void preInjectFade(Component component) {
 		preInjectFade(component, 0.0f);
@@ -20,13 +22,17 @@ public class AutoHudRenderer {
 			RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
 		}
 	}
-	public static void preInjectFade(DrawContext context, Component component, float minAlpha) {
+	public static void preInjectFadeWithReverseTranslation(DrawContext context, Component component, float minAlpha) {
 		preInjectFade(component, minAlpha);
-		if (AutoHud.config.animationFade() && AutoHud.config.animationMove()) {
+		if (AutoHud.config.animationMove()) {
 			context.getMatrices().push();
 			if (component.isHidden()) {
 				context.getMatrices().translate(-component.getOffsetX(tickDelta), -component.getOffsetY(tickDelta), 0);
 			}
+		}
+		if (globalOffsetX != 0 || globalOffsetY != 0) {
+			context.getMatrices().push();
+			context.getMatrices().translate(globalOffsetX, globalOffsetY, 0);
 		}
 	}
 	public static void preInject(DrawContext context, Component component) {
@@ -35,6 +41,7 @@ public class AutoHudRenderer {
 			RenderSystem.enableBlend();
 			RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
 		}
+		// Undo any translations we had before
 		if (AutoHud.config.animationMove() || !AutoHud.config.animationFade()) {
 			context.getMatrices().push();
 			if (component.isHidden()) {
@@ -49,9 +56,12 @@ public class AutoHudRenderer {
 			RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
 		}
 	}
-	public static void postInjectFade(DrawContext context) {
+	public static void postInjectFadeWithReverseTranslation(DrawContext context) {
 		postInjectFade();
-		if (AutoHud.config.animationMove() || !AutoHud.config.animationFade()) {
+		if (AutoHud.config.animationMove()) {
+			context.getMatrices().pop();
+		}
+		if (globalOffsetX != 0 || globalOffsetY != 0) {
 			context.getMatrices().pop();
 		}
 	}

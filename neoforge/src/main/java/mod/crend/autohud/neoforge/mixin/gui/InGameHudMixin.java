@@ -13,7 +13,6 @@ import net.minecraft.client.texture.StatusEffectSpriteManager;
 import net.minecraft.entity.JumpingMount;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.scoreboard.ScoreboardObjective;
-import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -80,9 +79,9 @@ public class InGameHudMixin {
 			if (!Component.Hotbar.fullyHidden() || AutoHud.config.getHotbarItemsMaximumFade() > 0.0f) {
 				// We have rendered onto the custom framebuffer now
 				// Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
-				AutoHudRenderer.preInjectFade(context, Component.Hotbar, AutoHud.config.getHotbarItemsMaximumFade());
+				AutoHudRenderer.preInjectFadeWithReverseTranslation(context, Component.Hotbar, AutoHud.config.getHotbarItemsMaximumFade());
 				CustomFramebufferRenderer.draw(context);
-				AutoHudRenderer.postInjectFade(context);
+				AutoHudRenderer.postInjectFadeWithReverseTranslation(context);
 			}
 		}
 	}

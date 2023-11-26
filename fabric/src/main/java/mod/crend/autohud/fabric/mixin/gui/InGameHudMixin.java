@@ -100,9 +100,9 @@ public class InGameHudMixin {
                 // Have the original call draw onto the custom framebuffer
                 original.call(instance, context, x, y, tickDelta, player, stack, seed);
                 // Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
-                AutoHudRenderer.preInjectFade(context, Component.Hotbar, AutoHud.config.getHotbarItemsMaximumFade());
+                AutoHudRenderer.preInjectFadeWithReverseTranslation(context, Component.Hotbar, AutoHud.config.getHotbarItemsMaximumFade());
                 CustomFramebufferRenderer.draw(context);
-                AutoHudRenderer.postInjectFade(context);
+                AutoHudRenderer.postInjectFadeWithReverseTranslation(context);
             }
         } else {
             original.call(instance, context, x, y, tickDelta, player, stack, seed);

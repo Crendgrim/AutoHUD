@@ -125,7 +125,7 @@ public class Component {
     private double alphaDelta = 0;
     private double offset = 0;
     private double offsetDelta = 0;
-    private final String name;
+    public final String name;
     private final boolean inMainHud;
     private float visibleTime = 1;
 

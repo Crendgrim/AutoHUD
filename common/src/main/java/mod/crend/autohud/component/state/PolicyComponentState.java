@@ -7,7 +7,7 @@ import mod.crend.autohud.config.ConfigHandler;
 import java.util.function.Supplier;
 
 public class PolicyComponentState extends ValueComponentState<Integer> {
-    Supplier<Integer> maxValueSupplier;
+    protected Supplier<Integer> maxValueSupplier;
 
     public PolicyComponentState(Component component, Supplier<Integer> newValueSupplier, Supplier<Integer> maxValueSupplier, boolean updateEveryTick) {
         super(component, newValueSupplier, updateEveryTick);

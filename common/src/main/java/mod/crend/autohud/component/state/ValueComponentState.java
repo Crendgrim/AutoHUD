@@ -6,8 +6,8 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 public class ValueComponentState<T> extends ComponentState {
-    T oldValue;
-    Supplier<T> newValueSupplier;
+    protected T oldValue;
+    protected Supplier<T> newValueSupplier;
 
     public ValueComponentState(Component component, Supplier<T> newValueSupplier, boolean updateEveryTick) {
         super(component, updateEveryTick);

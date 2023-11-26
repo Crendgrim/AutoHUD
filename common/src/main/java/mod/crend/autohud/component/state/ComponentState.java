@@ -4,10 +4,10 @@ package mod.crend.autohud.component.state;
 import mod.crend.autohud.component.Component;
 
 public class ComponentState {
-    Component component;
+    protected Component component;
 
-    boolean updateEveryTick = false;
-    boolean updateNextTick = true;
+    protected boolean updateEveryTick = false;
+    protected boolean updateNextTick = true;
 
     public ComponentState(Component component, boolean updateEveryTick) {
         this.component = component;

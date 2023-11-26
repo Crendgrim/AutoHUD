@@ -5,7 +5,7 @@ import mod.crend.autohud.component.Component;
 import java.util.function.Supplier;
 
 public class EnhancedPolicyComponentState extends PolicyComponentState {
-	Supplier<Boolean> test;
+	protected Supplier<Boolean> test;
 
 	public EnhancedPolicyComponentState(Component component, Supplier<Integer> newValueSupplier, Supplier<Integer> maxValueSupplier, Supplier<Boolean> test, boolean updateEveryTick) {
 		super(component, newValueSupplier, maxValueSupplier, updateEveryTick);

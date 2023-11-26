@@ -138,21 +138,16 @@ public class InGameHudMixin {
 
 
     // Status Bars
-    @WrapOperation(
-            method = "render",
+    @Inject(
+            method = "renderStatusBars",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderStatusBars(Lnet/minecraft/client/gui/DrawContext;)V"
+                    target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V"
             )
     )
-    private void autoHud$wrapStatusBars(InGameHud instance, DrawContext context, Operation<Void> original) {
+    private void autoHud$preArmorBar(DrawContext context, CallbackInfo ci) {
         if (AutoHud.targetStatusBars) {
-            // Armor is the first rendered status bar in the vanilla renderer
             AutoHudRenderer.preInject(context, Component.Armor);
-        }
-        original.call(instance, context);
-        if (AutoHud.targetStatusBars) {
-            AutoHudRenderer.postInject(context);
         }
     }
 
@@ -177,6 +172,16 @@ public class InGameHudMixin {
         if (AutoHud.targetStatusBars) {
             AutoHudRenderer.postInject(context);
             AutoHudRenderer.preInject(context, Component.Air);
+        }
+    }
+
+    @Inject(
+            method = "renderStatusBars",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;pop()V")
+    )
+    private void autoHud$postAirBar(DrawContext context, CallbackInfo ci) {
+        if (AutoHud.targetStatusBars) {
+            AutoHudRenderer.postInject(context);
         }
     }
 

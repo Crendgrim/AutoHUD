@@ -5,6 +5,9 @@ import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.state.PolicyComponentState;
 import net.dehydration.access.ThirstManagerAccess;
+import net.dehydration.effect.ThirstEffect;
+import net.dehydration.init.EffectInit;
+import net.dehydration.misc.ThirstTooltipData;
 import net.dehydration.thirst.ThirstManager;
 import net.minecraft.client.network.ClientPlayerEntity;
 
@@ -32,6 +35,19 @@ public class DehydrationCompat implements AutoHudApi {
         ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager();
         if (thirstManager.hasThirst()) {
             Thirst.state = new PolicyComponentState(Thirst, thirstManager::getThirstLevel, 20);
+        }
+    }
+
+    @Override
+    public void tickState(ClientPlayerEntity player) {
+        if (player.hasStatusEffect(EffectInit.THIRST)) {
+            Thirst.reveal();
+        } else if (((ThirstManagerAccess) player).getThirstManager().isNotFull()) {
+            if (!player.getMainHandStack().isEmpty() && player.getMainHandStack().getTooltipData().isPresent() && player.getMainHandStack().getTooltipData().get() instanceof ThirstTooltipData) {
+                Thirst.reveal();
+            } else if (!player.getOffHandStack().isEmpty() && player.getOffHandStack().getTooltipData().isPresent() && player.getOffHandStack().getTooltipData().get() instanceof ThirstTooltipData) {
+                Thirst.reveal();
+            }
         }
     }
 }

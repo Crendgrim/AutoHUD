@@ -13,6 +13,7 @@
     "dehydration.ThirstManagerMixin",
     "detailab.ArmorBarRendererMixin",
     "detailab.InGameDrawerMixin",
+    "environmentz.TemperatureHudRenderingMixin",
     "microdurability.MicroDurabilityMixin",
     "onebar.OneBarElementsMixin",
     "statuseffectbars.StatusEffectBarRendererMixin"

@@ -131,9 +131,11 @@ public class InGameHudMixin {
 			),
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V"))
 	private void autoHud$renderCrosshair(DrawContext context, Identifier texture, int x, int y, int width, int height, Operation<Void> original) {
-		AutoHudRenderer.preInjectCrosshair();
-		original.call(context, texture, x, y, width, height);
-		AutoHudRenderer.postInjectCrosshair(context);
+		if (AutoHudRenderer.shouldRenderCrosshair()) {
+			AutoHudRenderer.preInjectCrosshair();
+			original.call(context, texture, x, y, width, height);
+			AutoHudRenderer.postInjectCrosshair(context);
+		}
 	}
 
 	// Status Effects

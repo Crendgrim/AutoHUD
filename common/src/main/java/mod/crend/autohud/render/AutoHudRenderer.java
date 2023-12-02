@@ -43,6 +43,14 @@ public class AutoHudRenderer {
 			}
 		}
 	}
+
+	public static boolean shouldRenderCrosshair() {
+		if (!Component.Crosshair.config.active()) return true;
+		if (AutoHud.config.animationFade()) {
+			return !Component.Crosshair.fullyHidden() || Component.Crosshair.config.maximumFade() > 0;
+		}
+		return !Component.Crosshair.isHidden();
+	}
 	public static void preInjectCrosshair() {
 		if (Component.Crosshair.config.active()) {
 			CustomFramebufferRenderer.init();

@@ -286,8 +286,8 @@ public class Component {
     private void moveIn() {
         offset = Math.max(0, offset + offsetDelta);
         alpha = Math.min(1, alpha + alphaDelta);
-        double offsetSpeed = Math.sqrt(0.01 + offset) * 0.1 * AutoHud.config.animationSpeedMoveIn();
-        double alphaSpeed = 0.05 * AutoHud.config.animationSpeedFadeIn();
+        double offsetSpeed = Math.sqrt(0.01 + offset) * 0.1 * AutoHud.config.animationSpeedMoveIn() * config.speedMultiplier();
+        double alphaSpeed = 0.05 * AutoHud.config.animationSpeedFadeIn() * config.speedMultiplier();
         if (offset - offsetSpeed <= 0) {
             offsetDelta = -offset;
         } else {
@@ -302,8 +302,8 @@ public class Component {
     private void moveOut() {
         offset = Math.min(1, offset + offsetDelta);
         alpha = Math.max(0, alpha + alphaDelta);
-        double offsetSpeed = Math.sqrt(0.01 + offset) * 0.1 * AutoHud.config.animationSpeedMoveOut();
-        double alphaSpeed = 0.05 * AutoHud.config.animationSpeedFadeOut();
+        double offsetSpeed = Math.sqrt(0.01 + offset) * 0.1 * AutoHud.config.animationSpeedMoveOut() * config.speedMultiplier();
+        double alphaSpeed = 0.05 * AutoHud.config.animationSpeedFadeOut() * config.speedMultiplier();
         if (offset + offsetSpeed >= 1) {
             offsetDelta = 1 - offset;
         } else {

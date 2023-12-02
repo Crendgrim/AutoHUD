@@ -41,6 +41,22 @@ public class ConfigHandler {
         public int distance() { return (values.distance < 0 ? defaultValues.distance : values.distance); }
         public double maximumFade() { return (values.maximumFade < 0 ? Math.min(defaultValues.maximumFade, 1.0d) : Math.min(values.maximumFade, 1.0d)); }
     }
+    public abstract static class IFadeOnlyComponent extends IComponent {
+        IFadeOnlyComponent(Config.IComponent config, Config.AdvancedFadeOnlyComponent values, Config.DefaultValues defaultValues) {
+            super(config, new Config.AdvancedComponent(), defaultValues);
+            this.fadeOnlyValues = values;
+        }
+        Config.AdvancedFadeOnlyComponent fadeOnlyValues;
+
+        @Override
+        public ScrollDirection direction() { return ScrollDirection.Up; }
+        @Override
+        public double speedMultiplier() { return (fadeOnlyValues.speedMultiplier < 0 ? defaultValues.speedMultiplier : fadeOnlyValues.speedMultiplier); }
+        @Override
+        public int distance() { return 0; }
+        @Override
+        public double maximumFade() { return (fadeOnlyValues.maximumFade < 0 ? Math.min(defaultValues.maximumFade, 1.0d) : Math.min(fadeOnlyValues.maximumFade, 1.0d)); }
+    }
     public static class SimpleComponent extends IComponent {
         private SimpleComponent(Config.SimpleComponent config, Config.AdvancedComponent values, Config.DefaultValues defaultValues) {
             super(config, values, defaultValues);
@@ -86,6 +102,21 @@ public class ConfigHandler {
             return ((Config.BooleanComponent) config).onChange;
         }
     }
+    public static class BooleanFadeOnlyComponent extends IFadeOnlyComponent {
+        private BooleanFadeOnlyComponent(Config.BooleanComponent config, Config.AdvancedFadeOnlyComponent values, Config.DefaultValues defaultValues) {
+            super(config, values, defaultValues);
+        }
+
+        @Override
+        public boolean active() {
+            return ((Config.BooleanComponent) config).active;
+        }
+
+        @Override
+        public boolean onChange() {
+            return ((Config.BooleanComponent) config).onChange;
+        }
+    }
     public static final IComponent None = new SimpleComponent(new Config.SimpleComponent(), new Config.AdvancedComponent(), new Config.DefaultValues());
     public static final IComponent DummyPolicyComponent = new PolicyComponent(new Config.PolicyComponent(), new Config.AdvancedComponent(), new Config.DefaultValues());
     public static final IComponent DummyBooleanComponent = new BooleanComponent(new Config.BooleanComponent(), new Config.AdvancedComponent(), new Config.DefaultValues());
@@ -100,6 +131,7 @@ public class ConfigHandler {
     BooleanComponent hotbar;
     BooleanComponent statusEffects;
     BooleanComponent scoreboard;
+    BooleanFadeOnlyComponent crosshair;
 
     public PolicyComponent health() { return health; }
     public PolicyComponent armor() { return armor; }
@@ -117,6 +149,7 @@ public class ConfigHandler {
     public BooleanComponent statusEffects() { return statusEffects; }
     public boolean hidePersistentStatusEffects() { return CONFIG_STORE.config().hidePersistentStatusEffects; }
     public BooleanComponent scoreboard() { return scoreboard; }
+    public BooleanFadeOnlyComponent crosshair() { return crosshair; }
     public boolean shouldRevealScoreboardOnTitleChange() { return CONFIG_STORE.config().scoreboard.scoreboard.onChange; }
     public boolean shouldRevealScoreboardOnScoreChange() { return CONFIG_STORE.config().scoreboard.onScoreChange; }
     public boolean shouldRevealScoreboardOnTeamChange() { return CONFIG_STORE.config().scoreboard.onTeamChange; }
@@ -132,5 +165,6 @@ public class ConfigHandler {
         hotbar = new BooleanComponent(CONFIG_STORE.config().hotbar.hotbar, CONFIG_STORE.config().advanced.hotbar, CONFIG_STORE.config().defaultValues);
         statusEffects = new BooleanComponent(CONFIG_STORE.config().statusEffects, CONFIG_STORE.config().advanced.statusEffects, CONFIG_STORE.config().defaultValues);
         scoreboard = new BooleanComponent(CONFIG_STORE.config().scoreboard.scoreboard, CONFIG_STORE.config().advanced.scoreboard, CONFIG_STORE.config().defaultValues);
+        crosshair = new BooleanFadeOnlyComponent(CONFIG_STORE.config().crosshair, CONFIG_STORE.config().advanced.crosshair, CONFIG_STORE.config().defaultValues);
     }
 }

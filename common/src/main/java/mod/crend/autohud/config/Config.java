@@ -42,7 +42,7 @@ public class Config implements Cloneable {
     public static class DefaultValues {
         DefaultValues() { }
 
-        @FloatingPointRange(min = 0.1, max = 3.0, interval = 0.1)
+        @FloatingPointRange(min = 0.1, max = 5.0, interval = 0.1)
         @SerialEntry public double speedMultiplier = 1.0;
         @NumericRange(min = 0, max = 200, interval = 5)
         @SerialEntry public int distance = 60;
@@ -59,7 +59,7 @@ public class Config implements Cloneable {
         @Translation(key = "autohud.option.advanced.direction")
         @SerialEntry public ScrollDirection direction = ScrollDirection.Down;
         @Translation(key = "autohud.option.advanced.speedMultiplier")
-        @FloatingPointRange(min = 0.1, max = 3.0, interval = 0.1)
+        @FloatingPointRange(min = 0.1, max = 5.0, interval = 0.1)
         @SerialEntry public double speedMultiplier = -1;
         @Translation(key = "autohud.option.advanced.distance")
         @NumericRange(min = 0, max = 200, interval = 5)

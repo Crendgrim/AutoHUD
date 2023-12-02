@@ -69,6 +69,16 @@ public class Config implements Cloneable {
         @FloatingPointRange(min = 0.0, max = 1.0, interval = 0.1)
         @SerialEntry public double maximumFade = -1d;
     }
+    public static class AdvancedFadeOnlyComponent {
+        AdvancedFadeOnlyComponent() { }
+
+        @Translation(key = "autohud.option.advanced.speedMultiplier")
+        @FloatingPointRange(min = 0.1, max = 5.0, interval = 0.1)
+        @SerialEntry public double speedMultiplier = -1;
+        @Translation(key = "autohud.option.advanced.maximumFade")
+        @FloatingPointRange(min = 0.0, max = 1.0, interval = 0.1)
+        @SerialEntry public double maximumFade = -1d;
+    }
     public static class IComponent {
     }
     public static class SimpleComponent extends IComponent {
@@ -109,6 +119,9 @@ public class Config implements Cloneable {
     @SerialEntry public HotbarComponents hotbar = new HotbarComponents();
     @Category(name = "components")
     @SerialEntry public ScoreboardComponents scoreboard = new ScoreboardComponents();
+
+    @Category(name = "components")
+    @SerialEntry public BooleanComponent crosshair = new BooleanComponent();
 
     @Category(name = "components")
     @SerialEntry public ChatComponent chat = new ChatComponent();
@@ -176,6 +189,8 @@ public class Config implements Cloneable {
         @SerialEntry public AdvancedComponent statusEffects = new AdvancedComponent();
         @Translation(key = "autohud.group.scoreboard")
         @SerialEntry public AdvancedComponent scoreboard = new AdvancedComponent();
+        @Translation(key = "autohud.group.crosshair")
+        @SerialEntry public AdvancedFadeOnlyComponent crosshair = new AdvancedFadeOnlyComponent();
         @Translation(key = "autohud.group.chat")
         @SerialEntry public AdvancedComponent chat = new AdvancedComponent();
         @Translation(key = "autohud.group.actionBar")
@@ -189,6 +204,8 @@ public class Config implements Cloneable {
             chat.distance = 100;
             scoreboard.direction = ScrollDirection.Right;
             scoreboard.distance = 100;
+            crosshair.maximumFade = 0.1;
+            crosshair.speedMultiplier = 2.5;
         }
     }
 

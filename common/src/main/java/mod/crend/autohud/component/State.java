@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.PotionItem;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
+import net.minecraft.util.hit.HitResult;
 
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +49,7 @@ public class State {
         Component.ExperienceBar.state = new ValueComponentState<>(Component.ExperienceBar, () -> player.totalExperience, true);
         Component.Scoreboard.state = new ScoreboardComponentState(Component.Scoreboard);
         Component.MountJumpBar.state = new ComponentState(Component.MountJumpBar);
+        Component.Crosshair.state = new BooleanComponentState(Component.Crosshair, State::shouldShowCrosshair);
         Component.Chat.state = new ComponentState(Component.Chat);
         Component.ChatIndicator.state = new ComponentState(Component.ChatIndicator);
         Component.ChatIndicator.hideNow();
@@ -55,6 +57,11 @@ public class State {
         Component.BossBar.state = new ComponentState(Component.BossBar);
 
         AutoHud.apis.forEach(api -> api.initState(player));
+    }
+
+    private static boolean shouldShowCrosshair() {
+        HitResult hitResult = MinecraftClient.getInstance().crosshairTarget;
+        return (hitResult != null && hitResult.getType() != HitResult.Type.MISS);
     }
 
     private boolean isHealEffect(StatusEffectInstance effect) {

@@ -1,5 +1,6 @@
 package mod.crend.autohud.render;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
@@ -40,6 +41,20 @@ public class AutoHudRenderer {
 			if (component.isHidden()) {
 				context.getMatrices().translate(component.getOffsetX(tickDelta), component.getOffsetY(tickDelta), 0);
 			}
+		}
+	}
+	public static void preInjectCrosshair() {
+		if (Component.Crosshair.config.active()) {
+			CustomFramebufferRenderer.init();
+			RenderSystem.defaultBlendFunc();
+			AutoHudRenderer.preInjectFade(Component.Crosshair, (float) Component.Crosshair.config.maximumFade());
+		}
+	}
+	public static void postInjectCrosshair(DrawContext context) {
+		if (Component.Crosshair.config.active()) {
+			AutoHudRenderer.postInjectFade();
+			RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.ONE_MINUS_DST_COLOR, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
+			CustomFramebufferRenderer.draw(context);
 		}
 	}
 

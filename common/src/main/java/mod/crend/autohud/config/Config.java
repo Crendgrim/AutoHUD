@@ -34,8 +34,18 @@ public class Config implements Cloneable {
         @SerialEntry public double fadeOut = 0;
     }
     @SerialEntry public AnimationSpeeds animationSpeeds = new AnimationSpeeds();
-
     @SerialEntry public RevealType revealType = RevealType.Stacked;
+
+    public static class Events {
+        Events() { }
+
+        @SerialEntry public EventPolicy onScreenOpen = EventPolicy.Nothing;
+        @SerialEntry public EventPolicy onMoving = EventPolicy.Nothing;
+        @SerialEntry public EventPolicy onStandingStill = EventPolicy.Nothing;
+        @SerialEntry public EventPolicy onPauseScreen = EventPolicy.Nothing;
+    }
+    @SerialEntry public Events events = new Events();
+
     @Category(name = "components", group = "statusEffects")
     @SerialEntry public boolean statusEffectTimer = true;
 

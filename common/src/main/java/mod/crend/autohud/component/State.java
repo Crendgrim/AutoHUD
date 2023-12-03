@@ -3,8 +3,12 @@ package mod.crend.autohud.component;
 import com.mojang.datafixers.util.Pair;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.state.*;
+import mod.crend.autohud.config.EventPolicy;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.gui.screen.GameMenuScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -15,6 +19,7 @@ import net.minecraft.item.PotionItem;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,11 +29,17 @@ public class State {
 
     private Map<StatusEffect, StatusEffectInstance> previousStatusEffects;
     private ItemStack previousItemStack;
+    Vec3d previousPosition;
+    static final int TICKS_UNTIL_STANDING_STILL = 5;
+    int ticksUntilStandingStill = 0;
+    boolean wasInPauseScreen = false;
+    boolean screenWasOpen = false;
 
     public State(ClientPlayerEntity player) {
         initStates(player);
         previousStatusEffects = new HashMap<>();
         previousItemStack = player.getMainHandStack().copy();
+        previousPosition = player.getPos();
     }
    public void initStates(ClientPlayerEntity player) {
         Component.Hotbar.state = new ItemStackComponentState(Component.Hotbar, player::getMainHandStack, true);
@@ -122,9 +133,78 @@ public class State {
             }
         }
 
-        if (MinecraftClient.getInstance().currentScreen instanceof ChatScreen) {
+        Screen currentScreen = MinecraftClient.getInstance().currentScreen;
+        if (currentScreen instanceof ChatScreen) {
             Component.Chat.revealNow();
             Component.ChatIndicator.hide();
+        }
+
+        Vec3d position = player.getPos();
+        if (position != previousPosition) {
+            switch (AutoHud.config.onMoving()) {
+                case Reveal -> Component.revealAll();
+                case Hide -> Component.forceHideAll();
+                default -> {
+                    if (ticksUntilStandingStill < TICKS_UNTIL_STANDING_STILL) {
+                        switch (AutoHud.config.onStandingStill()) {
+                            case Hide -> Component.updateAll();
+                            case Reveal -> Component.hideAll();
+                        }
+                    }
+                }
+            }
+            previousPosition = position;
+            ticksUntilStandingStill = TICKS_UNTIL_STANDING_STILL;
+        } else {
+            if (ticksUntilStandingStill == 0) {
+                switch (AutoHud.config.onStandingStill()) {
+                    case Reveal -> Component.revealAll();
+                    case Hide -> Component.forceHideAll();
+                    default -> {
+                        if (AutoHud.config.onMoving() == EventPolicy.Hide) Component.updateAll();
+                    }
+                }
+            }
+            else {
+                if (ticksUntilStandingStill == TICKS_UNTIL_STANDING_STILL) {
+                    switch (AutoHud.config.onMoving()) {
+                        case Hide -> Component.updateAll();
+                        case Reveal -> Component.hideAll();
+                    }
+                }
+                --ticksUntilStandingStill;
+            }
+        }
+
+        if (currentScreen instanceof HandledScreen<?>) {
+            if (AutoHud.config.onScreenOpen() == EventPolicy.Reveal) Component.revealAll();
+            if (!screenWasOpen) {
+                if (AutoHud.config.onScreenOpen() == EventPolicy.Hide) Component.forceHideAll();
+                screenWasOpen = true;
+            }
+        } else if (screenWasOpen) {
+            switch (AutoHud.config.onScreenOpen()) {
+                case Hide -> Component.updateAll();
+                case Reveal -> Component.hideAll();
+            }
+            screenWasOpen = false;
+        }
+
+        if (AutoHud.config.onPauseScreen() != EventPolicy.Nothing) {
+            if (MinecraftClient.getInstance().currentScreen instanceof GameMenuScreen) {
+                switch (AutoHud.config.onPauseScreen()) {
+                    case Reveal -> Component.revealAll();
+                    case Hide -> Component.forceHideAll();
+                }
+                wasInPauseScreen = true;
+            }
+            else if (wasInPauseScreen) {
+                switch (AutoHud.config.onPauseScreen()) {
+                    case Hide -> Component.updateAll();
+                    case Reveal -> Component.hideAll();
+                }
+                wasInPauseScreen = false;
+            }
         }
 
         if (AutoHud.config.statusEffects().active()) {

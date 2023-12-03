@@ -16,16 +16,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ForgeGui.class)
 public class ForgeGuiMixin {
 
-	@Inject(method = "render", at = @At("HEAD"))
-	private void autoHud$preRender(DrawContext context, float tickDelta, CallbackInfo ci) {
-		AutoHudRenderer.inRender = true;
-		AutoHudRenderer.tickDelta = tickDelta;
-	}
-	@Inject(method = "render", at = @At("RETURN"))
-	private void autoHud$postRender(DrawContext context, float tickDelta, CallbackInfo ci) {
-		AutoHudRenderer.inRender = false;
-	}
-
 	@Inject(method = "renderHealth", at = @At("HEAD"))
 	private void autoHud$preHealth(int width, int height, DrawContext context, CallbackInfo ci) {
 		if (AutoHud.targetStatusBars) {

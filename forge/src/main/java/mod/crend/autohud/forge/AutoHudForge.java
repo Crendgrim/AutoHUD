@@ -3,8 +3,10 @@ package mod.crend.autohud.forge;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.ModKeyBindings;
 import mod.crend.autohud.component.Hud;
+import mod.crend.autohud.render.AutoHudRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderGuiEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -17,6 +19,15 @@ public class AutoHudForge {
         if (event.phase == TickEvent.Phase.END) {
             ModKeyBindings.clientTick(MinecraftClient.getInstance());
             Hud.tick();
+        }
+    }
+
+    @SubscribeEvent
+    static void onRenderGuiEvent(RenderGuiEvent event) {
+        if (event instanceof RenderGuiEvent.Pre) {
+            AutoHudRenderer.startRender(event.getGuiGraphics(), event.getPartialTick());
+        } else {
+            AutoHudRenderer.endRender();
         }
     }
 }

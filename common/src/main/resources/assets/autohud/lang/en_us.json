@@ -26,7 +26,15 @@
   "autohud.option.animationSpeeds.fadeOut.description": "Animation speed while fading out. Set to 0 to use above speed value.",
   "autohud.option.revealType": "Component stacking",
   "autohud.option.revealType.description": "Handle the components as such:\nIndividual: move all components individually\nStacked: Hide components only if not blocked by other visible components\nGrouped: move all logically grouped components (hotbar area) together\nHide Combined: hide revealed components together\nCombined: move all components together",
-
+  "autohud.group.events": "Events",
+  "autohud.option.events.onScreenOpen": "When screen opened",
+  "autohud.option.events.onScreenOpen.description": "When a screen is open:\nHide All: hides all UI components\nReveal All: reveals all UI components\nDo Nothing: No special handling",
+  "autohud.option.events.onMoving": "When moving",
+  "autohud.option.events.onMoving.description": "When you are moving around:\nHide All: hides all UI components\nReveal All: reveals all UI components\nDo Nothing: No special handling",
+  "autohud.option.events.onStandingStill": "When not moving",
+  "autohud.option.events.onStandingStill.description": "After you are standing still for a bit:\nHide All: hides all UI components\nReveal All: reveals all UI components\nDo Nothing: No special handling",
+  "autohud.option.events.onPauseScreen": "When pause screen opened",
+  "autohud.option.events.onPauseScreen.description": "When the pause screen is open:\nHide All: hides all UI components\nReveal All: reveals all UI components\nDo Nothing: No special handling",
 
   "autohud.group.statusBars": "Status Bars",
   "autohud.option.health.policy": "Reveal health when",
@@ -135,6 +143,9 @@
   "autohud.revealPolicy.Decreasing": "Decreasing",
   "autohud.revealPolicy.NotFull": "Not Full",
   "autohud.revealPolicy.Low": "Low",
+  "autohud.eventPolicy.Reveal": "Reveal All",
+  "autohud.eventPolicy.Hide": "Hide All",
+  "autohud.eventPolicy.Nothing": "Do Nothing",
 
   "key.category.autohud": "Auto HUD",
   "key.autohud.toggle-hud": "Toggle dynamic HUD",

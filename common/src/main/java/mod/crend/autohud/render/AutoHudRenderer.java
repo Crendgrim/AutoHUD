@@ -10,6 +10,8 @@ public class AutoHudRenderer {
 	public static boolean inRender;
 	public static float tickDelta = 0.0f;
 	public static float alpha = 1.0f;
+	public static float globalOffsetX = 0;
+	public static float globalOffsetY = 0;
 
 	public static void preInjectFade(Component component) {
 		preInjectFade(component, 0.0f);
@@ -108,4 +110,13 @@ public class AutoHudRenderer {
 		}
 	}
 
+	public static void startRender(DrawContext context, float pTickDelta) {
+		inRender = true;
+		tickDelta = pTickDelta;
+		ChatMessageIndicator.render(context);
+	}
+
+	public static void endRender() {
+		inRender = false;
+	}
 }

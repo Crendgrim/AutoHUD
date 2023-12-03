@@ -21,6 +21,10 @@ public class ConfigHandler {
     public double animationSpeedFadeIn() { return CONFIG_STORE.config().animationSpeeds.fadeIn == 0 ? CONFIG_STORE.config().animationSpeed : CONFIG_STORE.config().animationSpeeds.fadeIn; }
     public double animationSpeedFadeOut() { return CONFIG_STORE.config().animationSpeeds.fadeOut == 0 ? CONFIG_STORE.config().animationSpeed : CONFIG_STORE.config().animationSpeeds.fadeOut; }
     public RevealType revealType() { return CONFIG_STORE.config().revealType; }
+    public EventPolicy onScreenOpen() { return CONFIG_STORE.config().events.onScreenOpen; }
+    public EventPolicy onMoving() { return CONFIG_STORE.config().events.onMoving; }
+    public EventPolicy onStandingStill() { return CONFIG_STORE.config().events.onStandingStill; }
+    public EventPolicy onPauseScreen() { return CONFIG_STORE.config().events.onPauseScreen; }
     public boolean statusEffectTimer() { return CONFIG_STORE.config().statusEffectTimer; }
 
     public abstract static class IComponent {

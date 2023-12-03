@@ -54,6 +54,14 @@ public class Component {
         components.forEach(Component::revealCombined);
         statusEffectComponents.values().forEach(Component::revealCombined);
     }
+    public static void forceHideAll() {
+        components.forEach(Component::forceHide);
+    }
+    public static void updateAll() {
+        components.forEach(component -> {
+            if (component.state != null) component.state.updateNextTick();
+        });
+    }
     public static void hideAll() {
         components.forEach(Component::hide);
         statusEffectComponents.values().forEach(Component::hide);
@@ -258,6 +266,10 @@ public class Component {
         if (state != null) {
             state.updateNextTick();
         }
+    }
+    public void forceHide() {
+        if (!config.active()) return;
+        visibleTime = 0;
     }
     private boolean fullyRevealed() {
         return offset == 0 && alpha == 1;

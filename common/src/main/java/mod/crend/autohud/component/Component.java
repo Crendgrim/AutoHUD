@@ -54,6 +54,10 @@ public class Component {
         components.forEach(Component::revealCombined);
         statusEffectComponents.values().forEach(Component::revealCombined);
     }
+    public static void revealAll(float visibleTime) {
+        components.forEach(component -> component.revealCombined(visibleTime));
+        statusEffectComponents.values().forEach(component -> component.revealCombined(visibleTime));
+    }
     public static void forceHideAll() {
         components.forEach(Component::forceHide);
     }
@@ -207,7 +211,10 @@ public class Component {
      * - Grouped: force all components to be revealed that are logically grouped.
      */
     public void revealCombined() {
-        visibleTime = AutoHud.config.timeRevealed();
+        revealCombined(AutoHud.config.timeRevealed());
+    }
+    public void revealCombined(float visibleTime) {
+        this.visibleTime = visibleTime;
         if (config.active()) {
             switch (AutoHud.config.revealType()) {
                 case Combined -> components.forEach(c -> c.visibleTime = Math.max(c.visibleTime, visibleTime));

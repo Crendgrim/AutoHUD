@@ -34,6 +34,8 @@ public class State {
     int ticksUntilStandingStill = 0;
     boolean wasInPauseScreen = false;
     boolean screenWasOpen = false;
+    boolean wasSneaking = false;
+    boolean wasFlying = false;
 
     public State(ClientPlayerEntity player) {
         initStates(player);
@@ -137,6 +139,41 @@ public class State {
         if (currentScreen instanceof ChatScreen) {
             Component.Chat.revealNow();
             Component.ChatIndicator.hide();
+        }
+
+        if (player.isSneaking()) {
+            switch (AutoHud.config.onSneaking()) {
+                case Reveal -> Component.revealAll();
+                case Hide -> Component.forceHideAll();
+            }
+            wasSneaking = true;
+        } else if (wasSneaking) {
+            switch (AutoHud.config.onSneaking()) {
+                case Reveal -> Component.hideAll();
+                case Hide -> Component.updateAll();
+            }
+            wasSneaking = false;
+        }
+
+        if (player.isFallFlying()) {
+            switch (AutoHud.config.onFlying()) {
+                case Reveal -> Component.revealAll();
+                case Hide -> Component.forceHideAll();
+            }
+            wasFlying = true;
+        } else if (wasFlying) {
+            switch (AutoHud.config.onFlying()) {
+                case Reveal -> Component.hideAll();
+                case Hide -> Component.updateAll();
+            }
+        }
+
+        if (AutoHud.config.onUsingItem() && player.isUsingItem()) {
+            Component.revealAll(1);
+        }
+
+        if (AutoHud.config.onMining() && MinecraftClient.getInstance().interactionManager.getBlockBreakingProgress() >= 0) {
+            Component.revealAll(1);
         }
 
         Vec3d position = player.getPos();

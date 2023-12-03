@@ -9,6 +9,7 @@
     "ClientPlayNetworkHandlerMixin",
     "EntityMixin",
     "HungerManagerMixin",
+    "MinecraftClientMixin",
     "ScoreboardMixin",
     "TeamMixinAccessor",
     "gui.MinecraftClientMixin",

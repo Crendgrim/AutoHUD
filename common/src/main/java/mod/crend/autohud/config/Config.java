@@ -43,6 +43,12 @@ public class Config implements Cloneable {
         @SerialEntry public EventPolicy onMoving = EventPolicy.Nothing;
         @SerialEntry public EventPolicy onStandingStill = EventPolicy.Nothing;
         @SerialEntry public EventPolicy onPauseScreen = EventPolicy.Nothing;
+        @SerialEntry public EventPolicy onSneaking = EventPolicy.Nothing;
+        @SerialEntry public EventPolicy onFlying = EventPolicy.Nothing;
+        @SerialEntry public boolean onUsingItem = false;
+        @SerialEntry public boolean onMining = false;
+        @SerialEntry public boolean onSwinging = false;
+        @SerialEntry public boolean onAttacking = false;
     }
     @SerialEntry public Events events = new Events();
 

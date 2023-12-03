@@ -25,6 +25,12 @@ public class ConfigHandler {
     public EventPolicy onMoving() { return CONFIG_STORE.config().events.onMoving; }
     public EventPolicy onStandingStill() { return CONFIG_STORE.config().events.onStandingStill; }
     public EventPolicy onPauseScreen() { return CONFIG_STORE.config().events.onPauseScreen; }
+    public EventPolicy onSneaking() { return CONFIG_STORE.config().events.onSneaking; }
+    public EventPolicy onFlying() { return CONFIG_STORE.config().events.onFlying; }
+    public boolean onUsingItem() { return CONFIG_STORE.config().events.onUsingItem; }
+    public boolean onMining() { return CONFIG_STORE.config().events.onMining; }
+    public boolean onSwinging() { return CONFIG_STORE.config().events.onSwinging; }
+    public boolean onAttacking() { return CONFIG_STORE.config().events.onAttacking; }
     public boolean statusEffectTimer() { return CONFIG_STORE.config().statusEffectTimer; }
 
     public abstract static class IComponent {

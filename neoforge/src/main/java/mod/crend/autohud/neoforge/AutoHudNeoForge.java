@@ -23,11 +23,11 @@ public class AutoHudNeoForge {
     }
 
     @SubscribeEvent
-    static void onRenderGuiEvent(RenderGuiEvent event) {
-        if (event instanceof RenderGuiEvent.Pre) {
-            AutoHudRenderer.startRender(event.getGuiGraphics(), event.getPartialTick());
-        } else {
-            AutoHudRenderer.endRender();
-        }
+    static void onPreRenderGuiEvent(RenderGuiEvent.Pre event) {
+        AutoHudRenderer.startRender(event.getGuiGraphics(), event.getPartialTick());
+    }
+    @SubscribeEvent
+    static void onPostRenderGuiEvent(RenderGuiEvent.Post event) {
+        AutoHudRenderer.endRender();
     }
 }

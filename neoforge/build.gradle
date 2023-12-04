@@ -80,7 +80,7 @@ unifiedPublishing {
         changelog = "${rootProject.changelog}"
         releaseType = "${rootProject.release_type}"
         gameVersions = List.of(project.supported_versions.split(';'))
-        gameLoaders = ["neoForge"]
+        gameLoaders = ["neoforge"]
 
         mainPublication tasks.remapJar
 

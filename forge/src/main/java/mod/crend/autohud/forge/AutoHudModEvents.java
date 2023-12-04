@@ -20,6 +20,7 @@ import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 @Mod.EventBusSubscriber(modid = AutoHud.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class AutoHudModEvents {
 	public static final String REGISTER_API = "register_api";
+	public static final String NEW_CHAT_MESSAGE_INDICATOR = "new_chat_message_indicator";
 
 	@SubscribeEvent
 	static void onClientSetup(FMLClientSetupEvent event) {
@@ -43,7 +44,7 @@ public class AutoHudModEvents {
 
 	@SubscribeEvent
 	static void onRegisterOverlaysEvent(RegisterGuiOverlaysEvent event) {
-		event.registerAboveAll("autohud_new_chat_message_indicator", (forgeGui, context, f, i, j) -> ChatMessageIndicator.render(context));
+		event.registerAboveAll(NEW_CHAT_MESSAGE_INDICATOR, (forgeGui, context, f, i, j) -> ChatMessageIndicator.render(context));
 	}
 
 }

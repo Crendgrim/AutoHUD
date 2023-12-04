@@ -6,6 +6,7 @@ import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.config.ConfigHandler;
 import mod.crend.autohud.render.ChatMessageIndicator;
 import mod.crend.yaclx.neoforge.ConfigScreen;
+import net.minecraft.util.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.InterModComms;
@@ -20,6 +21,7 @@ import static net.neoforged.fml.common.Mod.EventBusSubscriber;
 @EventBusSubscriber(modid = AutoHud.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class AutoHudModEvents {
 	public static final String REGISTER_API = "register_api";
+	public static final Identifier NEW_CHAT_MESSAGE_INDICATOR = new Identifier(AutoHud.MOD_ID, "new_chat_message_indicator");
 
 	@SubscribeEvent
 	static void onClientSetup(FMLClientSetupEvent event) {
@@ -43,7 +45,7 @@ public class AutoHudModEvents {
 
 	@SubscribeEvent
 	static void onRegisterOverlaysEvent(RegisterGuiOverlaysEvent event) {
-		event.registerAboveAll("autohud_new_chat_message_indicator", (forgeGui, context, f, i, j) -> ChatMessageIndicator.render(context));
+		event.registerAboveAll(NEW_CHAT_MESSAGE_INDICATOR, (forgeGui, context, f, i, j) -> ChatMessageIndicator.render(context));
 	}
 
 }

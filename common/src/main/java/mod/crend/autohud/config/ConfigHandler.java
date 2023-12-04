@@ -160,6 +160,7 @@ public class ConfigHandler {
     public int getHotbarDurabilityPercentage() { return CONFIG_STORE.config().hotbar.durabilityPercentage; }
     public int getHotbarDurabilityTotal() { return CONFIG_STORE.config().hotbar.durabilityTotal; }
     public float getHotbarItemsMaximumFade() { return CONFIG_STORE.config().hotbar.maximumFadeHotbarItems; }
+    public boolean revealExperienceTextWithHotbar() { return CONFIG_STORE.config().hotbar.revealExperienceTextWithHotbar; }
     public BooleanComponent statusEffects() { return statusEffects; }
     public boolean hidePersistentStatusEffects() { return CONFIG_STORE.config().hidePersistentStatusEffects; }
     public BooleanComponent scoreboard() { return scoreboard; }

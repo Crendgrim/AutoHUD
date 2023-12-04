@@ -349,6 +349,10 @@ public class Component {
         }
     }
 
+    public boolean isMoreVisibleThan(Component other) {
+        return this.offset < other.offset;
+    }
+
     public void tick() {
         if (visibleTime == 0) { // hide component
             if (!fullyHidden()) {

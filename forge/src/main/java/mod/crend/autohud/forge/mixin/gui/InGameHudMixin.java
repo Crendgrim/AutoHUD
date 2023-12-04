@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Hud;
+import mod.crend.autohud.forge.AutoHudGui;
 import mod.crend.autohud.render.AutoHudRenderer;
 import mod.crend.autohud.render.CustomFramebufferRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -120,6 +121,12 @@ public class InGameHudMixin {
 	private void autoHud$preExperienceBar(DrawContext context, int x, CallbackInfo ci) {
 		if (AutoHud.targetExperienceBar) {
 			AutoHudRenderer.preInjectFade(Component.ExperienceBar);
+		}
+	}
+	@Inject(method = "renderExperienceBar", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;IIIZ)I", ordinal = 0, shift = At.Shift.BEFORE))
+	private void autoHud$experienceText(DrawContext context, int x, CallbackInfo ci) {
+		if (AutoHud.config.revealExperienceTextWithHotbar()) {
+			AutoHudRenderer.moveExperienceText(context);
 		}
 	}
 

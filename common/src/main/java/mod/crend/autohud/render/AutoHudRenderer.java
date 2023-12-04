@@ -90,6 +90,16 @@ public class AutoHudRenderer {
 		}
 	}
 
+	public static void moveExperienceText(DrawContext context) {
+		if (Component.Hotbar.isMoreVisibleThan(Component.ExperienceBar)) {
+			context.getMatrices().translate(
+					Component.Hotbar.getOffsetX(tickDelta) - Component.ExperienceBar.getOffsetX(tickDelta),
+					Component.Hotbar.getOffsetY(tickDelta) - Component.ExperienceBar.getOffsetY(tickDelta),
+					0);
+			AutoHudRenderer.preInjectFade(Component.Hotbar);
+		}
+	}
+
 	/**
 	 * Modifies the given color to set its alpha value
 	 */

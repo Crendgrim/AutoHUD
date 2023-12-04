@@ -66,7 +66,7 @@ public class AutoHudGui extends ForgeGui {
 	public void preHudComponent(RenderGuiOverlayEvent.Pre event) {
 		getComponent(event.getOverlay().id()).ifPresent(
 				component -> {
-					if (component.fullyHidden()) {
+					if (component.fullyHidden() && !(AutoHud.config.revealExperienceTextWithHotbar() && component.equals(Component.ExperienceBar) && !Component.Hotbar.fullyHidden())) {
 						event.setCanceled(true);
 					}
 					preRender(event.getGuiGraphics(), component, event.getPartialTick());

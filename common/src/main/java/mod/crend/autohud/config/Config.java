@@ -168,6 +168,9 @@ public class Config implements Cloneable {
         @EnableIf(field = "hotbar.active", value = EnableIf.BooleanPredicate.class)
         @FloatingPointRange(min = 0.0f, max = 1.0f, interval = 0.1f)
         @SerialEntry public float maximumFadeHotbarItems = 0.0f;
+        @EnableIf(field = "hotbar.active", value = EnableIf.BooleanPredicate.class)
+        @EnableIf(field = "experience.active", value = EnableIf.BooleanPredicate.class)
+        @SerialEntry public boolean revealExperienceTextWithHotbar = true;
     }
     
     public static class ScoreboardComponents {

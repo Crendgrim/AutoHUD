@@ -118,10 +118,11 @@ public abstract class InGameHudMixin {
     }
 
     // Experience bar
-    @Inject(method = "renderExperienceBar", at = @At("HEAD"))
+    @Inject(method = "renderExperienceBar", at = @At("HEAD"), cancellable = true)
     private void autoHud$preExperienceBar(MatrixStack matrixStack, int x, CallbackInfo ci) {
         if (AutoHud.targetExperienceBar) {
-            Hud.preInject(matrixStack, Component.ExperienceBar);
+            if (Component.ExperienceBar.fullyHidden()) ci.cancel();
+            else Hud.preInject(matrixStack, Component.ExperienceBar);
         }
     }
 
@@ -130,6 +131,14 @@ public abstract class InGameHudMixin {
         if (AutoHud.targetExperienceBar) {
             Hud.postInject(matrixStack);
         }
+    }
+
+    @ModifyArg(method = "renderExperienceBar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/client/util/math/MatrixStack;Ljava/lang/String;FFI)I"), index = 4)
+    private int autoHud$transparentExperienceText(int color) {
+        if (AutoHud.targetExperienceBar) {
+            return Hud.modifyArgb(color);
+        }
+        return color;
     }
 
     // Status Effects

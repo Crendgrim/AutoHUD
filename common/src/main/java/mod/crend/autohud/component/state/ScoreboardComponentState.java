@@ -7,6 +7,7 @@ import mod.crend.autohud.mixin.TeamMixinAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.scoreboard.*;
 import net.minecraft.text.Text;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,7 +50,7 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
     private static ScoreboardObjective createObjective() {
         Scoreboard scoreboard = MinecraftClient.getInstance().world.getScoreboard();
 
-        Team playerTeam = scoreboard.getPlayerTeam(MinecraftClient.getInstance().player.getEntityName());
+        Team playerTeam = scoreboard.getTeam(MinecraftClient.getInstance().player.getNameForScoreboard());
         if (playerTeam != null && playerTeam.getColor().isColor()) {
             return scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.fromFormatting(playerTeam.getColor()));
         }
@@ -77,15 +78,17 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
         this.cachedPlayerScores.clear();
         this.cachedDisplayName = objective.getDisplayName();
 
-        objective.getScoreboard().getAllPlayerScores(objective).forEach(this::addPlayerScoreAndTeam);
+        objective.getScoreboard().getScoreboardEntries(objective).forEach(scoreboardEntry -> {
+            addPlayerScoreAndTeam(ScoreHolder.fromName(scoreboardEntry.owner()), objective, scoreboardEntry.value());
+        });
     }
 
-    private void addPlayerScoreAndTeam(ScoreboardPlayerScore playerScore) {
-        Team playerTeam = playerScore.getObjective().getScoreboard().getPlayerTeam(playerScore.getPlayerName());
+    private void addPlayerScoreAndTeam(ScoreHolder scoreHolder, ScoreboardObjective objective, int score) {
+        Team playerTeam = objective.getScoreboard().getTeam(scoreHolder.getNameForScoreboard());
         String teamName = playerTeam == null ? null : playerTeam.getName();
 
-        this.cachedPlayerScores.put(playerScore.getPlayerName(),
-                new ObjectIntMutablePair<>(teamName, playerScore.getScore()));
+        this.cachedPlayerScores.put(scoreHolder.getNameForScoreboard(),
+                new ObjectIntMutablePair<>(teamName, score));
 
         if (teamName == null) return;
 
@@ -118,20 +121,20 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
         }
     }
 
-    public void onPlayerScoreUpdate(ScoreboardPlayerScore playerScore) {
-        if (Objects.equals(super.oldValue, playerScore.getObjective())) {
-            if (this.cachedPlayerScores.containsKey(playerScore.getPlayerName())) {
+    public void onPlayerScoreUpdate(ScoreHolder scoreHolder, ScoreboardObjective objective, ScoreboardScore score) {
+        if (Objects.equals(super.oldValue, objective)) {
+            if (this.cachedPlayerScores.containsKey(scoreHolder.getNameForScoreboard())) {
                 // if there's an existing player cached, update the cache and perform checks
-                Pair<String, Integer> cachedTeamAndScore = this.cachedPlayerScores.get(playerScore.getPlayerName());
+                Pair<String, Integer> cachedTeamAndScore = this.cachedPlayerScores.get(scoreHolder.getNameForScoreboard());
 
-                if (cachedTeamAndScore.right() == null || cachedTeamAndScore.right() != playerScore.getScore()) {
+                if (cachedTeamAndScore.right() == null || cachedTeamAndScore.right() != score.getScore()) {
                     super.component.revealCombined();
-                    cachedTeamAndScore.right(playerScore.getScore());
+                    cachedTeamAndScore.right(score.getScore());
                 }
             } else {
                 // else add this new player since we don't easily get to know when it was
                 // recently added
-                this.addPlayerScoreAndTeam(playerScore);
+                this.addPlayerScoreAndTeam(scoreHolder, objective, score.getScore());
             }
 
         }

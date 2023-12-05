@@ -8,15 +8,12 @@ architectury {
     fabric()
 }
 
-def extractedDir = "$buildDir/dependencies/extractedDir"
-
 configurations {
     common
     shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentFabric.extendsFrom common
-    jijArchive
 }
 
 repositories {
@@ -39,9 +36,6 @@ dependencies {
     modImplementation fabricApi.module("fabric-key-binding-api-v1", project.fabric_api_version)
     modImplementation fabricApi.module("fabric-transfer-api-v1", project.fabric_api_version)
 
-    include("io.github.llamalad7:mixinextras-fabric:${project.mixin_extras_version}")
-    //modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
-
     modImplementation "dev.isxander.yacl:yet-another-config-lib-fabric:${project.yacl_version}"
     modImplementation include(name: "yaclx", group: "mod.crend.yaclx", version: "${project.yaclx_version}-fabric")
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
@@ -54,8 +48,7 @@ dependencies {
     modCompileOnly("maven.modrinth:inventory-profiles-next:${project.inventory_profiles_next_version}") { transitive = false }
     modCompileOnly("maven.modrinth:onebar:${project.onebar_version}") { transitive = false }
     modCompileOnly("maven.modrinth:status-effect-bars:${project.status_effect_bars_version}") { transitive = false }
-    jijArchive "maven.modrinth:microdurability:${project.microdurability_version}"
-    modCompileOnly fileTree(dir: "${extractedDir}", include: '*.jar')
+    modCompileOnly("maven.modrinth:microdurability:${project.microdurability_version}") { transitive = false }
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
@@ -68,20 +61,6 @@ processResources {
         expand(project.properties)
     }
 }
-
-// Special magic to extract a jar-in-jar archive and add it to the include path
-tasks.register('extractJij', Copy) {
-    configurations.jijArchive.asFileTree.each {
-        zipTree(it).each { it2 ->
-            if (it2.name.endsWith(".jar")) {
-                from(it2)
-                compileJava.classpath += files("${extractedDir}/${it2.getName()}")
-            }
-        }
-    }
-    into extractedDir
-}
-compileJava.dependsOn extractJij
 
 shadowJar {
     exclude "architectury.common.json"

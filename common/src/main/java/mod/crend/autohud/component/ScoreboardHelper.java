@@ -2,8 +2,9 @@ package mod.crend.autohud.component;
 
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.state.ScoreboardComponentState;
+import net.minecraft.scoreboard.ScoreHolder;
 import net.minecraft.scoreboard.ScoreboardObjective;
-import net.minecraft.scoreboard.ScoreboardPlayerScore;
+import net.minecraft.scoreboard.ScoreboardScore;
 import net.minecraft.scoreboard.Team;
 
 public class ScoreboardHelper {
@@ -13,9 +14,9 @@ public class ScoreboardHelper {
         }
     }
 
-    public static void onPlayerScoreUpdate(ScoreboardPlayerScore score) {
+    public static void onPlayerScoreUpdate(ScoreHolder scoreHolder, ScoreboardObjective objective, ScoreboardScore score) {
         if (canUpdate() && AutoHud.config.shouldRevealScoreboardOnScoreChange()) {
-            getScoreboardComponent().onPlayerScoreUpdate(score);
+            getScoreboardComponent().onPlayerScoreUpdate(scoreHolder, objective, score);
         }
     }
 

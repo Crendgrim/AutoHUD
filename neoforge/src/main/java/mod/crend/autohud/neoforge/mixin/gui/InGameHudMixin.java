@@ -93,21 +93,21 @@ public class InGameHudMixin {
 			AutoHudRenderer.preInjectFade(Component.Scoreboard);
 		}
 	}
-	@ModifyArg(method = "renderScoreboardSidebar", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;IIIZ)I"), index = 4)
+	@ModifyArg(method = "method_55440", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;IIIZ)I"), index = 4)
 	private int autoHud$scoreboardSidebarString(int color) {
 		if (AutoHudRenderer.inRender) {
 			return AutoHudRenderer.getArgb() | 0xFFFFFF;
 		}
 		return color;
 	}
-	@ModifyArg(method = "renderScoreboardSidebar", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;IIIZ)I"), index = 4)
+	@ModifyArg(method = "method_55440", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;IIIZ)I"), index = 4)
 	private int autoHud$scoreboardSidebarText(int color) {
 		if (AutoHudRenderer.inRender) {
 			return AutoHudRenderer.getArgb() | 0xFFFFFF;
 		}
 		return color;
 	}
-	@ModifyArg(method = "renderScoreboardSidebar", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V"), index=4)
+	@ModifyArg(method = "method_55440", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V"), index=4)
 	private int autoHud$scoreboardSidebarFill(int color) {
 		if (AutoHudRenderer.inRender) {
 			return AutoHudRenderer.modifyArgb(color);

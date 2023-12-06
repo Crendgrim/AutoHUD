@@ -18,7 +18,14 @@ subprojects {
 
     dependencies {
         minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
-        mappings "net.fabricmc:yarn:${rootProject.yarn_mappings}:v2"
+        if (project.name == "common" || project.name == "fabric") {
+            mappings "net.fabricmc:yarn:${rootProject.yarn_mappings}:v2"
+        } else {
+            mappings loom.layered() {
+                it.mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
+                it.mappings file("${rootDir}/mappings/yarnpatch.tiny")
+            }
+        }
 
         implementation annotationProcessor("com.github.LlamaLad7.MixinExtras:mixinextras-common:${project.mixin_extras_version}")
     }

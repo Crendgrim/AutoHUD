@@ -41,7 +41,11 @@ processResources {
     inputs.property "version", project.version
 
     filesMatching("META-INF/mods.toml") {
-        expand "version": project.version
+        expand(project.properties)
+    }
+
+    copy {
+        from(project(":common").projectDir.path + "/src/main/resources/assets/${project.mod_id}/icon.png") into "build/resources/main"
     }
 }
 

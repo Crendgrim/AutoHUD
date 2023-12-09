@@ -1,5 +1,7 @@
 package mod.crend.autohud.neoforge.mixin.gui;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Hud;
@@ -12,7 +14,10 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.StatusEffectSpriteManager;
 import net.minecraft.entity.JumpingMount;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.ScoreboardObjective;
+import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -46,14 +51,14 @@ public class InGameHudMixin {
 	}
 
 	// Hotbar items
-	@Inject(
+	@WrapOperation(
 			method = "renderHotbar",
 			at = @At(
 					value = "INVOKE",
 					target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/gui/DrawContext;IIFLnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V"
 			)
 	)
-	private void autoHud$preTransparentHotbarItems(float tickDelta, DrawContext context, CallbackInfo ci) {
+	private void autoHud$transparentHotbarItems(InGameHud instance, DrawContext context, int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed, Operation<Void> original) {
 		if (AutoHud.targetHotbar && AutoHud.config.animationFade()) {
 			// Don't render items if they're fully invisible anyway
 			if (!Component.Hotbar.fullyHidden() || AutoHud.config.getHotbarItemsMaximumFade() > 0.0f) {
@@ -62,27 +67,14 @@ public class InGameHudMixin {
 				// Setup custom framebuffer
 				CustomFramebufferRenderer.init();
 				// Have the original call draw onto the custom framebuffer
-			}
-		}
-	}
-	@Inject(
-			method = "renderHotbar",
-			at = @At(
-					value = "INVOKE",
-					target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/gui/DrawContext;IIFLnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V",
-					shift = At.Shift.AFTER
-			)
-	)
-	private void autoHud$postTransparentHotbarItems(float tickDelta, DrawContext context, CallbackInfo ci) {
-		if (AutoHud.targetHotbar && AutoHud.config.animationFade()) {
-			// Don't render items if they're fully invisible anyway
-			if (!Component.Hotbar.fullyHidden() || AutoHud.config.getHotbarItemsMaximumFade() > 0.0f) {
-				// We have rendered onto the custom framebuffer now
+				original.call(instance, context, x, y, tickDelta, player, stack, seed);
 				// Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
 				AutoHudRenderer.preInjectFadeWithReverseTranslation(context, Component.Hotbar, AutoHud.config.getHotbarItemsMaximumFade());
 				CustomFramebufferRenderer.draw(context);
 				AutoHudRenderer.postInjectFadeWithReverseTranslation(context);
 			}
+		} else {
+			original.call(instance, context, x, y, tickDelta, player, stack, seed);
 		}
 	}
 
@@ -138,25 +130,16 @@ public class InGameHudMixin {
 	}
 
 	// Crosshair
-	@Inject(method = "renderCrosshair",
+	@WrapOperation(method = "renderCrosshair",
 			slice = @Slice(
 					from = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;blendFuncSeparate(Lcom/mojang/blaze3d/platform/GlStateManager$SrcFactor;Lcom/mojang/blaze3d/platform/GlStateManager$DstFactor;Lcom/mojang/blaze3d/platform/GlStateManager$SrcFactor;Lcom/mojang/blaze3d/platform/GlStateManager$DstFactor;)V"),
 					to = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getAttackIndicator()Lnet/minecraft/client/option/SimpleOption;")
 			),
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V", shift = At.Shift.BEFORE))
-	private void autoHud$preRenderCrosshair(DrawContext context, CallbackInfo ci) {
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V"))
+	private void autoHud$renderCrosshair(DrawContext context, Identifier texture, int x, int y, int width, int height, Operation<Void> original) {
 		if (AutoHudRenderer.shouldRenderCrosshair()) {
 			AutoHudRenderer.preInjectCrosshair();
-		}
-	}
-	@Inject(method = "renderCrosshair",
-			slice = @Slice(
-					from = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;blendFuncSeparate(Lcom/mojang/blaze3d/platform/GlStateManager$SrcFactor;Lcom/mojang/blaze3d/platform/GlStateManager$DstFactor;Lcom/mojang/blaze3d/platform/GlStateManager$SrcFactor;Lcom/mojang/blaze3d/platform/GlStateManager$DstFactor;)V"),
-					to = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getAttackIndicator()Lnet/minecraft/client/option/SimpleOption;")
-			),
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V", shift = At.Shift.AFTER))
-	private void autoHud$postRenderCrosshair(DrawContext context, CallbackInfo ci) {
-		if (AutoHudRenderer.shouldRenderCrosshair()) {
+			original.call(context, texture, x, y, width, height);
 			AutoHudRenderer.postInjectCrosshair(context);
 		}
 	}

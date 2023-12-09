@@ -24,9 +24,6 @@
     "client": [
       "mod.crend.autohud.fabric.AutoHudFabric"
     ],
-    "preLaunch": [
-      "com.llamalad7.mixinextras.MixinExtrasBootstrap::init"
-    ],
     "modmenu": [
       "mod.crend.autohud.fabric.screen.ModMenuIntegration"
     ]

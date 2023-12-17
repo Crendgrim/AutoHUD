@@ -16,8 +16,13 @@ public class ArmorBarRendererMixin {
 	@Inject(method = "render", at=@At("HEAD"))
 	void autoHud$preRender(DrawContext context, PlayerEntity player, CallbackInfo ci) {
 		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.postInject(context);
 			AutoHudRenderer.preInject(context, Component.Armor);
+		}
+	}
+	@Inject(method = "render", at=@At("RETURN"))
+	void autoHud$postRender(DrawContext context, PlayerEntity player, CallbackInfo ci) {
+		if (AutoHud.targetStatusBars) {
+			AutoHudRenderer.postInject(context);
 		}
 	}
 }

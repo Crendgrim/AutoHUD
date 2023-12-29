@@ -8,8 +8,6 @@ architectury {
     fabric()
 }
 
-def extractedDir = "$buildDir/dependencies/extractedDir"
-
 configurations {
     common
     shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.

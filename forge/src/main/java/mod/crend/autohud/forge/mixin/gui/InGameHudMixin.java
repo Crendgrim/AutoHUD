@@ -5,7 +5,6 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Hud;
-import mod.crend.autohud.forge.AutoHudGui;
 import mod.crend.autohud.render.AutoHudRenderer;
 import mod.crend.autohud.render.CustomFramebufferRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -85,27 +84,6 @@ public class InGameHudMixin {
 		if (AutoHud.targetScoreboard) {
 			AutoHudRenderer.preInjectFade(Component.Scoreboard);
 		}
-	}
-	@ModifyArg(method = "method_55440", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;IIIZ)I"), index = 4)
-	private int autoHud$scoreboardSidebarString(int color) {
-		if (AutoHudRenderer.inRender) {
-			return AutoHudRenderer.getArgb() | 0xFFFFFF;
-		}
-		return color;
-	}
-	@ModifyArg(method = "method_55440", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;IIIZ)I"), index = 4)
-	private int autoHud$scoreboardSidebarText(int color) {
-		if (AutoHudRenderer.inRender) {
-			return AutoHudRenderer.getArgb() | 0xFFFFFF;
-		}
-		return color;
-	}
-	@ModifyArg(method = "method_55440", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V"), index=4)
-	private int autoHud$scoreboardSidebarFill(int color) {
-		if (AutoHudRenderer.inRender) {
-			return AutoHudRenderer.modifyArgb(color);
-		}
-		return color;
 	}
 
 	// Mount

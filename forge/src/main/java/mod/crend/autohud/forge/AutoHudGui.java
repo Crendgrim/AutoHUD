@@ -42,6 +42,7 @@ public class AutoHudGui extends ForgeGui {
 		AutoHudRenderer.preInjectFade(component);
 	}
 	public void postRender(DrawContext context, Component component, float tickDelta) {
+		AutoHudRenderer.postInjectFade();
 		if (AutoHud.config.animationMove()) {
 			context.getMatrices().translate(-component.getOffsetX(tickDelta), -component.getOffsetY(tickDelta), 0);
 		}

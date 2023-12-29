@@ -32,6 +32,8 @@ dependencies {
    // modImplementation "dev.isxander.yacl:yet-another-config-lib-forge:${project.yacl_version}"
     modImplementation include(name: "yaclx", group: "mod.crend.yaclx", version:"${project.yaclx_version}-forge")
 
+    modCompileOnly("maven.modrinth:raised:${project.raised_version}") { transitive = false }
+
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 }

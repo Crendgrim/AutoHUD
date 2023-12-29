@@ -11,7 +11,7 @@ authors = "Crendgrim"
 description = '''
  Dynamic HUD that hides interface elements while they are not needed.
 '''
-logoFile = "icon.png"
+logoFile = "autohud.png"
 displayTest = "IGNORE_ALL_VERSION"
 
 [[mixins]]
@@ -22,6 +22,7 @@ config = "autohud-neoforge.mixins.json"
 [[dependencies.autohud]]
 modId = "neoforge"
 mandatory = true
+type = "required"
 versionRange = "${neoforge_version_range}"
 ordering = "NONE"
 side = "BOTH"
@@ -29,6 +30,7 @@ side = "BOTH"
 [[dependencies.autohud]]
 modId = "minecraft"
 mandatory = true
+type = "required"
 versionRange = "${minecraft_version_range_forge}"
 ordering = "NONE"
 side = "BOTH"
@@ -36,6 +38,7 @@ side = "BOTH"
 [[dependencies.autohud]]
 modId = "yet_another_config_lib"
 mandatory = false
+type = "optional"
 versionRange = "${yacl_version_range_neoforge}"
 ordering = "NONE"
 side = "BOTH"

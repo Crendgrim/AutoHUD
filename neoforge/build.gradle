@@ -36,10 +36,6 @@ processResources {
     filesMatching("META-INF/mods.toml") {
         expand(project.properties)
     }
-
-    copy {
-        from(project(":common").projectDir.path + "/src/main/resources/assets/${project.mod_id}/icon.png") into "build/resources/main"
-    }
 }
 
 shadowJar {

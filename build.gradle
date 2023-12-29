@@ -14,14 +14,7 @@ subprojects {
 
     dependencies {
         minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
-        if (project.name == "forge") {
-            mappings loom.layered() {
-                it.mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
-                it.mappings file("${rootDir}/mappings/yarnpatch.tiny")
-            }
-        } else {
-            mappings "net.fabricmc:yarn:${rootProject.yarn_mappings}:v2"
-        }
+        mappings "net.fabricmc:yarn:${rootProject.yarn_mappings}:v2"
     }
 }
 

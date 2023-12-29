@@ -11,7 +11,7 @@ authors = "Crendgrim"
 description = '''
  Dynamic HUD that hides interface elements while they are not needed.
 '''
-logoFile = "icon.png"
+logoFile = "autohud.png"
 displayTest = "IGNORE_ALL_VERSION"
 
 [[dependencies.autohud]]

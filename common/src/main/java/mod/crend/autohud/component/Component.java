@@ -278,7 +278,7 @@ public class Component {
         if (!config.active()) return;
         visibleTime = 0;
     }
-    private boolean fullyRevealed() {
+    public boolean fullyRevealed() {
         return offset == 0 && alpha == 1;
     }
     public boolean fullyHidden() {

@@ -15,6 +15,7 @@
     "environmentz.TemperatureHudRenderingMixin",
     "microdurability.MicroDurabilityMixin",
     "onebar.OneBarElementsMixin",
+    "hotbarslotcycling.SlotsRendererHandlerMixin",
     "statuseffectbars.StatusEffectBarRendererMixin"
   ],
   "injectors": {

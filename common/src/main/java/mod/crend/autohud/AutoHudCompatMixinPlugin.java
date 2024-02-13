@@ -1,6 +1,5 @@
 package mod.crend.autohud;
 
-import mod.crend.autohud.PlatformUtils;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -19,7 +18,7 @@ public class AutoHudCompatMixinPlugin implements IMixinConfigPlugin {
             if (modid.equals("statuseffectbars")) {
                 modid = "status-effect-bars";
             }
-            return PlatformUtils.isModLoaded(modid);
+            return PlatformUtils.isModPresent(modid);
         }
         return true;
     }

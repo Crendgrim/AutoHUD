@@ -4,12 +4,14 @@ import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.ModKeyBindings;
 import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.config.ConfigHandler;
+import mod.crend.autohud.neoforge.compat.HotbarSlotCyclingCompat;
 import mod.crend.autohud.render.ChatMessageIndicator;
 import mod.crend.yaclx.neoforge.ConfigScreen;
 import net.minecraft.util.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.InterModComms;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiOverlaysEvent;
@@ -25,10 +27,12 @@ public class AutoHudModEvents {
 
 	@SubscribeEvent
 	static void onClientSetup(FMLClientSetupEvent event) {
-		//MixinExtrasBootstrap.init();
 		AutoHud.init();
 		ConfigScreen.register(ConfigHandler.CONFIG_STORE);
 		NeoForge.EVENT_BUS.register(new AutoHudGui());
+		if (ModList.get().isLoaded("hotbarslotcycling")) {
+			HotbarSlotCyclingCompat.init();
+		}
 	}
 
 	@SubscribeEvent

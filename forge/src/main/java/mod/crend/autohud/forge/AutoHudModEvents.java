@@ -5,6 +5,7 @@ import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.ModKeyBindings;
 import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.config.ConfigHandler;
+import mod.crend.autohud.forge.compat.HotbarSlotCyclingCompat;
 import mod.crend.autohud.render.ChatMessageIndicator;
 import mod.crend.yaclx.forge.ConfigScreen;
 import net.minecraftforge.api.distmarker.Dist;
@@ -13,6 +14,7 @@ import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
@@ -28,6 +30,9 @@ public class AutoHudModEvents {
 		AutoHud.init();
 		ConfigScreen.register(ConfigHandler.CONFIG_STORE);
 		MinecraftForge.EVENT_BUS.register(new AutoHudGui());
+		if (ModList.get().isLoaded("hotbarslotcycling")) {
+			HotbarSlotCyclingCompat.init();
+		}
 	}
 
 	@SubscribeEvent

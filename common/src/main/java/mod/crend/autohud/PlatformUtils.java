@@ -8,4 +8,9 @@ public class PlatformUtils {
 	public static boolean isModLoaded(String modid) {
 		throw new AssertionError();
 	}
+
+	@ExpectPlatform
+	public static boolean isModPresent(String modid) {
+		throw new AssertionError();
+	}
 }

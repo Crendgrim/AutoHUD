@@ -26,6 +26,8 @@ dependencies {
    // modImplementation "dev.isxander.yacl:yet-another-config-lib-neoforge:${project.yacl_version}"
     modImplementation include(name: "yaclx", group: "mod.crend.yaclx", version:"${project.yaclx_version}-neoforge")
 
+    modCompileOnly("fuzs.hotbarslotcycling:hotbarslotcycling-neoforge:${project.hotbarslotcycling_version}") { transitive = false }
+
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
 }

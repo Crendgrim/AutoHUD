@@ -12,6 +12,7 @@ loom {
 
     forge {
         mixinConfig "autohud-common.mixins.json"
+        mixinConfig "autohud-forge-compat.mixins.json"
         mixinConfig "autohud-forge.mixins.json"
     }
 }
@@ -34,6 +35,7 @@ dependencies {
     modImplementation include(name: "yaclx", group: "mod.crend.yaclx", version:"${project.yaclx_version}-forge")
 
     modCompileOnly("maven.modrinth:raised:${project.raised_version}") { transitive = false }
+    modCompileOnly("fuzs.hotbarslotcycling:hotbarslotcycling-forge:${project.hotbarslotcycling_version}") { transitive = false }
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }

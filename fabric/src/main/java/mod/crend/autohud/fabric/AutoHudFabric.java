@@ -3,6 +3,7 @@ package mod.crend.autohud.fabric;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.ModKeyBindings;
 import mod.crend.autohud.api.AutoHudApi;
+import mod.crend.autohud.compat.HotbarSlotCyclingCompat;
 import mod.crend.autohud.compat.RaisedCompat;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -24,6 +25,10 @@ public class AutoHudFabric implements ClientModInitializer {
 
         if (FabricLoader.getInstance().isModLoaded("raised")) {
             ClientTickEvents.END_CLIENT_TICK.register(RaisedCompat::tick);
+        }
+
+        if (FabricLoader.getInstance().isModLoaded("hotbarslotcycling")) {
+            HotbarSlotCyclingCompat.init();
         }
 
     }

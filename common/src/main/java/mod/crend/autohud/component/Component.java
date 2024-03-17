@@ -19,7 +19,8 @@ public class Component {
     public static Component Hunger = new Component("Hunger", AutoHud.config.hunger(), List.of(Air), true);
     public static Component MountHealth = new Component("MountHealth", AutoHud.config.mountHealth(), List.of(Air), true);
     public static Component MountJumpBar = new Component("MountJumpBar", AutoHud.config.mountJumpBar(), true);
-    public static Component ExperienceBar = new Component("ExperienceBar", AutoHud.config.experience(), List.of(Health, Hunger, MountHealth), true);
+    public static Component ExperienceLevel = new Component("Experience", AutoHud.config.experience(), true);
+    public static Component ExperienceBar = new Component("ExperienceBar", AutoHud.config.experienceBar(), List.of(Health, Hunger, MountHealth, ExperienceLevel), true);
     public static Component Hotbar = new Component("Hotbar", AutoHud.config.hotbar(), List.of(ExperienceBar), true);
     public static Component Tooltip = new Component("Tooltip", AutoHud.config.hotbar(), true);
     public static Component Scoreboard = new Component("Scoreboard", AutoHud.config.scoreboard());
@@ -34,6 +35,7 @@ public class Component {
             Hotbar,
             Tooltip,
             ExperienceBar,
+            ExperienceLevel,
             Armor,
             Health,
             Hunger,

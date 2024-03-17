@@ -59,6 +59,7 @@ public class State {
                 20,
                 () -> player.getMainHandStack().getItem() instanceof Equipment equipment && equipment.getSlotType().isArmorSlot() && player.canEquip(player.getMainHandStack()), true);
         Component.Air.state = new PolicyComponentState(Component.Air, player::getAir, player::getMaxAir);
+        Component.ExperienceLevel.state = new ValueComponentState<>(Component.ExperienceLevel, () -> player.experienceLevel, true);
         Component.ExperienceBar.state = new ValueComponentState<>(Component.ExperienceBar, () -> player.totalExperience, true);
         Component.Scoreboard.state = new ScoreboardComponentState(Component.Scoreboard);
         Component.MountJumpBar.state = new ComponentState(Component.MountJumpBar);

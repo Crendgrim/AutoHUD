@@ -129,9 +129,13 @@ public class InGameHudMixin {
 
     @Inject(method = "renderExperienceBar", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;IIIZ)I", ordinal = 0, shift = At.Shift.BEFORE))
     private void autoHud$experienceText(DrawContext context, int x, CallbackInfo ci) {
-        if (AutoHud.config.revealExperienceTextWithHotbar() && Component.Hotbar.isMoreVisibleThan(Component.ExperienceBar)) {
+        if (AutoHud.targetExperienceBar) {
             AutoHudRenderer.postInject(context);
-            AutoHudRenderer.preInject(context, Component.Hotbar);
+            if (AutoHud.config.revealExperienceTextWithHotbar() && Component.Hotbar.isMoreVisibleThan(Component.ExperienceLevel)) {
+                AutoHudRenderer.preInject(context, Component.Hotbar);
+            } else {
+                AutoHudRenderer.preInject(context, Component.ExperienceLevel);
+            }
         }
     }
 

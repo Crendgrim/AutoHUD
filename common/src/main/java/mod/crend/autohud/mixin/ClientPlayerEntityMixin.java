@@ -29,6 +29,7 @@ public class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
     }
     @Inject(method = "setExperience", at = @At("TAIL"))
     private void autoHud$setExperience(float progress, int total, int level, CallbackInfo ci) {
+        Component.ExperienceLevel.updateState();
         Component.ExperienceBar.updateState();
     }
 

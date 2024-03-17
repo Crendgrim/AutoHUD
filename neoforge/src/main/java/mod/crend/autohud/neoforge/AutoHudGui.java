@@ -76,7 +76,7 @@ public class AutoHudGui extends ExtendedGui {
 	public void preHudComponent(RenderGuiOverlayEvent.Pre event) {
 		getComponent(event.getOverlay().id()).ifPresent(
 				component -> {
-					if (component.fullyHidden() && !(AutoHud.config.revealExperienceTextWithHotbar() && component.equals(Component.ExperienceBar) && !Component.Hotbar.fullyHidden())) {
+					if (component.fullyHidden() && !(component.equals(Component.ExperienceBar) && AutoHudRenderer.experienceLevelOverridesBar())) {
 						event.setCanceled(true);
 					} else {
 						preRender(event.getGuiGraphics(), component, event.getPartialTick());

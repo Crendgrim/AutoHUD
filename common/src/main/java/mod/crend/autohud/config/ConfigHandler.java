@@ -136,6 +136,7 @@ public class ConfigHandler {
     PolicyComponent hunger;
     PolicyComponent air;
     BooleanComponent experience;
+    BooleanComponent experienceBar;
     BooleanComponent mountJumpBar;
     PolicyComponent mountHealth;
     BooleanComponent hotbar;
@@ -152,6 +153,7 @@ public class ConfigHandler {
     public PolicyComponent hunger() { return hunger; }
     public PolicyComponent air() { return air; }
     public BooleanComponent experience() { return experience; }
+    public BooleanComponent experienceBar() { return experienceBar; }
     public BooleanComponent mountJumpBar() { return mountJumpBar; }
     public PolicyComponent mountHealth() { return mountHealth; }
     public BooleanComponent hotbar() { return hotbar; }
@@ -179,6 +181,7 @@ public class ConfigHandler {
         hunger = new PolicyComponent(CONFIG_STORE.config().hunger, CONFIG_STORE.config().advanced.hunger, CONFIG_STORE.config().defaultValues);
         air = new PolicyComponent(CONFIG_STORE.config().air, CONFIG_STORE.config().advanced.air, CONFIG_STORE.config().defaultValues);
         experience = new BooleanComponent(CONFIG_STORE.config().experience, CONFIG_STORE.config().advanced.experience, CONFIG_STORE.config().defaultValues);
+        experienceBar = new BooleanComponent(CONFIG_STORE.config().experienceBar, CONFIG_STORE.config().advanced.experience, CONFIG_STORE.config().defaultValues);
         mountJumpBar = new BooleanComponent(CONFIG_STORE.config().mountJumpBar, CONFIG_STORE.config().advanced.mountJumpBar, CONFIG_STORE.config().defaultValues);
         mountHealth = new PolicyComponent(CONFIG_STORE.config().mountHealth, CONFIG_STORE.config().advanced.mountHealth, CONFIG_STORE.config().defaultValues);
         hotbar = new BooleanComponent(CONFIG_STORE.config().hotbar.hotbar, CONFIG_STORE.config().advanced.hotbar, CONFIG_STORE.config().defaultValues);

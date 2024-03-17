@@ -123,6 +123,9 @@ public class Config implements Cloneable {
     @Category(name = "components", group = "statusBars")
     @SerialEntry public BooleanComponent experience = new BooleanComponent();
     @Category(name = "components", group = "statusBars")
+    @EnableIf(field = "experience.active", value = EnableIf.BooleanPredicate.class)
+    @SerialEntry public BooleanComponent experienceBar = new BooleanComponent();
+    @Category(name = "components", group = "statusBars")
     @SerialEntry public BooleanComponent mountJumpBar = new BooleanComponent();
     @Category(name = "components", group = "statusBars")
     @SerialEntry public PolicyComponent mountHealth = new PolicyComponent();

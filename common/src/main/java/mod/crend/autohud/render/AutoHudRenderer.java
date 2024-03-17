@@ -109,14 +109,30 @@ public class AutoHudRenderer {
 		}
 	}
 
+	public static boolean experienceLevelOverridesBar() {
+		return (AutoHud.config.revealExperienceTextWithHotbar() && !Component.Hotbar.fullyHidden())
+				|| (AutoHud.config.experience().onChange() && !AutoHud.config.experienceBar().onChange());
+	}
 	public static void moveExperienceText(DrawContext context) {
-		if (Component.Hotbar.isMoreVisibleThan(Component.ExperienceBar)) {
-			context.getMatrices().translate(
-					Component.Hotbar.getOffsetX(tickDelta) - Component.ExperienceBar.getOffsetX(tickDelta),
-					Component.Hotbar.getOffsetY(tickDelta) - Component.ExperienceBar.getOffsetY(tickDelta),
-					0);
-			AutoHudRenderer.preInjectFade(Component.Hotbar);
+		Component experienceTextComponent = Component.ExperienceLevel;
+		if (AutoHud.config.revealExperienceTextWithHotbar() && Component.Hotbar.isMoreVisibleThan(Component.ExperienceLevel)) {
+			experienceTextComponent = Component.Hotbar;
 		}
+		context.getMatrices().translate(
+				experienceTextComponent.getOffsetX(tickDelta) - Component.ExperienceBar.getOffsetX(tickDelta),
+				experienceTextComponent.getOffsetY(tickDelta) - Component.ExperienceBar.getOffsetY(tickDelta),
+				0);
+		AutoHudRenderer.preInjectFade(experienceTextComponent);
+	}
+	public static void moveBackExperienceText(DrawContext context) {
+		Component experienceTextComponent = Component.ExperienceLevel;
+		if (AutoHud.config.revealExperienceTextWithHotbar() && Component.Hotbar.isMoreVisibleThan(Component.ExperienceLevel)) {
+			experienceTextComponent = Component.Hotbar;
+		}
+		context.getMatrices().translate(
+				Component.ExperienceBar.getOffsetX(tickDelta) - experienceTextComponent.getOffsetX(tickDelta),
+				Component.ExperienceBar.getOffsetY(tickDelta) - experienceTextComponent.getOffsetY(tickDelta),
+				0);
 	}
 
 	/**

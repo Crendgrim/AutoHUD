@@ -51,6 +51,17 @@ public class AutoHudRenderer {
 		}
 	}
 
+	public static boolean shouldRenderHotbarItems() {
+		// Render items when we're not doing anything with the hotbar
+		return !AutoHud.targetHotbar
+				// Render items when they're not fully hidden (in other words, visible in some way)
+				|| !Component.Hotbar.fullyHidden()
+				// If we are in fade mode, only render items if they're not fully transparent.
+				|| (AutoHud.config.animationFade() && AutoHud.config.getHotbarItemsMaximumFade() > 0.0f)
+				// If we are neither in fade nor move mode, skip rendering if it's hidden.
+				// If we are in move mode, the items may still be visible in the "hidden" state!
+				|| (!AutoHud.config.animationFade() && AutoHud.config.animationMove());
+	}
 	public static boolean shouldRenderCrosshair() {
 		if (!Component.Crosshair.config.active()) return true;
 		if (AutoHud.config.animationFade()) {
@@ -137,4 +148,5 @@ public class AutoHudRenderer {
 	public static void endRender() {
 		inRender = false;
 	}
+
 }

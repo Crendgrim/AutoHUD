@@ -59,20 +59,18 @@ public class InGameHudMixin {
 			)
 	)
 	private void autoHud$transparentHotbarItems(InGameHud instance, DrawContext context, int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed, Operation<Void> original) {
+		if (!AutoHudRenderer.shouldRenderHotbarItems()) return;
 		if (AutoHud.targetHotbar && AutoHud.config.animationFade()) {
-			// Don't render items if they're fully invisible anyway
-			if (!Component.Hotbar.fullyHidden() || AutoHud.config.getHotbarItemsMaximumFade() > 0.0f) {
-				// We need to reset the renderer because otherwise the first item gets drawn with double alpha
-				AutoHudRenderer.postInjectFade();
-				// Setup custom framebuffer
-				CustomFramebufferRenderer.init();
-				// Have the original call draw onto the custom framebuffer
-				original.call(instance, context, x, y, tickDelta, player, stack, seed);
-				// Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
-				AutoHudRenderer.preInjectFadeWithReverseTranslation(context, Component.Hotbar, AutoHud.config.getHotbarItemsMaximumFade());
-				CustomFramebufferRenderer.draw(context);
-				AutoHudRenderer.postInjectFadeWithReverseTranslation(context);
-			}
+			// We need to reset the renderer because otherwise the first item gets drawn with double alpha
+			AutoHudRenderer.postInjectFade();
+			// Setup custom framebuffer
+			CustomFramebufferRenderer.init();
+			// Have the original call draw onto the custom framebuffer
+			original.call(instance, context, x, y, tickDelta, player, stack, seed);
+			// Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
+			AutoHudRenderer.preInjectFadeWithReverseTranslation(context, Component.Hotbar, AutoHud.config.getHotbarItemsMaximumFade());
+			CustomFramebufferRenderer.draw(context);
+			AutoHudRenderer.postInjectFadeWithReverseTranslation(context);
 		} else {
 			original.call(instance, context, x, y, tickDelta, player, stack, seed);
 		}

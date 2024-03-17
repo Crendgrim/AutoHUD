@@ -47,8 +47,8 @@ public class State {
         Component.Hotbar.state = new ItemStackComponentState(Component.Hotbar, player::getMainHandStack, true);
         Component.Tooltip.state = new ItemStackComponentState(Component.Tooltip, player::getMainHandStack, true);
         Component.Health.state = new EnhancedPolicyComponentState(Component.Health,
-                () -> (int) player.getHealth(),
-                () -> (int) player.getMaxHealth(),
+                () -> Math.round(player.getHealth()),
+                () -> Math.round(player.getMaxHealth()),
                 this::canHeal);
         Component.Hunger.state = new EnhancedPolicyComponentState(Component.Hunger,
                 () -> player.getHungerManager().getFoodLevel(),

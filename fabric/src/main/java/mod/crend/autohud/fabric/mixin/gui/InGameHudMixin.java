@@ -92,7 +92,6 @@ public class InGameHudMixin {
     private void autoHud$transparentHotbarItems(InGameHud instance, DrawContext context, int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed, Operation<Void> original) {
         // Don't render items if they're fully invisible anyway
         if (!AutoHudRenderer.shouldRenderHotbarItems()) return;
-        System.err.println("rendering hotbar items");
         if (AutoHud.targetHotbar && AutoHud.config.animationFade()) {
             // We need to reset the renderer because otherwise the first item gets drawn with double alpha
             AutoHudRenderer.postInjectFade();

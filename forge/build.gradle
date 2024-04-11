@@ -12,7 +12,6 @@ loom {
 
     forge {
         mixinConfig "autohud-common.mixins.json"
-        mixinConfig "autohud-forge-compat.mixins.json"
         mixinConfig "autohud-forge.mixins.json"
     }
 }

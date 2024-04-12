@@ -2,7 +2,7 @@ package mod.crend.autohud.config;
 
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import mod.crend.autohud.AutoHud;
-import mod.crend.yaclx.auto.annotation.*;
+import mod.crend.libbamboo.auto.annotation.*;
 
 @AutoYaclConfig(modid = AutoHud.MOD_ID, filename = "autohud.json5")
 public class Config implements Cloneable {
@@ -125,6 +125,8 @@ public class Config implements Cloneable {
     @Category(name = "components", group = "statusBars")
     @EnableIf(field = "experience.active", value = EnableIf.BooleanPredicate.class)
     @SerialEntry public BooleanComponent experienceBar = new BooleanComponent();
+    @Category(name = "components", group = "statusBars")
+    @SerialEntry public boolean revealExperienceTextOnTargetingEnchantingBlock = true;
     @Category(name = "components", group = "statusBars")
     @SerialEntry public BooleanComponent mountJumpBar = new BooleanComponent();
     @Category(name = "components", group = "statusBars")

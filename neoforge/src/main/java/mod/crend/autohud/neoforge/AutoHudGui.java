@@ -3,36 +3,30 @@ package mod.crend.autohud.neoforge;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.render.AutoHudRenderer;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
-import net.neoforged.neoforge.client.event.RenderGuiOverlayEvent;
-import net.neoforged.neoforge.client.gui.overlay.ExtendedGui;
+import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay.*;
+import static net.neoforged.neoforge.client.gui.VanillaGuiLayers.*;
 
-public class AutoHudGui extends ExtendedGui {
+public class AutoHudGui {
 
 	static Map<Identifier, Component> STATUS_BAR_COMPONENTS = new HashMap<>();
 	static {
-		STATUS_BAR_COMPONENTS.put(PLAYER_HEALTH.id(), Component.Health);
-		STATUS_BAR_COMPONENTS.put(ARMOR_LEVEL.id(), Component.Armor);
-		STATUS_BAR_COMPONENTS.put(FOOD_LEVEL.id(), Component.Hunger);
-		STATUS_BAR_COMPONENTS.put(AIR_LEVEL.id(), Component.Air);
-		STATUS_BAR_COMPONENTS.put(MOUNT_HEALTH.id(), Component.MountHealth);
-		STATUS_BAR_COMPONENTS.put(JUMP_BAR.id(), Component.MountJumpBar);
-		STATUS_BAR_COMPONENTS.put(EXPERIENCE_BAR.id(), Component.ExperienceBar);
-	}
-
-	public AutoHudGui() {
-		super(MinecraftClient.getInstance());
+		STATUS_BAR_COMPONENTS.put(PLAYER_HEALTH, Component.Health);
+		STATUS_BAR_COMPONENTS.put(ARMOR_LEVEL, Component.Armor);
+		STATUS_BAR_COMPONENTS.put(FOOD_LEVEL, Component.Hunger);
+		STATUS_BAR_COMPONENTS.put(AIR_LEVEL, Component.Air);
+		STATUS_BAR_COMPONENTS.put(VEHICLE_HEALTH, Component.MountHealth);
+		STATUS_BAR_COMPONENTS.put(JUMP_METER, Component.MountJumpBar);
+		STATUS_BAR_COMPONENTS.put(EXPERIENCE_BAR, Component.ExperienceBar);
 	}
 
 	public void preRender(DrawContext context, Component component, float tickDelta) {
@@ -51,14 +45,18 @@ public class AutoHudGui extends ExtendedGui {
 	public Optional<Component> getComponent(Identifier id) {
 		if (AutoHud.targetStatusBars && STATUS_BAR_COMPONENTS.containsKey(id)) {
 			return Optional.of(STATUS_BAR_COMPONENTS.get(id));
-		} else if (AutoHud.targetScoreboard && id.equals(SCOREBOARD.id())) {
+		} else if (AutoHud.targetScoreboard && id.equals(SCOREBOARD_SIDEBAR)) {
 			return Optional.of(Component.Scoreboard);
-		} else if (AutoHud.targetHotbar && id.equals(HOTBAR.id())) {
+		} else if (AutoHud.targetHotbar && id.equals(HOTBAR)) {
 			return Optional.of(Component.Hotbar);
-		} else if (AutoHud.targetHotbar && id.equals(ITEM_NAME.id())) {
+		} else if (AutoHud.targetHotbar && id.equals(SELECTED_ITEM_NAME)) {
 			return Optional.of(Component.Tooltip);
-		} else if (Component.Chat.config.active() && id.equals(CHAT_PANEL.id())) {
+		} else if (Component.Chat.config.active() && id.equals(CHAT)) {
 			return Optional.of(Component.Chat);
+		} else if (Component.ActionBar.config.active() && id.equals(TITLE)) {
+			return Optional.of(Component.ActionBar);
+		} else if (Component.BossBar.config.active() && id.equals(BOSS_OVERLAY)) {
+			return Optional.of(Component.BossBar);
 		}
 		return Optional.empty();
 	}
@@ -73,10 +71,10 @@ public class AutoHudGui extends ExtendedGui {
 	 * of the handled overlay events.
 	 */
 	@SubscribeEvent(priority = EventPriority.HIGHEST, receiveCanceled = true)
-	public void preHudComponent(RenderGuiOverlayEvent.Pre event) {
-		getComponent(event.getOverlay().id()).ifPresent(
+	public void preHudComponent(RenderGuiLayerEvent.Pre event) {
+		getComponent(event.getName()).ifPresent(
 				component -> {
-					if (component.fullyHidden() && !(component.equals(Component.ExperienceBar) && AutoHudRenderer.experienceLevelOverridesBar())) {
+					if (component.fullyHidden() && component.config.maximumFade() == 0 && !(component.equals(Component.ExperienceBar) && AutoHudRenderer.experienceLevelOverridesBar())) {
 						event.setCanceled(true);
 					} else {
 						preRender(event.getGuiGraphics(), component, event.getPartialTick());
@@ -85,16 +83,16 @@ public class AutoHudGui extends ExtendedGui {
 		);
 	}
 	@SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
-	public void cancelHudComponent(RenderGuiOverlayEvent.Pre event) {
+	public void cancelHudComponent(RenderGuiLayerEvent.Pre event) {
 		if (event.isCanceled()) {
-			getComponent(event.getOverlay().id()).ifPresent(
+			getComponent(event.getName()).ifPresent(
 					component -> postRender(event.getGuiGraphics(), component, event.getPartialTick())
 			);
 		}
 	}
 	@SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
-	public void postHudComponent(RenderGuiOverlayEvent.Post event) {
-		getComponent(event.getOverlay().id()).ifPresent(
+	public void postHudComponent(RenderGuiLayerEvent.Post event) {
+		getComponent(event.getName()).ifPresent(
 				component -> postRender(event.getGuiGraphics(), component, event.getPartialTick())
 		);
 	}

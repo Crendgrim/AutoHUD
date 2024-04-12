@@ -6,7 +6,7 @@ import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.config.ConfigHandler;
 import mod.crend.autohud.neoforge.compat.HotbarSlotCyclingCompat;
 import mod.crend.autohud.render.ChatMessageIndicator;
-import mod.crend.yaclx.neoforge.ConfigScreen;
+import mod.crend.libbamboo.neoforge.ConfigScreen;
 import net.minecraft.util.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -14,7 +14,7 @@ import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
-import net.neoforged.neoforge.client.event.RegisterGuiOverlaysEvent;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
@@ -48,8 +48,8 @@ public class AutoHudModEvents {
 	}
 
 	@SubscribeEvent
-	static void onRegisterOverlaysEvent(RegisterGuiOverlaysEvent event) {
-		event.registerAboveAll(NEW_CHAT_MESSAGE_INDICATOR, (forgeGui, context, f, i, j) -> ChatMessageIndicator.render(context));
+	static void onRegisterOverlaysEvent(RegisterGuiLayersEvent event) {
+		event.registerAboveAll(NEW_CHAT_MESSAGE_INDICATOR, (context, tickDelta) -> ChatMessageIndicator.render(context));
 	}
 
 }

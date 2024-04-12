@@ -1,8 +1,10 @@
 package mod.crend.autohud;
 
 import mod.crend.autohud.api.AutoHudApi;
+import mod.crend.autohud.component.EventHandler;
 import mod.crend.autohud.component.Hud;
 import mod.crend.autohud.config.ConfigHandler;
+import mod.crend.libbamboo.event.GameEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,10 @@ public class AutoHud {
         if (config.dynamicOnLoad()) {
             Hud.enableDynamic();
         }
+        GameEvent.WORLD_LOAD.register(Hud::registerState);
+        GameEvent.WORLD_TICK.register(Hud::tickState);
+        GameEvent.WORLD_UNLOAD.register(Hud::unregisterState);
+        EventHandler.registerEvents();
     }
 
     public static void addApi(AutoHudApi api) {

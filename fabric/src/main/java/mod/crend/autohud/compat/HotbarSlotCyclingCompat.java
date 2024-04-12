@@ -6,7 +6,7 @@ import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.state.ItemStackComponentState;
 import mod.crend.autohud.render.AutoHudRenderer;
-import mod.crend.autohud.render.CustomFramebufferRenderer;
+import mod.crend.libbamboo.render.CustomFramebufferRenderer;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;

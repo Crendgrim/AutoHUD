@@ -4,15 +4,9 @@
   "package": "mod.crend.autohud.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "ClientPlayerEntityMixin",
-    "ClientPlayerInteractionManagerMixin",
     "ClientPlayNetworkHandlerMixin",
-    "EntityMixin",
-    "HungerManagerMixin",
-    "MinecraftClientMixin",
     "ScoreboardMixin",
     "TeamMixinAccessor",
-    "gui.MinecraftClientMixin",
     "gui.StatusEffectTimerMixin"
   ],
   "injectors": {

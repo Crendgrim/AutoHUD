@@ -17,10 +17,6 @@ import org.objectweb.asm.Opcodes;
 public class ClientPlayNetworkHandlerMixin {
 	@Shadow private ClientWorld world;
 	
-    @Inject(method="onPlayerRespawn", at=@At("TAIL"))
-    private void autoHud$onPlayerRespawn(PlayerRespawnS2CPacket packet, CallbackInfo ci) {
-        Hud.resetState();
-    }
     @Inject(method="onTeam", at=@At(value="INVOKE", target = "java/util/Optional.ifPresent(Ljava/util/function/Consumer;)V", shift=At.Shift.AFTER))
     private void autoHud$onTeamUpdate(TeamS2CPacket packet, CallbackInfo ci) {
         // JuggleStruggle: The reason why both getTeamOperation cannot be REMOVE is because we already perform team removal checks in 

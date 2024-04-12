@@ -7,6 +7,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.StatusEffectSpriteManager;
 import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.entry.RegistryEntry;
 
 import java.util.*;
 
@@ -30,7 +32,7 @@ public class Component {
     public static Component ActionBar = new Component("ActionBar", AutoHud.config.actionBar());
     public static Component BossBar = new Component("BossBar", AutoHud.config.bossBar());
 
-    private static final Map<StatusEffect, Component> statusEffectComponents = new HashMap<>();
+    private static final Map<RegistryEntry<StatusEffect>, Component> statusEffectComponents = new HashMap<>();
     private static final List<Component> components = new ArrayList<>(List.of(
             Hotbar,
             Tooltip,
@@ -117,15 +119,15 @@ public class Component {
         this(name, config, stackComponents, false);
     }
 
-    public static void register(StatusEffect effect) {
+    public static void register(RegistryEntry<StatusEffect> effect) {
         if (!statusEffectComponents.containsKey(effect)) {
-            Component c = new Component(effect.getTranslationKey(), AutoHud.config.statusEffects());
+            Component c = new Component(effect.value().getTranslationKey(), AutoHud.config.statusEffects());
             c.offset = 1.0d;
             c.alpha = 0.0d;
             statusEffectComponents.put(effect, c);
         }
     }
-    public static Component get(StatusEffect effect) {
+    public static Component get(RegistryEntry<StatusEffect> effect) {
         register(effect);
         return statusEffectComponents.get(effect);
     }
@@ -137,7 +139,7 @@ public class Component {
     }
     public static Component findBySprite(Sprite sprite) {
         StatusEffectSpriteManager statusEffectSpriteManager = MinecraftClient.getInstance().getStatusEffectSpriteManager();
-        for (StatusEffect effect : statusEffectComponents.keySet()) {
+        for (RegistryEntry<StatusEffect> effect : statusEffectComponents.keySet()) {
             if (statusEffectSpriteManager.getSprite(effect) == sprite) {
                 return statusEffectComponents.get(effect);
             }

@@ -1,6 +1,5 @@
 package mod.crend.autohud.component;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 
@@ -42,22 +41,15 @@ public class Hud {
         wasPeeking = doPeek;
     }
 
-    public static void resetState() {
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+    public static void registerState(ClientPlayerEntity player) {
         state = new State(player);
+        wasPeeking = false;
     }
-
-    public static void tick() {
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        if (player != null && MinecraftClient.getInstance().world != null) {
-            if (state == null) {
-                state = new State(player);
-                wasPeeking = false;
-            }
-            state.tick(player);
-        } else {
-            state = null;
-        }
+    public static void tickState(ClientPlayerEntity player) {
+        state.tick(player);
+    }
+    public static void unregisterState() {
+        state = null;
     }
 
     public static boolean shouldShowIcon(StatusEffectInstance instance) {

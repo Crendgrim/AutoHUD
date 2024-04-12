@@ -10,6 +10,8 @@ import net.dehydration.init.EffectInit;
 import net.dehydration.misc.ThirstTooltipData;
 import net.dehydration.thirst.ThirstManager;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.registry.entry.RegistryEntry;
 
 import java.util.List;
 
@@ -40,7 +42,8 @@ public class DehydrationCompat implements AutoHudApi {
 
     @Override
     public void tickState(ClientPlayerEntity player) {
-        if (player.hasStatusEffect(EffectInit.THIRST)) {
+        // FIXME update once Dehydration has been updated
+        if (player.hasStatusEffect(RegistryEntry.of(EffectInit.THIRST))) {
             Thirst.reveal();
         } else if (((ThirstManagerAccess) player).getThirstManager().isNotFull()) {
             if (!player.getMainHandStack().isEmpty() && player.getMainHandStack().getTooltipData().isPresent() && player.getMainHandStack().getTooltipData().get() instanceof ThirstTooltipData) {

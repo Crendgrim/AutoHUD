@@ -7,7 +7,7 @@ import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.config.ConfigHandler;
 import mod.crend.autohud.forge.compat.HotbarSlotCyclingCompat;
 import mod.crend.autohud.render.ChatMessageIndicator;
-import mod.crend.yaclx.forge.ConfigScreen;
+import mod.crend.libbamboo.forge.ConfigScreen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;

@@ -1,6 +1,6 @@
 package mod.crend.autohud.config;
 
-import mod.crend.yaclx.opt.ConfigStore;
+import mod.crend.libbamboo.opt.ConfigStore;
 
 public class ConfigHandler {
 
@@ -163,6 +163,7 @@ public class ConfigHandler {
     public int getHotbarDurabilityTotal() { return CONFIG_STORE.config().hotbar.durabilityTotal; }
     public float getHotbarItemsMaximumFade() { return CONFIG_STORE.config().hotbar.maximumFadeHotbarItems; }
     public boolean revealExperienceTextWithHotbar() { return CONFIG_STORE.config().hotbar.revealExperienceTextWithHotbar; }
+    public boolean revealExperienceTextOnTargetingEnchantingBlock() { return CONFIG_STORE.config().revealExperienceTextOnTargetingEnchantingBlock; }
     public BooleanComponent statusEffects() { return statusEffects; }
     public boolean hidePersistentStatusEffects() { return CONFIG_STORE.config().hidePersistentStatusEffects; }
     public BooleanComponent scoreboard() { return scoreboard; }

@@ -1,6 +1,6 @@
 package mod.crend.autohud.config;
 
-import mod.crend.yaclx.type.NameableEnum;
+import mod.crend.libbamboo.type.NameableEnum;
 import net.minecraft.text.Text;
 
 public enum RevealPolicy implements NameableEnum {

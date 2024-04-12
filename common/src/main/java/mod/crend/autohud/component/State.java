@@ -1,15 +1,12 @@
 package mod.crend.autohud.component;
 
-import com.mojang.datafixers.util.Pair;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.state.*;
-import mod.crend.autohud.config.EventPolicy;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ChatScreen;
-import net.minecraft.client.gui.screen.GameMenuScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.FoodComponent;
+import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -17,31 +14,21 @@ import net.minecraft.item.Equipment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PotionItem;
 import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtil;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.Vec3d;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class State {
 
-    private Map<StatusEffect, StatusEffectInstance> previousStatusEffects;
-    private ItemStack previousItemStack;
-    Vec3d previousPosition;
-    static final int TICKS_UNTIL_STANDING_STILL = 5;
-    int ticksUntilStandingStill = 0;
-    boolean wasInPauseScreen = false;
-    boolean screenWasOpen = false;
-    boolean wasSneaking = false;
-    boolean wasFlying = false;
+    private Map<RegistryEntry<StatusEffect>, StatusEffectInstance> previousStatusEffects;
 
     public State(ClientPlayerEntity player) {
         initStates(player);
         previousStatusEffects = new HashMap<>();
-        previousItemStack = player.getMainHandStack().copy();
-        previousPosition = player.getPos();
     }
    public void initStates(ClientPlayerEntity player) {
         Component.Hotbar.state = new ItemStackComponentState(Component.Hotbar, player::getMainHandStack, true);
@@ -53,7 +40,7 @@ public class State {
         Component.Hunger.state = new EnhancedPolicyComponentState(Component.Hunger,
                 () -> player.getHungerManager().getFoodLevel(),
                 20,
-                () -> player.getHungerManager().getFoodLevel() < 20 && player.getMainHandStack().isFood());
+                () -> player.getHungerManager().getFoodLevel() < 20 && player.getMainHandStack().contains(DataComponentTypes.FOOD));
         Component.Armor.state = new EnhancedPolicyComponentState(Component.Armor,
                 player::getArmor,
                 20,
@@ -87,18 +74,20 @@ public class State {
     }
     private boolean canHeal() {
         ItemStack itemStack = MinecraftClient.getInstance().player.getMainHandStack();
-        if (itemStack.isFood()) {
-            List<Pair<StatusEffectInstance, Float>> statusEffects = itemStack.getItem().getFoodComponent().getStatusEffects();
-            for (Pair<StatusEffectInstance, Float> effect : statusEffects) {
-                if (isHealEffect(effect.getFirst())) {
+        if (itemStack.contains(DataComponentTypes.FOOD)) {
+            List<FoodComponent.StatusEffectEntry> statusEffects = itemStack.get(DataComponentTypes.FOOD).effects();
+            for (FoodComponent.StatusEffectEntry effect : statusEffects) {
+                if (isHealEffect(effect.effect())) {
                     return true;
                 }
             }
         } else if (itemStack.getItem() instanceof PotionItem) {
-            Potion potion = PotionUtil.getPotion(itemStack);
-            for (StatusEffectInstance effect : potion.getEffects()) {
-                if (isHealEffect(effect)) {
-                    return true;
+            Optional<RegistryEntry<Potion>> potion = itemStack.getOrDefault(DataComponentTypes.POTION_CONTENTS, PotionContentsComponent.DEFAULT).potion();
+            if (potion.isPresent()) {
+                for (StatusEffectInstance effect : potion.get().value().getEffects()) {
+                    if (isHealEffect(effect)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -120,14 +109,6 @@ public class State {
     public void tick(ClientPlayerEntity player) {
         if (player == null) return;
 
-        ItemStack mainHandStack = player.getMainHandStack();
-        if (!ItemStack.areEqual(mainHandStack, previousItemStack)) {
-            previousItemStack = mainHandStack.copy();
-            Component.Health.state.updateNextTick();
-            Component.Hunger.state.updateNextTick();
-            Component.Armor.state.updateNextTick();
-        }
-
         Component.tickAll();
 
         if (AutoHud.config.isHotbarOnLowDurability()) {
@@ -136,120 +117,11 @@ public class State {
             }
         }
 
-        Screen currentScreen = MinecraftClient.getInstance().currentScreen;
-        if (currentScreen instanceof ChatScreen) {
-            Component.Chat.revealNow();
-            Component.ChatIndicator.hide();
-        }
-
-        if (player.isSneaking()) {
-            switch (AutoHud.config.onSneaking()) {
-                case Reveal -> Component.revealAll();
-                case Hide -> Component.forceHideAll();
-            }
-            wasSneaking = true;
-        } else if (wasSneaking) {
-            switch (AutoHud.config.onSneaking()) {
-                case Reveal -> Component.hideAll();
-                case Hide -> Component.updateAll();
-            }
-            wasSneaking = false;
-        }
-
-        if (player.isFallFlying()) {
-            switch (AutoHud.config.onFlying()) {
-                case Reveal -> Component.revealAll();
-                case Hide -> Component.forceHideAll();
-            }
-            wasFlying = true;
-        } else if (wasFlying) {
-            switch (AutoHud.config.onFlying()) {
-                case Reveal -> Component.hideAll();
-                case Hide -> Component.updateAll();
-            }
-        }
-
-        if (AutoHud.config.onUsingItem() && player.isUsingItem()) {
-            Component.revealAll(1);
-        }
-
-        if (AutoHud.config.onMining() && MinecraftClient.getInstance().interactionManager.getBlockBreakingProgress() >= 0) {
-            Component.revealAll(1);
-        }
-
-        Vec3d position = player.getPos();
-        if (position != previousPosition) {
-            switch (AutoHud.config.onMoving()) {
-                case Reveal -> Component.revealAll();
-                case Hide -> Component.forceHideAll();
-                default -> {
-                    if (ticksUntilStandingStill < TICKS_UNTIL_STANDING_STILL) {
-                        switch (AutoHud.config.onStandingStill()) {
-                            case Hide -> Component.updateAll();
-                            case Reveal -> Component.hideAll();
-                        }
-                    }
-                }
-            }
-            previousPosition = position;
-            ticksUntilStandingStill = TICKS_UNTIL_STANDING_STILL;
-        } else {
-            if (ticksUntilStandingStill == 0) {
-                switch (AutoHud.config.onStandingStill()) {
-                    case Reveal -> Component.revealAll();
-                    case Hide -> Component.forceHideAll();
-                    default -> {
-                        if (AutoHud.config.onMoving() == EventPolicy.Hide) Component.updateAll();
-                    }
-                }
-            }
-            else {
-                if (ticksUntilStandingStill == TICKS_UNTIL_STANDING_STILL) {
-                    switch (AutoHud.config.onMoving()) {
-                        case Hide -> Component.updateAll();
-                        case Reveal -> Component.hideAll();
-                    }
-                }
-                --ticksUntilStandingStill;
-            }
-        }
-
-        if (currentScreen instanceof HandledScreen<?>) {
-            if (AutoHud.config.onScreenOpen() == EventPolicy.Reveal) Component.revealAll();
-            if (!screenWasOpen) {
-                if (AutoHud.config.onScreenOpen() == EventPolicy.Hide) Component.forceHideAll();
-                screenWasOpen = true;
-            }
-        } else if (screenWasOpen) {
-            switch (AutoHud.config.onScreenOpen()) {
-                case Hide -> Component.updateAll();
-                case Reveal -> Component.hideAll();
-            }
-            screenWasOpen = false;
-        }
-
-        if (AutoHud.config.onPauseScreen() != EventPolicy.Nothing) {
-            if (MinecraftClient.getInstance().currentScreen instanceof GameMenuScreen) {
-                switch (AutoHud.config.onPauseScreen()) {
-                    case Reveal -> Component.revealAll();
-                    case Hide -> Component.forceHideAll();
-                }
-                wasInPauseScreen = true;
-            }
-            else if (wasInPauseScreen) {
-                switch (AutoHud.config.onPauseScreen()) {
-                    case Hide -> Component.updateAll();
-                    case Reveal -> Component.hideAll();
-                }
-                wasInPauseScreen = false;
-            }
-        }
-
         if (AutoHud.config.statusEffects().active()) {
             if (AutoHud.config.statusEffects().onChange()) {
-                Map<StatusEffect, StatusEffectInstance> newStatusEffects = new HashMap<>();
-                Map<StatusEffect, StatusEffectInstance> effects = player.getActiveStatusEffects();
-                for (StatusEffect effect : effects.keySet()) {
+                Map<RegistryEntry<StatusEffect>, StatusEffectInstance> newStatusEffects = new HashMap<>();
+                Map<RegistryEntry<StatusEffect>, StatusEffectInstance> effects = player.getActiveStatusEffects();
+                for (RegistryEntry<StatusEffect> effect : effects.keySet()) {
                     StatusEffectInstance effectInstance = effects.get(effect);
                     if (effectInstance.shouldShowIcon()) {
                         if (effectInstance.getDuration() < 5) {
@@ -267,9 +139,9 @@ public class State {
         } else {
             Component.getStatusEffectComponents().forEach(Component::reveal);
             if (AutoHud.config.hidePersistentStatusEffects()) {
-                Map<StatusEffect, StatusEffectInstance> newStatusEffects = new HashMap<>();
-                Map<StatusEffect, StatusEffectInstance> effects = player.getActiveStatusEffects();
-                for (StatusEffect effect : effects.keySet()) {
+                Map<RegistryEntry<StatusEffect>, StatusEffectInstance> newStatusEffects = new HashMap<>();
+                Map<RegistryEntry<StatusEffect>, StatusEffectInstance> effects = player.getActiveStatusEffects();
+                for (RegistryEntry<StatusEffect> effect : effects.keySet()) {
                     StatusEffectInstance effectInstance = effects.get(effect);
                     if (effectInstance.shouldShowIcon()) {
                         if (previousStatusEffects.containsKey(effect) && previousStatusEffects.get(effect).equals(effectInstance)) {

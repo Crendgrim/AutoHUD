@@ -3,7 +3,7 @@ package mod.crend.autohud.compat.mixin.armorchroma;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.render.AutoHudRenderer;
-import mod.crend.autohud.render.CustomFramebufferRenderer;
+import mod.crend.libbamboo.render.CustomFramebufferRenderer;
 import net.minecraft.client.gui.DrawContext;
 import nukeduck.armorchroma.GuiArmor;
 import org.spongepowered.asm.mixin.Mixin;

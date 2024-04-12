@@ -31,7 +31,7 @@ dependencies {
     implementation(include("io.github.llamalad7:mixinextras-forge:${project.mixin_extras_version}"))
 
    // modImplementation "dev.isxander.yacl:yet-another-config-lib-forge:${project.yacl_version}"
-    modImplementation include(name: "yaclx", group: "mod.crend.yaclx", version:"${project.yaclx_version}-forge")
+    modImplementation include(name: "libbamboo", group: "mod.crend.libbamboo", version:"${project.libbamboo_version}-forge")
 
     modCompileOnly("maven.modrinth:raised:${project.raised_version}") { transitive = false }
     modCompileOnly("fuzs.hotbarslotcycling:hotbarslotcycling-forge:${project.hotbarslotcycling_version}") { transitive = false }

@@ -13,6 +13,8 @@ import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
@@ -42,7 +44,7 @@ public abstract class StatusEffectTimerMixin {
     private MinecraftClient client;
 
     @Inject(method = "renderStatusEffectOverlay", at = @At("TAIL"))
-    private void renderDurationOverlay(DrawContext context, CallbackInfo c) {
+    private void renderDurationOverlay(DrawContext context, float f, CallbackInfo ci) {
         if (!AutoHud.config.statusEffectTimer()) return;
         Collection<StatusEffectInstance> collection = this.client.player.getStatusEffects();
         if (!collection.isEmpty()) {
@@ -52,7 +54,7 @@ public abstract class StatusEffectTimerMixin {
             int beneficialCount = 0;
             int nonBeneficialCount = 0;
             for (StatusEffectInstance statusEffectInstance : Ordering.natural().reverse().sortedCopy(collection)) {
-                StatusEffect statusEffect = statusEffectInstance.getEffectType();
+                RegistryEntry<StatusEffect> statusEffect = statusEffectInstance.getEffectType();
                 if (Hud.shouldShowIcon(statusEffectInstance)) {
                     int x = this.client.getWindow().getScaledWidth();
                     int y = 1;
@@ -61,7 +63,7 @@ public abstract class StatusEffectTimerMixin {
                         y += 15;
                     }
 
-                    if (statusEffect.isBeneficial()) {
+                    if (statusEffect.value().isBeneficial()) {
                         beneficialCount++;
                         x -= 25 * beneficialCount;
                     } else {

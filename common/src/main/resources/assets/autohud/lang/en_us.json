@@ -63,6 +63,8 @@
   "autohud.option.experienceBar.active.description": "Dynamically hide the experience bar. If disabled, the experience bar is always visible.",
   "autohud.option.experienceBar.onChange": "Reveal on experience change",
   "autohud.option.experienceBar.onChange.description": "Reveal the experience bar whenever gaining experience.",
+  "autohud.option.revealExperienceTextOnTargetingEnchantingBlock": "Reveal on targeting certain blocks",
+  "autohud.option.revealExperienceTextOnTargetingEnchantingBlock.description": "Reveal the experience level when facing an enchanting table or anvil",
   "autohud.option.mountJumpBar.active": "Hide mount jump bar",
   "autohud.option.mountJumpBar.active.description": "Hide mount jump bar when not charging",
   "autohud.option.mountJumpBar.onChange": "Reveal mount jump bar",

@@ -8,6 +8,7 @@ import mod.crend.autohud.render.AutoHudRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.ClientChatReceivedEvent;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
@@ -18,7 +19,7 @@ import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
 import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
 
 @Mod(AutoHud.MOD_ID)
-@Mod.EventBusSubscriber(value = Dist.CLIENT)
+@EventBusSubscriber(value = Dist.CLIENT)
 public class AutoHudNeoForge {
     @SubscribeEvent
     static void onClientTick(TickEvent.ClientTickEvent event) {

@@ -27,6 +27,7 @@ public class AutoHudGui {
 		STATUS_BAR_COMPONENTS.put(VEHICLE_HEALTH, Component.MountHealth);
 		STATUS_BAR_COMPONENTS.put(JUMP_METER, Component.MountJumpBar);
 		STATUS_BAR_COMPONENTS.put(EXPERIENCE_BAR, Component.ExperienceBar);
+		STATUS_BAR_COMPONENTS.put(EXPERIENCE_LEVEL, Component.ExperienceLevel);
 	}
 
 	public void preRender(DrawContext context, Component component, float tickDelta) {

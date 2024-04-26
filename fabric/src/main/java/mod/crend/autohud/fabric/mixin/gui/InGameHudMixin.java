@@ -123,13 +123,16 @@ public class InGameHudMixin {
     @Inject(method = "renderExperienceLevel", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;IIIZ)I", ordinal = 0, shift = At.Shift.BEFORE))
     private void autoHud$experienceText(DrawContext context, float x, CallbackInfo ci) {
         if (AutoHud.targetExperienceBar) {
-            AutoHudRenderer.postInject(context);
             if (AutoHud.config.revealExperienceTextWithHotbar() && Component.Hotbar.isMoreVisibleThan(Component.ExperienceLevel)) {
                 AutoHudRenderer.preInject(context, Component.Hotbar);
             } else {
                 AutoHudRenderer.preInject(context, Component.ExperienceLevel);
             }
         }
+    }
+    @Inject(method = "renderExperienceLevel", at= @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;pop()V"))
+    private void autoHud$postExperienceText(DrawContext context, float x, CallbackInfo ci) {
+        AutoHudRenderer.postInject(context);
     }
 
     @ModifyArg(method = "renderExperienceLevel", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;IIIZ)I"), index = 4)

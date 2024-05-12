@@ -32,6 +32,7 @@ public class AutoHud {
         GameEvent.WORLD_LOAD.register(Hud::registerState);
         GameEvent.WORLD_TICK.register(Hud::tickState);
         GameEvent.WORLD_UNLOAD.register(Hud::unregisterState);
+        GameEvent.PLAYER_RESPAWN.register(Hud::registerState);
         EventHandler.registerEvents();
     }
 

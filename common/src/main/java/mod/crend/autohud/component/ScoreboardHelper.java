@@ -57,7 +57,7 @@ public class ScoreboardHelper {
 
     // The next two methods are used to cut down on unnecessary duplicate code
     private static boolean canUpdate() {
-        return Component.Scoreboard.config.active() && Component.Scoreboard.state != null;
+        return AutoHud.config != null && Component.Scoreboard.config.active() && Component.Scoreboard.state != null;
     }
 
     private static ScoreboardComponentState getScoreboardComponent() {

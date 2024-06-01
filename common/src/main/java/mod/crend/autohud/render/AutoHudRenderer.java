@@ -71,14 +71,14 @@ public class AutoHudRenderer {
 		return !Component.Crosshair.isHidden();
 	}
 	public static void preInjectCrosshair() {
-		if (Component.Crosshair.config.active()) {
+		if (Component.Crosshair.config.active() && !Component.Crosshair.fullyRevealed()) {
 			CustomFramebufferRenderer.init();
 			RenderSystem.defaultBlendFunc();
 			AutoHudRenderer.preInjectFade(Component.Crosshair, (float) Component.Crosshair.config.maximumFade());
 		}
 	}
 	public static void postInjectCrosshair(DrawContext context) {
-		if (Component.Crosshair.config.active()) {
+		if (Component.Crosshair.config.active() && !Component.Crosshair.fullyRevealed()) {
 			AutoHudRenderer.postInjectFade();
 			RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.ONE_MINUS_DST_COLOR, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
 			CustomFramebufferRenderer.draw(context);

@@ -29,12 +29,10 @@ public class Hud {
         else enableDynamic();
     }
     public static void peekHud(boolean doPeek) {
-        if (doPeek == wasPeeking) return;
-
         if (dynamic == doPeek) {
             Component.revealAll();
             Component.ChatIndicator.hide();
-        } else {
+        } else if (doPeek != wasPeeking) {
             Component.hideAll();
         }
 

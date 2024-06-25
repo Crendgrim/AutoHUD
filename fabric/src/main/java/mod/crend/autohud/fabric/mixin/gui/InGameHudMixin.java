@@ -11,6 +11,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.BossBarHud;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.entity.JumpingMount;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -26,11 +27,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class InGameHudMixin {
 
     @Inject(method="render", at=@At("HEAD"))
-    private void autoHud$preRender(DrawContext context, float tickDelta, CallbackInfo ci) {
+    private void autoHud$preRender(DrawContext context, RenderTickCounter tickDelta, CallbackInfo ci) {
         AutoHudRenderer.startRender(context, tickDelta);
     }
     @Inject(method="render", at=@At("RETURN"))
-    private void autoHud$postRender(DrawContext context, float tickDelta, CallbackInfo ci) {
+    private void autoHud$postRender(DrawContext context, RenderTickCounter tickDelta, CallbackInfo ci) {
         AutoHudRenderer.endRender();
     }
 
@@ -40,10 +41,10 @@ public class InGameHudMixin {
             method = "renderMainHud",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbar(Lnet/minecraft/client/gui/DrawContext;F)V"
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V"
             )
     )
-    private void autoHud$wrapHotbar(InGameHud instance, DrawContext context, float tickDelta, Operation<Void> original) {
+    private void autoHud$wrapHotbar(InGameHud instance, DrawContext context, RenderTickCounter tickDelta, Operation<Void> original) {
         if (AutoHud.targetHotbar) {
             AutoHudRenderer.preInject(context, Component.Hotbar);
         }
@@ -53,7 +54,7 @@ public class InGameHudMixin {
         }
     }
     @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;getMatrices()Lnet/minecraft/client/util/math/MatrixStack;", ordinal = 0))
-    private void autoHud$preHotbar(DrawContext drawContext, float f, CallbackInfo ci) {
+    private void autoHud$preHotbar(DrawContext drawContext, RenderTickCounter tickDelta, CallbackInfo ci) {
         AutoHudRenderer.injectTransparency();
     }
 
@@ -80,10 +81,10 @@ public class InGameHudMixin {
             method = "renderHotbar",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/gui/DrawContext;IIFLnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V"
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/gui/DrawContext;IILnet/minecraft/client/render/RenderTickCounter;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V"
             )
     )
-    private void autoHud$transparentHotbarItems(InGameHud instance, DrawContext context, int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed, Operation<Void> original) {
+    private void autoHud$transparentHotbarItems(InGameHud instance, DrawContext context, int x, int y, RenderTickCounter tickDelta, PlayerEntity player, ItemStack stack, int seed, Operation<Void> original) {
         // Don't render items if they're fully invisible anyway
         if (!AutoHudRenderer.shouldRenderHotbarItems()) return;
         if (AutoHud.targetHotbar && AutoHud.config.animationFade()) {
@@ -121,7 +122,7 @@ public class InGameHudMixin {
     }
 
     @Inject(method = "renderExperienceLevel", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;IIIZ)I", ordinal = 0, shift = At.Shift.BEFORE))
-    private void autoHud$experienceText(DrawContext context, float x, CallbackInfo ci) {
+    private void autoHud$experienceText(DrawContext context, RenderTickCounter x, CallbackInfo ci) {
         if (AutoHud.targetExperienceBar) {
             if (AutoHud.config.revealExperienceTextWithHotbar() && Component.Hotbar.isMoreVisibleThan(Component.ExperienceLevel)) {
                 AutoHudRenderer.preInject(context, Component.Hotbar);
@@ -131,7 +132,7 @@ public class InGameHudMixin {
         }
     }
     @Inject(method = "renderExperienceLevel", at= @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;pop()V"))
-    private void autoHud$postExperienceText(DrawContext context, float x, CallbackInfo ci) {
+    private void autoHud$postExperienceText(DrawContext context, RenderTickCounter x, CallbackInfo ci) {
         AutoHudRenderer.postInject(context);
     }
 
@@ -230,7 +231,7 @@ public class InGameHudMixin {
 
     // Scoreboard
     @WrapOperation(
-            method = "renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;F)V",
+            method = "renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/gui/hud/InGameHud;renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/scoreboard/ScoreboardObjective;)V"
@@ -292,7 +293,7 @@ public class InGameHudMixin {
         return original.call(instance);
     }
     @Inject(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/StatusEffectSpriteManager;getSprite(Lnet/minecraft/registry/entry/RegistryEntry;)Lnet/minecraft/client/texture/Sprite;"))
-    private void autoHud$postEffect(DrawContext context, float tickDelta, CallbackInfo ci) {
+    private void autoHud$postEffect(DrawContext context, RenderTickCounter tickDelta, CallbackInfo ci) {
         if (AutoHud.targetStatusEffects) {
             AutoHudRenderer.postInject(context);
         }
@@ -341,13 +342,13 @@ public class InGameHudMixin {
 
     // Action Bar
     @Inject(method = "renderOverlayMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;push()V", ordinal = 0, shift = At.Shift.AFTER))
-    private void autoHud$preActionBar(DrawContext context, float tickDelta, CallbackInfo ci) {
+    private void autoHud$preActionBar(DrawContext context, RenderTickCounter tickDelta, CallbackInfo ci) {
         if (Component.ActionBar.config.active()) {
             AutoHudRenderer.preInject(context, Component.ActionBar);
         }
     }
     @Inject(method = "renderOverlayMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;pop()V", ordinal = 0, shift = At.Shift.BEFORE))
-    private void autoHud$postActionBar(DrawContext context, float tickDelta, CallbackInfo ci) {
+    private void autoHud$postActionBar(DrawContext context, RenderTickCounter tickDelta, CallbackInfo ci) {
         if (Component.ActionBar.config.active()) {
             AutoHudRenderer.postInject(context);
         }

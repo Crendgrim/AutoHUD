@@ -22,7 +22,7 @@ import net.neoforged.neoforge.common.NeoForge;
 @EventBusSubscriber(modid = AutoHud.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class AutoHudModEvents {
 	public static final String REGISTER_API = "register_api";
-	public static final Identifier NEW_CHAT_MESSAGE_INDICATOR = new Identifier(AutoHud.MOD_ID, "new_chat_message_indicator");
+	public static final Identifier NEW_CHAT_MESSAGE_INDICATOR = Identifier.of(AutoHud.MOD_ID, "new_chat_message_indicator");
 
 	@SubscribeEvent
 	static void onClientSetup(FMLClientSetupEvent event) {

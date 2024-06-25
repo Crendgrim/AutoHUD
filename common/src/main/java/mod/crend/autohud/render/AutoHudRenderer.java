@@ -6,6 +6,7 @@ import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.libbamboo.render.CustomFramebufferRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderTickCounter;
 
 public class AutoHudRenderer {
 	public static boolean inRender;
@@ -156,9 +157,9 @@ public class AutoHudRenderer {
 		}
 	}
 
-	public static void startRender(DrawContext context, float pTickDelta) {
+	public static void startRender(DrawContext context, RenderTickCounter renderTickCounter) {
 		inRender = true;
-		tickDelta = pTickDelta;
+		tickDelta = renderTickCounter.getTickDelta(true);
 		ChatMessageIndicator.render(context);
 	}
 

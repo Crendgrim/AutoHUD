@@ -10,6 +10,7 @@ import mod.crend.autohud.render.AutoHudRenderer;
 import mod.crend.libbamboo.render.CustomFramebufferRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,13 +25,13 @@ public class InGameHudMixin {
 
 	// Hotbar items
 	@WrapOperation(
-			method = "renderHotbarVanilla",
+			method = "renderHotbarYarn",
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/gui/DrawContext;IIFLnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V"
+					target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/gui/DrawContext;IILnet/minecraft/client/render/RenderTickCounter;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V"
 			)
 	)
-	private void autoHud$transparentHotbarItems(InGameHud instance, DrawContext context, int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed, Operation<Void> original) {
+	private void autoHud$transparentHotbarItems(InGameHud instance, DrawContext context, int x, int y, RenderTickCounter tickCounter, PlayerEntity player, ItemStack stack, int seed, Operation<Void> original) {
 		if (!AutoHudRenderer.shouldRenderHotbarItems()) return;
 		if (AutoHud.targetHotbar && AutoHud.config.animationFade()) {
 			// We need to reset the renderer because otherwise the first item gets drawn with double alpha
@@ -38,13 +39,13 @@ public class InGameHudMixin {
 			// Setup custom framebuffer
 			CustomFramebufferRenderer.init();
 			// Have the original call draw onto the custom framebuffer
-			original.call(instance, context, x, y, tickDelta, player, stack, seed);
+			original.call(instance, context, x, y, tickCounter, player, stack, seed);
 			// Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
 			AutoHudRenderer.preInjectFadeWithReverseTranslation(context, Component.Hotbar, AutoHud.config.getHotbarItemsMaximumFade());
 			CustomFramebufferRenderer.draw(context);
 			AutoHudRenderer.postInjectFadeWithReverseTranslation(context);
 		} else {
-			original.call(instance, context, x, y, tickDelta, player, stack, seed);
+			original.call(instance, context, x, y, tickCounter, player, stack, seed);
 		}
 	}
 
@@ -89,7 +90,7 @@ public class InGameHudMixin {
 		return result;
 	}
 
-	@WrapOperation(method = {"lambda$renderEffects$10", "method_18620"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawSprite(IIIIILnet/minecraft/client/texture/Sprite;)V"), require = 0)
+	@WrapOperation(method = "lambda$renderEffects$10", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawSprite(IIIIILnet/minecraft/client/texture/Sprite;)V"), require = 0)
 	private static void autoHud$preSprite(DrawContext context, int x, int y, int z, int width, int height, Sprite sprite, Operation<Void> original) {
 		if (AutoHud.targetStatusEffects) {
 			Component component = Component.findBySprite(sprite);

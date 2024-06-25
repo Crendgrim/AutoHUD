@@ -9,7 +9,6 @@ import mod.crend.autohud.forge.compat.HotbarSlotCyclingCompat;
 import mod.crend.autohud.render.ChatMessageIndicator;
 import mod.crend.libbamboo.forge.ConfigScreen;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -29,7 +28,9 @@ public class AutoHudModEvents {
 		MixinExtrasBootstrap.init();
 		AutoHud.init();
 		ConfigScreen.register(ConfigHandler.CONFIG_STORE);
+		/*
 		MinecraftForge.EVENT_BUS.register(new AutoHudGui());
+		 */
 		if (ModList.get().isLoaded("hotbarslotcycling")) {
 			HotbarSlotCyclingCompat.init();
 		}
@@ -47,9 +48,11 @@ public class AutoHudModEvents {
 		ModKeyBindings.ALL.forEach(event::register);
 	}
 
+	/*
 	@SubscribeEvent
 	static void onRegisterOverlaysEvent(RegisterGuiOverlaysEvent event) {
 		event.registerAboveAll(NEW_CHAT_MESSAGE_INDICATOR, (forgeGui, context, f, i, j) -> ChatMessageIndicator.render(context));
 	}
+	 */
 
 }

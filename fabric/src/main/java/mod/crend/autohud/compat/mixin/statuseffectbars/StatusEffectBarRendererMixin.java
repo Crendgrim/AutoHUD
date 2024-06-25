@@ -16,7 +16,7 @@ public class StatusEffectBarRendererMixin {
 			at = @At("HEAD"),
 			ordinal = 1,
 			argsOnly = true)
-	private static int autoHud$renderWithOffset(int y, DrawContext context, StatusEffectInstance effect) {
+	private static int autoHud$renderWithOffset(int y, DrawContext context, float tickDelta, StatusEffectInstance effect) {
 		if (AutoHudRenderer.inRender) {
 			return y + (int) Component.get(effect.getEffectType()).getOffsetY(AutoHudRenderer.tickDelta);
 		}

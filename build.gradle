@@ -15,7 +15,7 @@ subprojects {
         if (name == "neoforge") {
             mappings loom.layered {
                 it.mappings "net.fabricmc:yarn:${rootProject.yarn_mappings}:v2"
-                it.mappings file("${rootDir}/mappings/23w13a.tiny")
+                it.mappings file("${rootDir}/mappings/1.21.tiny")
             }
         } else {
             mappings "net.fabricmc:yarn:${rootProject.yarn_mappings}:v2"

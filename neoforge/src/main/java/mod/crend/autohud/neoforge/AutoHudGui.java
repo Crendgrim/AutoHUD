@@ -4,6 +4,7 @@ import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.render.AutoHudRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -30,16 +31,16 @@ public class AutoHudGui {
 		STATUS_BAR_COMPONENTS.put(EXPERIENCE_LEVEL, Component.ExperienceLevel);
 	}
 
-	public void preRender(DrawContext context, Component component, float tickDelta) {
+	public void preRender(DrawContext context, Component component, RenderTickCounter tickDelta) {
 		if (AutoHud.config.animationMove()) {
-			context.getMatrices().translate(component.getOffsetX(tickDelta), component.getOffsetY(tickDelta), 0);
+			context.getMatrices().translate(component.getOffsetX(tickDelta.getTickDelta(true)), component.getOffsetY(tickDelta.getTickDelta(true)), 0);
 		}
 		AutoHudRenderer.preInjectFade(component);
 	}
-	public void postRender(DrawContext context, Component component, float tickDelta) {
+	public void postRender(DrawContext context, Component component, RenderTickCounter tickDelta) {
 		AutoHudRenderer.postInjectFade();
 		if (AutoHud.config.animationMove()) {
-			context.getMatrices().translate(-component.getOffsetX(tickDelta), -component.getOffsetY(tickDelta), 0);
+			context.getMatrices().translate(-component.getOffsetX(tickDelta.getTickDelta(true)), -component.getOffsetY(tickDelta.getTickDelta(true)), 0);
 		}
 	}
 
@@ -75,7 +76,11 @@ public class AutoHudGui {
 	public void preHudComponent(RenderGuiLayerEvent.Pre event) {
 		getComponent(event.getName()).ifPresent(
 				component -> {
-					if (component.fullyHidden() && component.config.maximumFade() == 0 && !(component.equals(Component.ExperienceBar) && AutoHudRenderer.experienceLevelOverridesBar())) {
+					if (component.fullyHidden()
+							&& component.config.maximumFade() == 0
+							&& !(component.equals(Component.Hotbar) && AutoHud.config.getHotbarItemsMaximumFade() > 0.0f)
+							&& !(component.equals(Component.ExperienceBar) && AutoHudRenderer.experienceLevelOverridesBar())
+					) {
 						event.setCanceled(true);
 					} else {
 						preRender(event.getGuiGraphics(), component, event.getPartialTick());

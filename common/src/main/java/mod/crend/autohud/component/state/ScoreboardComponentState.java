@@ -135,6 +135,7 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
                 // else add this new player since we don't easily get to know when it was
                 // recently added
                 this.addPlayerScoreAndTeam(scoreHolder, objective, score.getScore());
+                super.component.revealCombined();
             }
 
         }

@@ -10,6 +10,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.util.math.MathHelper;
@@ -42,7 +43,7 @@ public abstract class StatusEffectTimerMixin {
 
     @Inject(method = "renderStatusEffectOverlay",
             at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", shift = At.Shift.AFTER))
-    private void appendOverlayDrawing(DrawContext context, float tickDelta, CallbackInfo c,
+    private void appendOverlayDrawing(DrawContext context, RenderTickCounter tickDelta, CallbackInfo c,
                                       @Local List<Runnable> list, @Local StatusEffectInstance statusEffectInstance,
                                       @Local(ordinal = 4) int x, @Local(ordinal = 3) int y) {
         list.add(() -> {

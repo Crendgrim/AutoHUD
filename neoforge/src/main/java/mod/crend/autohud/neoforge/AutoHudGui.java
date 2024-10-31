@@ -31,16 +31,18 @@ public class AutoHudGui {
 		STATUS_BAR_COMPONENTS.put(EXPERIENCE_LEVEL, Component.ExperienceLevel);
 	}
 
-	public void preRender(DrawContext context, Component component, RenderTickCounter tickDelta) {
+	public void preRender(DrawContext context, Component component, /*? if <1.21 {*/float/*?} else {*//*RenderTickCounter*//*?}*/ renderTickCounter) {
 		if (AutoHud.config.animationMove()) {
-			context.getMatrices().translate(component.getOffsetX(tickDelta.getTickDelta(true)), component.getOffsetY(tickDelta.getTickDelta(true)), 0);
+			float tickDelta = /*? if <1.21 {*/renderTickCounter/*?} else {*//*renderTickCounter.getTickDelta(true)*//*?}*/;
+			context.getMatrices().translate(component.getOffsetX(tickDelta), component.getOffsetY(tickDelta), 0);
 		}
 		AutoHudRenderer.preInjectFade(component);
 	}
-	public void postRender(DrawContext context, Component component, RenderTickCounter tickDelta) {
+	public void postRender(DrawContext context, Component component, /*? if <1.21 {*/float/*?} else {*//*RenderTickCounter*//*?}*/ renderTickCounter) {
 		AutoHudRenderer.postInjectFade();
 		if (AutoHud.config.animationMove()) {
-			context.getMatrices().translate(-component.getOffsetX(tickDelta.getTickDelta(true)), -component.getOffsetY(tickDelta.getTickDelta(true)), 0);
+			float tickDelta = /*? if <1.21 {*/renderTickCounter/*?} else {*//*renderTickCounter.getTickDelta(true)*//*?}*/;
+			context.getMatrices().translate(-component.getOffsetX(tickDelta), -component.getOffsetY(tickDelta), 0);
 		}
 	}
 

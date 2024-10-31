@@ -2,11 +2,13 @@ package mod.crend.autohud.neoforge;
 
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.ModKeyBindings;
+import mod.crend.autohud.neoforge.compat.RaisedCompat;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.render.AutoHudRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.ClientChatReceivedEvent;
@@ -19,6 +21,10 @@ public class AutoHudNeoForge {
     @SubscribeEvent
     static void onClientTick(ClientTickEvent.Post event) {
         ModKeyBindings.clientTick(MinecraftClient.getInstance());
+
+        if (ModList.get().isLoaded("raised")) {
+            RaisedCompat.tick();
+        }
     }
 
     @SubscribeEvent

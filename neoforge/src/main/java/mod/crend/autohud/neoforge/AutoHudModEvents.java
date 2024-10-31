@@ -4,7 +4,8 @@ import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.ModKeyBindings;
 import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.config.ConfigHandler;
-import mod.crend.autohud.neoforge.compat.HotbarSlotCyclingCompat;
+//? if >1.21
+/*import mod.crend.autohud.neoforge.compat.HotbarSlotCyclingCompat;*/
 import mod.crend.autohud.render.ChatMessageIndicator;
 import mod.crend.libbamboo.neoforge.ConfigScreen;
 import net.minecraft.util.Identifier;
@@ -30,7 +31,8 @@ public class AutoHudModEvents {
 		ConfigScreen.register(ConfigHandler.CONFIG_STORE);
 		NeoForge.EVENT_BUS.register(new AutoHudGui());
 		if (ModList.get().isLoaded("hotbarslotcycling")) {
-			HotbarSlotCyclingCompat.init();
+			//? if >1.21
+			/*HotbarSlotCyclingCompat.init();*/
 		}
 	}
 

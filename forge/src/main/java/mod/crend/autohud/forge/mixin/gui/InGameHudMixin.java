@@ -32,7 +32,8 @@ import java.util.List;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
-	@Inject(method="render", at=@At("HEAD"))
+	//? if >=1.21 {
+	/*@Inject(method="render", at=@At("HEAD"))
 	private void autoHud$preRender(DrawContext context, RenderTickCounter tickDelta, CallbackInfo ci) {
 		AutoHudRenderer.startRender(context, tickDelta);
 	}
@@ -40,17 +41,32 @@ public class InGameHudMixin {
 	private void autoHud$postRender(DrawContext context, RenderTickCounter tickDelta, CallbackInfo ci) {
 		AutoHudRenderer.endRender();
 	}
+	*///?}
 
 	// Hotbar
 	@Inject(method = "renderHotbar", at = @At("HEAD"))
-	private void autoHud$preHotbar(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
+	private void autoHud$preHotbar(
+			//? if <1.21
+			float tickDelta,
+			DrawContext context,
+			//? if >=1.21
+			/*RenderTickCounter tickCounter,*/
+			CallbackInfo ci
+	) {
 		if (AutoHud.targetHotbar) {
 			AutoHudRenderer.preInjectFade(Component.Hotbar);
 		}
 	}
 
 	@Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;getMatrices()Lnet/minecraft/client/util/math/MatrixStack;", ordinal = 0))
-	private void autoHud$hotbarTransparency(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
+	private void autoHud$hotbarTransparency(
+			//? if <1.21
+			float tickDelta,
+			DrawContext context,
+			//? if >=1.21
+			/*RenderTickCounter tickCounter,*/
+			CallbackInfo ci
+	) {
 		AutoHudRenderer.injectTransparency();
 	}
 
@@ -67,10 +83,23 @@ public class InGameHudMixin {
 			method = "renderHotbar",
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/gui/DrawContext;IILnet/minecraft/client/render/RenderTickCounter;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V"
+					//? if <1.21 {
+					target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/gui/DrawContext;IIFLnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V"
+					//?} else
+					/*target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/gui/DrawContext;IILnet/minecraft/client/render/RenderTickCounter;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V"*/
 			)
 	)
-	private void autoHud$transparentHotbarItems(InGameHud instance, DrawContext context, int x, int y, RenderTickCounter tickCounter, PlayerEntity player, ItemStack stack, int seed, Operation<Void> original) {
+	private void autoHud$transparentHotbarItems(
+			InGameHud instance,
+			DrawContext context,
+			int x,
+			int y,
+			/*? if <1.21 {*/float/*?} else {*//*RenderTickCounter*//*?}*/ tickCounter,
+			PlayerEntity player,
+			ItemStack stack,
+			int seed,
+			Operation<Void> original
+	) {
 		if (!AutoHudRenderer.shouldRenderHotbarItems()) return;
 		if (AutoHud.targetHotbar && AutoHud.config.animationFade()) {
 			// We need to reset the renderer because otherwise the first item gets drawn with double alpha
@@ -111,8 +140,14 @@ public class InGameHudMixin {
 			AutoHudRenderer.preInjectFade(Component.ExperienceBar);
 		}
 	}
-	@Inject(method = "renderExperienceLevel", at=@At("HEAD"))
-	private void autoHud$experienceText(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
+	@Inject(
+			//? if <1.21 {
+			method = "render",
+			//?} else
+			/*method = "renderExperienceLevel",*/
+			at=@At("HEAD")
+	)
+	private void autoHud$experienceText(DrawContext context, /*? if <1.21 {*/float/*?} else {*//*RenderTickCounter*//*?}*/ tickCounter, CallbackInfo ci) {
 		if (AutoHud.targetExperienceBar) {
 			AutoHudRenderer.moveExperienceText(context);
 		}
@@ -130,22 +165,38 @@ public class InGameHudMixin {
 					from = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;blendFuncSeparate(Lcom/mojang/blaze3d/platform/GlStateManager$SrcFactor;Lcom/mojang/blaze3d/platform/GlStateManager$DstFactor;Lcom/mojang/blaze3d/platform/GlStateManager$SrcFactor;Lcom/mojang/blaze3d/platform/GlStateManager$DstFactor;)V"),
 					to = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getAttackIndicator()Lnet/minecraft/client/option/SimpleOption;")
 			),
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V"))
-	private void autoHud$renderCrosshair(DrawContext context, Identifier texture, int x, int y, int width, int height, Operation<Void> original) {
+			at = @At(
+					value = "INVOKE",
+					//? if <1.21 {
+					target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V"
+					//?} else
+					/*target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V"*/
+			)
+	)
+	private void autoHud$renderCrosshair(DrawContext context, Identifier texture, int x, int y, /*? if <1.21 {*/int u, int v,/*?}*/ int width, int height, Operation<Void> original) {
 		if (AutoHudRenderer.shouldRenderCrosshair()) {
 			AutoHudRenderer.preInjectCrosshair();
-			original.call(context, texture, x, y, width, height);
+			original.call(context, texture, x, y, /*? if <1.21 {*/u, v,/*?}*/ width, height);
 			AutoHudRenderer.postInjectCrosshair(context);
 		}
 	}
 
 	// Status Effects
-	@WrapOperation(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V"))
-	private void autoHud$statusEffectBackground(DrawContext context, Identifier texture, int x, int y, int width, int height, Operation<Void> original, @Local StatusEffectInstance statusEffectInstance) {
+	@WrapOperation(
+			method = "renderStatusEffectOverlay",
+			at = @At(
+					value = "INVOKE",
+					//? if <1.21 {
+					target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V"
+					//?} else
+					/*target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V"*/
+			)
+	)
+	private void autoHud$statusEffectBackground(DrawContext context, Identifier texture, int x, int y, /*? if <1.21 {*/int u, int v,/*?}*/ int width, int height, Operation<Void> original, @Local StatusEffectInstance statusEffectInstance) {
 		if (AutoHud.targetStatusEffects) {
 			AutoHudRenderer.preInject(context, Component.get(statusEffectInstance.getEffectType()));
 		}
-		original.call(context, texture, x, y, width, height);
+		original.call(context, texture, x, y, /*? if <1.21 {*/u, v,/*?}*/ width, height);
 		if (AutoHud.targetStatusEffects) {
 			AutoHudRenderer.postInject(context);
 		}
@@ -163,7 +214,7 @@ public class InGameHudMixin {
 		return result;
 	}
 
-	@Inject(method = {"m_279741_", "method_18620"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawSprite(IIIIILnet/minecraft/client/texture/Sprite;)V"), require = 0)
+	@Inject(method = "method_18620", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawSprite(IIIIILnet/minecraft/client/texture/Sprite;)V"), require = 0)
 	private static void autoHud$preSprite(DrawContext context, float f, int i, int j, Sprite sprite, CallbackInfo ci) {
 		if (AutoHud.targetStatusEffects) {
 			Component component = Component.findBySprite(sprite);
@@ -174,7 +225,7 @@ public class InGameHudMixin {
 			}
 		}
 	}
-	@Inject(method = {"m_279741_", "method_18620"}, at = @At(value = "RETURN"), require = 0)
+	@Inject(method = "method_18620", at = @At(value = "RETURN"), require = 0)
 	private static void autoHud$postSprite(DrawContext drawContext, float f, int i, int j, Sprite sprite, CallbackInfo ci) {
 		if (AutoHud.targetStatusEffects) {
 			AutoHudRenderer.postInject(drawContext);

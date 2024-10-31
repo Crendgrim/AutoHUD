@@ -25,13 +25,27 @@ public class InGameHudMixin {
 
 	// Hotbar items
 	@WrapOperation(
-			method = "renderHotbarYarn",
+			method = "renderHotbarVanilla",
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/gui/DrawContext;IILnet/minecraft/client/render/RenderTickCounter;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V"
+					//? if <1.21 {
+					target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/gui/DrawContext;IIFLnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V"
+					//?} else
+					/*target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/gui/DrawContext;IILnet/minecraft/client/render/RenderTickCounter;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V"*/
 			)
 	)
-	private void autoHud$transparentHotbarItems(InGameHud instance, DrawContext context, int x, int y, RenderTickCounter tickCounter, PlayerEntity player, ItemStack stack, int seed, Operation<Void> original) {
+	private void autoHud$transparentHotbarItems(
+			InGameHud instance,
+			DrawContext context,
+			int x, int y,
+			//? if <1.21 {
+			float tickCounter,
+			//?} else
+			/*RenderTickCounter tickCounter,*/
+			PlayerEntity player,
+			ItemStack stack,
+			int seed,
+			Operation<Void> original) {
 		if (!AutoHudRenderer.shouldRenderHotbarItems()) return;
 		if (AutoHud.targetHotbar && AutoHud.config.animationFade()) {
 			// We need to reset the renderer because otherwise the first item gets drawn with double alpha

@@ -1,5 +1,9 @@
 package mod.crend.autohud.compat;
 
+//? if 1.20.6 {
+/*public class DehydrationCompat { }
+*///?} else {
+
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.component.Component;
@@ -42,8 +46,7 @@ public class DehydrationCompat implements AutoHudApi {
 
     @Override
     public void tickState(ClientPlayerEntity player) {
-        // FIXME update once Dehydration has been updated
-        if (player.hasStatusEffect(RegistryEntry.of(EffectInit.THIRST))) {
+        if (player.hasStatusEffect(EffectInit.THIRST)) {
             Thirst.reveal();
         } else if (((ThirstManagerAccess) player).getThirstManager().isNotFull()) {
             if (!player.getMainHandStack().isEmpty() && player.getMainHandStack().getTooltipData().isPresent() && player.getMainHandStack().getTooltipData().get() instanceof ThirstTooltipData) {
@@ -54,3 +57,4 @@ public class DehydrationCompat implements AutoHudApi {
         }
     }
 }
+//?}

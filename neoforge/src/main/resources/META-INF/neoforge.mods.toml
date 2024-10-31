@@ -1,44 +1,22 @@
 modLoader = "javafml"
-loaderVersion = "[1,)"
+loaderVersion = "*"
 issueTrackerURL = "https://github.com/Crendgrim/AutoHUD/issues"
 license = "LGPL-3.0"
 
 [[mods]]
-modId = "autohud"
-version = "1.0"
-displayName = "Auto HUD"
+modId = "${id}"
+version = "${version}"
+displayName = "${name}"
 authors = "Crendgrim"
 description = '''
  Dynamic HUD that hides interface elements while they are not needed.
 '''
 logoFile = "autohud.png"
+logoBlur = false
 displayTest = "IGNORE_ALL_VERSION"
 
 [[mixins]]
 config = "autohud-common.mixins.json"
+
 [[mixins]]
 config = "autohud-neoforge.mixins.json"
-
-[[dependencies.autohud]]
-modId = "neoforge"
-mandatory = true
-type = "required"
-versionRange = "${neoforge_version_range}"
-ordering = "NONE"
-side = "BOTH"
-
-[[dependencies.autohud]]
-modId = "minecraft"
-mandatory = true
-type = "required"
-versionRange = "${minecraft_version_range_forge}"
-ordering = "NONE"
-side = "BOTH"
-
-[[dependencies.autohud]]
-modId = "yet_another_config_lib"
-mandatory = false
-type = "optional"
-versionRange = "${yacl_version_range_neoforge}"
-ordering = "NONE"
-side = "BOTH"

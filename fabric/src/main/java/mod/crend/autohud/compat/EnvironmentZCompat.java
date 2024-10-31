@@ -1,5 +1,9 @@
 package mod.crend.autohud.compat;
 
+//? if =1.20.6 {
+/*public class EnvironmentZCompat {
+}
+*///?} else {
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.component.Component;
@@ -94,3 +98,4 @@ public class EnvironmentZCompat implements AutoHudApi {
 		}
 	}
 }
+//?}

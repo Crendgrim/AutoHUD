@@ -2,9 +2,7 @@ package mod.crend.autohud.mixin.gui;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import mod.crend.autohud.AutoHud;
-import mod.crend.autohud.component.Component;
-import mod.crend.autohud.component.Hud;
-import mod.crend.autohud.render.AutoHudRenderer;
+import mod.crend.autohud.render.RenderWrapper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -56,15 +54,14 @@ public abstract class StatusEffectTimerMixin {
             @Local(ordinal = 3) int y
     ) {
         list.add(() -> {
-            if (AutoHud.config.statusEffectTimer() && Hud.shouldShowIcon(statusEffectInstance)) {
-                drawStatusEffectOverlay(context, statusEffectInstance, x, y);
+            if (AutoHud.config.statusEffectTimer()) {
+                RenderWrapper.STATUS_EFFECT.wrap(context, statusEffectInstance, () -> drawStatusEffectOverlay(context, statusEffectInstance, x, y));
             }
         });
     }
 
     @Unique
     private void drawStatusEffectOverlay(DrawContext context, StatusEffectInstance statusEffectInstance, int x, int y) {
-        AutoHudRenderer.preInject(context, Component.get(statusEffectInstance.getEffectType()));
         String duration = getDurationAsString(statusEffectInstance);
         int durationLength = client.textRenderer.getWidth(duration);
         context.drawTextWithShadow(client.textRenderer, duration, x + 13 - (durationLength / 2), y + 14, 0x99FFFFFF);
@@ -76,7 +73,6 @@ public abstract class StatusEffectTimerMixin {
             int amplifierLength = client.textRenderer.getWidth(amplifierString);
             context.drawTextWithShadow(client.textRenderer, amplifierString, x + 22 - amplifierLength, y + 3, 0x99FFFFFF);
         }
-        AutoHudRenderer.postInject(context);
     }
 
     @Unique

@@ -4,6 +4,9 @@ import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.state.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+//? if >=1.21.2
+/*import net.minecraft.component.type.EquippableComponent;
+*/
 //? if >=1.20.5 {
 /*import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.FoodComponent;
@@ -15,6 +18,10 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.Equipment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PotionItem;
+//? if >=1.21.2 {
+/*import net.minecraft.item.consume.ApplyEffectsConsumeEffect;
+import net.minecraft.item.consume.ConsumeEffect;
+*///?}
 import net.minecraft.potion.Potion;
 //? if <1.20.5
 import net.minecraft.potion.PotionUtil;
@@ -54,7 +61,21 @@ public class State {
         Component.Armor.state = new EnhancedPolicyComponentState(Component.Armor,
                 player::getArmor,
                 20,
-                () -> player.getMainHandStack().getItem() instanceof Equipment equipment && equipment.getSlotType().isArmorSlot() && player.canEquip(player.getMainHandStack()), true);
+                () ->
+                        //? if <1.21.2 {
+                        player.getMainHandStack().getItem() instanceof Equipment equipment
+                                && equipment.getSlotType().isArmorSlot()
+                                && player.canEquip(player.getMainHandStack())
+                        //?} else {
+                        /*{
+                            ItemStack mainHandStack = player.getMainHandStack();
+                            EquippableComponent equipment = mainHandStack.get(DataComponentTypes.EQUIPPABLE);
+                            return equipment != null
+                                && equipment.slot().isArmorSlot()
+                                && player.canEquip(mainHandStack, equipment.slot());
+                        }
+                        *///?}
+                   , true);
         Component.Air.state = new PolicyComponentState(Component.Air, player::getAir, player::getMaxAir);
         Component.ExperienceLevel.state = new ValueComponentState<>(Component.ExperienceLevel, () -> player.experienceLevel, true);
         Component.ExperienceBar.state = new ValueComponentState<>(Component.ExperienceBar, () -> player.totalExperience, true);
@@ -78,9 +99,11 @@ public class State {
     private boolean isFood(ItemStack itemStack) {
         //? if <1.20.5 {
         return itemStack.isFood();
-        //?} else {
+        //?} else if <1.21.2 {
         /*return itemStack.contains(DataComponentTypes.FOOD);
-        *///?}
+        *///?} else
+        /*return itemStack.contains(DataComponentTypes.CONSUMABLE);
+         */
     }
 
     private boolean isHealEffect(StatusEffectInstance effect) {
@@ -96,14 +119,30 @@ public class State {
 
             //? if <1.20.5 {
             var statusEffects = itemStack.getItem().getFoodComponent().getStatusEffects();
-            //?} else {
-            /*var statusEffects = itemStack.get(DataComponentTypes.FOOD).effects();
-            *///?}
             for (var effect : statusEffects) {
-                if (isHealEffect(/*? if <1.20.5 {*/effect.getFirst()/*?} else {*//*effect.effect()*//*?}*/)) {
+                if (isHealEffect(effect.getFirst())) {
                     return true;
                 }
             }
+            //?} else if <1.21.2 {
+            /*var statusEffects = itemStack.get(DataComponentTypes.FOOD).effects();
+            for (var effect : statusEffects) {
+                if (isHealEffect(effect.effect())) {
+                    return true;
+                }
+            }
+            *///?} else {
+            /*var consumeEffects = itemStack.get(DataComponentTypes.CONSUMABLE).onConsumeEffects();
+            for (var consumeEffect : consumeEffects) {
+                if (consumeEffect instanceof ApplyEffectsConsumeEffect effect) {
+                    for (var statusEffect : effect.effects()) {
+                        if (isHealEffect(statusEffect)) {
+                            return true;
+                        }
+                    }
+                }
+            }*/
+            //?}
         } else if (itemStack.getItem() instanceof PotionItem) {
             //? if <1.20.5 {
             Potion potion = PotionUtil.getPotion(itemStack);
@@ -143,6 +182,10 @@ public class State {
             if (!revealHotbarOnDurability(player.getMainHandStack())) {
                 revealHotbarOnDurability(player.getOffHandStack());
             }
+        }
+
+        if (AutoHud.config.revealExperienceTextWithHotbar()) {
+            Component.ExperienceLevel.synchronizeFrom(Component.ExperienceBar, Component.Hotbar);
         }
 
         if (AutoHud.config.statusEffects().active()) {

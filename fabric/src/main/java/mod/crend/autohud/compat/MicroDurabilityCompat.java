@@ -14,7 +14,7 @@ public class MicroDurabilityCompat implements AutoHudApi {
     }
 
     // We bind this to the hotbar config, as that is the most closely related one.
-    public static Component MicroDurabilityComponent = new Component("MicroDurability", AutoHud.config.hotbar(), true);
+    public static Component MicroDurabilityComponent = Component.builder("MicroDurability").config(AutoHud.config.hotbar()).inMainHud().build();
     static {
         // Fake this API being inserted via entry point
         AutoHud.addApi(new MicroDurabilityCompat());

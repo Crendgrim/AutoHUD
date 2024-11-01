@@ -27,7 +27,7 @@ public class DehydrationCompat implements AutoHudApi {
     }
 
     // We bind this to the hunger config, as that is the most closely related one.
-    public static Component Thirst = new Component("Thirst", AutoHud.config.hunger(), List.of(Component.Air), true);
+    public static Component Thirst = Component.builder("Thirst").config(AutoHud.config.hunger()).stackComponents(Component.Air).inMainHud().build();
     static {
         // Fake this API being inserted via entry point
         AutoHud.addApi(new DehydrationCompat());

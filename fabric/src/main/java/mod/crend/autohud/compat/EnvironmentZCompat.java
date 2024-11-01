@@ -23,8 +23,8 @@ public class EnvironmentZCompat implements AutoHudApi {
 		return "environmentz";
 	}
 
-	public static Component Temperature = new Component("Player Temperature", ConfigHandler.DummyPolicyComponent, true);
-	public static Component Thermometer = new Component("Thermometer", ConfigHandler.DummyPolicyComponent, true);
+	public static Component Temperature = Component.builder("Player Temperature").config(ConfigHandler.DummyPolicyComponent).inMainHud().build();
+	public static Component Thermometer = Component.builder("Thermometer").config(ConfigHandler.DummyPolicyComponent).inMainHud().build();
 
 	static {
 		// Fake this API being inserted via entry point

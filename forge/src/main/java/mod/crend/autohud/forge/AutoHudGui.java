@@ -1,10 +1,7 @@
 package mod.crend.autohud.forge;
 
-import mod.crend.autohud.AutoHud;
-import mod.crend.autohud.component.Component;
-import mod.crend.autohud.render.AutoHudRenderer;
+import mod.crend.autohud.render.RenderWrapper;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
@@ -19,73 +16,53 @@ import static net.minecraftforge.client.gui.overlay.VanillaGuiOverlay.*;
 
 public class AutoHudGui extends ForgeGui {
 
-	static Map<Identifier, Component> STATUS_BAR_COMPONENTS = new HashMap<>();
+	static Map<Identifier, RenderWrapper> RENDER_WRAPPERS = new HashMap<>();
 	static {
-		STATUS_BAR_COMPONENTS.put(PLAYER_HEALTH.id(), Component.Health);
-		STATUS_BAR_COMPONENTS.put(ARMOR_LEVEL.id(), Component.Armor);
-		STATUS_BAR_COMPONENTS.put(FOOD_LEVEL.id(), Component.Hunger);
-		STATUS_BAR_COMPONENTS.put(AIR_LEVEL.id(), Component.Air);
-		STATUS_BAR_COMPONENTS.put(MOUNT_HEALTH.id(), Component.MountHealth);
-		STATUS_BAR_COMPONENTS.put(JUMP_BAR.id(), Component.MountJumpBar);
-		STATUS_BAR_COMPONENTS.put(EXPERIENCE_BAR.id(), Component.ExperienceBar);
+		RENDER_WRAPPERS.put(PLAYER_HEALTH.id(), RenderWrapper.HEALTH);
+		RENDER_WRAPPERS.put(ARMOR_LEVEL.id(), RenderWrapper.ARMOR);
+		RENDER_WRAPPERS.put(FOOD_LEVEL.id(), RenderWrapper.HUNGER);
+		RENDER_WRAPPERS.put(AIR_LEVEL.id(), RenderWrapper.AIR);
+		RENDER_WRAPPERS.put(MOUNT_HEALTH.id(), RenderWrapper.MOUNT_HEALTH);
+		RENDER_WRAPPERS.put(JUMP_BAR.id(), RenderWrapper.MOUNT_JUMP_BAR);
+		RENDER_WRAPPERS.put(EXPERIENCE_BAR.id(), RenderWrapper.EXPERIENCE_BAR);
+		//RENDER_WRAPPERS.put(EXPERIENCE_LEVEL.id(), RenderWrapper.EXPERIENCE_LEVEL);
+
+		RENDER_WRAPPERS.put(SCOREBOARD.id(), RenderWrapper.SCOREBOARD);
+		RENDER_WRAPPERS.put(HOTBAR.id(), RenderWrapper.HOTBAR);
+		RENDER_WRAPPERS.put(ITEM_NAME.id(), RenderWrapper.TOOLTIP);
+		RENDER_WRAPPERS.put(CHAT_PANEL.id(), RenderWrapper.CHAT);
+		RENDER_WRAPPERS.put(TITLE_TEXT.id(), RenderWrapper.ACTION_BAR);
+		RENDER_WRAPPERS.put(BOSS_EVENT_PROGRESS.id(), RenderWrapper.BOSS_BAR);
 	}
 
 	public AutoHudGui() {
 		super(MinecraftClient.getInstance());
 	}
 
-	public void preRender(DrawContext context, Component component, float tickDelta) {
-		if (AutoHud.config.animationMove()) {
-			context.getMatrices().translate(component.getOffsetX(tickDelta), component.getOffsetY(tickDelta), 0);
-		}
-		AutoHudRenderer.preInjectFade(component);
-	}
-	public void postRender(DrawContext context, Component component, float tickDelta) {
-		AutoHudRenderer.postInjectFade();
-		if (AutoHud.config.animationMove()) {
-			context.getMatrices().translate(-component.getOffsetX(tickDelta), -component.getOffsetY(tickDelta), 0);
-		}
-	}
-
-	public Optional<Component> getComponent(Identifier id) {
-		if (AutoHud.targetStatusBars && STATUS_BAR_COMPONENTS.containsKey(id)) {
-			return Optional.of(STATUS_BAR_COMPONENTS.get(id));
-		} else if (AutoHud.targetScoreboard && id.equals(SCOREBOARD.id())) {
-			return Optional.of(Component.Scoreboard);
-		} else if (AutoHud.targetHotbar && id.equals(HOTBAR.id())) {
-			return Optional.of(Component.Hotbar);
-		} else if (AutoHud.targetHotbar && id.equals(ITEM_NAME.id())) {
-			return Optional.of(Component.Tooltip);
-		}
-		return Optional.empty();
-	}
-
 	@SubscribeEvent(priority = EventPriority.HIGHEST, receiveCanceled = true)
 	public void preHudComponent(RenderGuiOverlayEvent.Pre event) {
-		getComponent(event.getOverlay().id()).ifPresent(
-				component -> {
-					if (component.fullyHidden()
-							&& component.config.maximumFade() == 0
-							&& !(component.equals(Component.Hotbar) && AutoHud.config.getHotbarItemsMaximumFade() > 0.0f)
-					) {
+		Optional.ofNullable(RENDER_WRAPPERS.get(event.getOverlay().id())).ifPresent(
+				wrapper -> {
+					if (wrapper.isActive() && !wrapper.doRender()) {
 						event.setCanceled(true);
 					}
-					preRender(event.getGuiGraphics(), component, event.getPartialTick());
+					// Forge only: need to begin render for canceled events
+					wrapper.beginRender(event.getGuiGraphics());
 				}
 		);
 	}
 	@SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
 	public void cancelHudComponent(RenderGuiOverlayEvent.Pre event) {
 		if (event.isCanceled()) {
-			getComponent(event.getOverlay().id()).ifPresent(
-					component -> postRender(event.getGuiGraphics(), component, event.getPartialTick())
+			Optional.ofNullable(RENDER_WRAPPERS.get(event.getOverlay().id())).ifPresent(
+					wrapper -> wrapper.endRender(event.getGuiGraphics())
 			);
 		}
 	}
 	@SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
 	public void postHudComponent(RenderGuiOverlayEvent.Post event) {
-		getComponent(event.getOverlay().id()).ifPresent(
-				component -> postRender(event.getGuiGraphics(), component, event.getPartialTick())
+		Optional.ofNullable(RENDER_WRAPPERS.get(event.getOverlay().id())).ifPresent(
+				wrapper -> wrapper.endRender(event.getGuiGraphics())
 		);
 	}
 }

@@ -4,15 +4,9 @@ import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.state.PolicyComponentState;
 import mod.crend.autohud.config.EventPolicy;
 import mod.crend.libbamboo.event.*;
-import net.minecraft.block.AnvilBlock;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.EnchantingTableBlock;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
 
 public class EventHandler {
 	public static void registerEvents() {
@@ -102,6 +96,10 @@ public class EventHandler {
 		HotbarEvent.SELECTED_SLOT_CHANGE.register(() -> {
 			if (AutoHud.config.isHotbarOnSlotChange()) {
 				Component.Hotbar.revealCombined();
+
+				if (AutoHud.config.revealExperienceTextWithHotbar()) {
+					Component.ExperienceLevel.synchronizeFrom(Component.Hotbar);
+				}
 			}
 		});
 

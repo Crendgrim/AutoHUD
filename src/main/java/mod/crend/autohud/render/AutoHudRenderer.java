@@ -22,7 +22,8 @@ public class AutoHudRenderer {
 		if (AutoHud.config.animationFade()) {
 			alpha = Math.max(component.getAlpha(tickDelta), minAlpha);
 			RenderSystem.enableBlend();
-			RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
+			float[] color = RenderSystem.getShaderColor();
+			RenderSystem.setShaderColor(color[0], color[1], color[2], color[3] * alpha);
 		}
 	}
 	public static void preInjectFadeWithReverseTranslation(DrawContext context, Component component, float minAlpha) {
@@ -38,12 +39,11 @@ public class AutoHudRenderer {
 			context.getMatrices().translate(globalOffsetX, globalOffsetY, 0);
 		}
 	}
+	public static void preInject(Component component, DrawContext context) {
+		preInject(context, component);
+	}
 	public static void preInject(DrawContext context, Component component) {
-		if (AutoHud.config.animationFade()) {
-			alpha = component.getAlpha(tickDelta);
-			RenderSystem.enableBlend();
-			RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
-		}
+		preInjectFade(component);
 		// Undo any translations we had before
 		if (AutoHud.config.animationMove() || !AutoHud.config.animationFade()) {
 			context.getMatrices().push();
@@ -71,29 +71,17 @@ public class AutoHudRenderer {
 		}
 		return !Component.Crosshair.isHidden();
 	}
-	public static void preInjectCrosshair() {
-		if (Component.Crosshair.config.active() && !Component.Crosshair.fullyRevealed()) {
-			CustomFramebufferRenderer.init();
-			RenderSystem.defaultBlendFunc();
-			AutoHudRenderer.preInjectFade(Component.Crosshair, (float) Component.Crosshair.config.maximumFade());
-		}
-	}
-	public static void postInjectCrosshair(DrawContext context) {
-		if (Component.Crosshair.config.active() && !Component.Crosshair.fullyRevealed()) {
-			AutoHudRenderer.postInjectFade();
-			RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.ONE_MINUS_DST_COLOR, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
-			CustomFramebufferRenderer.draw(context);
-		}
-	}
 
-	public static void postInjectFade() {
+	public static void postInjectFade(DrawContext context) {
 		if (AutoHud.config.animationFade()) {
+			//? if >=1.21.2
+			//context.draw();
 			alpha = 1.0f;
 			RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
 		}
 	}
 	public static void postInjectFadeWithReverseTranslation(DrawContext context) {
-		postInjectFade();
+		postInjectFade(context);
 		if (AutoHud.config.animationMove()) {
 			context.getMatrices().pop();
 		}
@@ -101,11 +89,11 @@ public class AutoHudRenderer {
 			context.getMatrices().pop();
 		}
 	}
+	public static void postInject(Component ignored, DrawContext context) {
+		postInject(context);
+	}
 	public static void postInject(DrawContext context) {
-		if (AutoHud.config.animationFade()) {
-			alpha = 1.0f;
-			RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
-		}
+		postInjectFade(context);
 		if (AutoHud.config.animationMove() || !AutoHud.config.animationFade()) {
 			context.getMatrices().pop();
 		}
@@ -165,6 +153,8 @@ public class AutoHudRenderer {
 
 	public static void endRender() {
 		inRender = false;
+		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+		RenderSystem.defaultBlendFunc();
 	}
 
 }

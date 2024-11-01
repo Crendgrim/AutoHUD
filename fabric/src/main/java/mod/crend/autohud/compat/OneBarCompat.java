@@ -12,7 +12,7 @@ public class OneBarCompat implements AutoHudApi {
 		return "onebar";
 	}
 
-	public static Component OneBarComponent = new Component("OneBar", AutoHud.config.health(), true);
+	public static Component OneBarComponent = Component.builder("OneBar").config(AutoHud.config.health()).inMainHud().build();
 	static {
 		// Fake this API being inserted via entry point
 		AutoHud.addApi(new OneBarCompat());

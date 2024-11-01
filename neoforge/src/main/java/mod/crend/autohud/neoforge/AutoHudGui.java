@@ -3,6 +3,7 @@ package mod.crend.autohud.neoforge;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.render.AutoHudRenderer;
+import mod.crend.autohud.render.RenderWrapper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
@@ -19,6 +20,25 @@ import static net.neoforged.neoforge.client.gui.VanillaGuiLayers.*;
 
 public class AutoHudGui {
 
+	static Map<Identifier, RenderWrapper> RENDER_WRAPPERS = new HashMap<>();
+	static {
+		RENDER_WRAPPERS.put(PLAYER_HEALTH, RenderWrapper.HEALTH);
+		RENDER_WRAPPERS.put(ARMOR_LEVEL, RenderWrapper.ARMOR);
+		RENDER_WRAPPERS.put(FOOD_LEVEL, RenderWrapper.HUNGER);
+		RENDER_WRAPPERS.put(AIR_LEVEL, RenderWrapper.AIR);
+		RENDER_WRAPPERS.put(VEHICLE_HEALTH, RenderWrapper.MOUNT_HEALTH);
+		RENDER_WRAPPERS.put(JUMP_METER, RenderWrapper.MOUNT_JUMP_BAR);
+		RENDER_WRAPPERS.put(EXPERIENCE_BAR, RenderWrapper.EXPERIENCE_BAR);
+		RENDER_WRAPPERS.put(EXPERIENCE_LEVEL, RenderWrapper.EXPERIENCE_LEVEL);
+
+		RENDER_WRAPPERS.put(SCOREBOARD_SIDEBAR, RenderWrapper.SCOREBOARD);
+		RENDER_WRAPPERS.put(HOTBAR, RenderWrapper.HOTBAR);
+		RENDER_WRAPPERS.put(SELECTED_ITEM_NAME, RenderWrapper.TOOLTIP);
+		RENDER_WRAPPERS.put(CHAT, RenderWrapper.CHAT);
+		RENDER_WRAPPERS.put(TITLE, RenderWrapper.ACTION_BAR);
+		RENDER_WRAPPERS.put(BOSS_OVERLAY, RenderWrapper.BOSS_BAR);
+	}
+
 	static Map<Identifier, Component> STATUS_BAR_COMPONENTS = new HashMap<>();
 	static {
 		STATUS_BAR_COMPONENTS.put(PLAYER_HEALTH, Component.Health);
@@ -29,40 +49,6 @@ public class AutoHudGui {
 		STATUS_BAR_COMPONENTS.put(JUMP_METER, Component.MountJumpBar);
 		STATUS_BAR_COMPONENTS.put(EXPERIENCE_BAR, Component.ExperienceBar);
 		STATUS_BAR_COMPONENTS.put(EXPERIENCE_LEVEL, Component.ExperienceLevel);
-	}
-
-	public void preRender(DrawContext context, Component component, /*? if <1.21 {*/float/*?} else {*//*RenderTickCounter*//*?}*/ renderTickCounter) {
-		if (AutoHud.config.animationMove()) {
-			float tickDelta = /*? if <1.21 {*/renderTickCounter/*?} else {*//*renderTickCounter.getTickDelta(true)*//*?}*/;
-			context.getMatrices().translate(component.getOffsetX(tickDelta), component.getOffsetY(tickDelta), 0);
-		}
-		AutoHudRenderer.preInjectFade(component);
-	}
-	public void postRender(DrawContext context, Component component, /*? if <1.21 {*/float/*?} else {*//*RenderTickCounter*//*?}*/ renderTickCounter) {
-		AutoHudRenderer.postInjectFade();
-		if (AutoHud.config.animationMove()) {
-			float tickDelta = /*? if <1.21 {*/renderTickCounter/*?} else {*//*renderTickCounter.getTickDelta(true)*//*?}*/;
-			context.getMatrices().translate(-component.getOffsetX(tickDelta), -component.getOffsetY(tickDelta), 0);
-		}
-	}
-
-	public Optional<Component> getComponent(Identifier id) {
-		if (AutoHud.targetStatusBars && STATUS_BAR_COMPONENTS.containsKey(id)) {
-			return Optional.of(STATUS_BAR_COMPONENTS.get(id));
-		} else if (AutoHud.targetScoreboard && id.equals(SCOREBOARD_SIDEBAR)) {
-			return Optional.of(Component.Scoreboard);
-		} else if (AutoHud.targetHotbar && id.equals(HOTBAR)) {
-			return Optional.of(Component.Hotbar);
-		} else if (AutoHud.targetHotbar && id.equals(SELECTED_ITEM_NAME)) {
-			return Optional.of(Component.Tooltip);
-		} else if (Component.Chat.config.active() && id.equals(CHAT)) {
-			return Optional.of(Component.Chat);
-		} else if (Component.ActionBar.config.active() && id.equals(TITLE)) {
-			return Optional.of(Component.ActionBar);
-		} else if (Component.BossBar.config.active() && id.equals(BOSS_OVERLAY)) {
-			return Optional.of(Component.BossBar);
-		}
-		return Optional.empty();
 	}
 
 	/*
@@ -76,16 +62,12 @@ public class AutoHudGui {
 	 */
 	@SubscribeEvent(priority = EventPriority.HIGHEST, receiveCanceled = true)
 	public void preHudComponent(RenderGuiLayerEvent.Pre event) {
-		getComponent(event.getName()).ifPresent(
-				component -> {
-					if (component.fullyHidden()
-							&& component.config.maximumFade() == 0
-							&& !(component.equals(Component.Hotbar) && AutoHud.config.getHotbarItemsMaximumFade() > 0.0f)
-							&& !(component.equals(Component.ExperienceBar) && AutoHudRenderer.experienceLevelOverridesBar())
-					) {
+		Optional.ofNullable(RENDER_WRAPPERS.get(event.getName())).ifPresent(
+				wrapper -> {
+					if (wrapper.isActive() && !wrapper.doRender()) {
 						event.setCanceled(true);
 					} else {
-						preRender(event.getGuiGraphics(), component, event.getPartialTick());
+						wrapper.beginRender(event.getGuiGraphics());
 					}
 				}
 		);
@@ -93,15 +75,15 @@ public class AutoHudGui {
 	@SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
 	public void cancelHudComponent(RenderGuiLayerEvent.Pre event) {
 		if (event.isCanceled()) {
-			getComponent(event.getName()).ifPresent(
-					component -> postRender(event.getGuiGraphics(), component, event.getPartialTick())
+			Optional.ofNullable(RENDER_WRAPPERS.get(event.getName())).ifPresent(
+					wrapper -> wrapper.endRender(event.getGuiGraphics())
 			);
 		}
 	}
 	@SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
 	public void postHudComponent(RenderGuiLayerEvent.Post event) {
-		getComponent(event.getName()).ifPresent(
-				component -> postRender(event.getGuiGraphics(), component, event.getPartialTick())
+		Optional.ofNullable(RENDER_WRAPPERS.get(event.getName())).ifPresent(
+				wrapper -> wrapper.endRender(event.getGuiGraphics())
 		);
 	}
 

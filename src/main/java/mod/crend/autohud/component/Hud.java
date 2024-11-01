@@ -1,5 +1,6 @@
 package mod.crend.autohud.component;
 
+import mod.crend.autohud.render.RenderWrapper;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 
@@ -51,11 +52,7 @@ public class Hud {
     }
 
     public static boolean shouldShowIcon(StatusEffectInstance instance) {
-        if (instance.shouldShowIcon()) {
-            Component component = Component.get(instance.getEffectType());
-            return (!component.fullyHidden());
-        }
-        return false;
+        return (!RenderWrapper.STATUS_EFFECT.isActive() || RenderWrapper.STATUS_EFFECT.doRender(instance));
     }
 
 }

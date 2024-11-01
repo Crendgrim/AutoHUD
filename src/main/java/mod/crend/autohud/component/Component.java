@@ -12,26 +12,33 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.entry.RegistryEntry;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 public class Component {
     private static final List<Component> mainHudComponents = new ArrayList<>();
+    public static final Supplier<Boolean> TARGET_STATUS_BARS = () -> AutoHud.targetStatusBars;
+    public static final Supplier<Boolean> TARGET_EXPERIENCE_BAR = () -> AutoHud.targetExperienceBar;
+    public static final Supplier<Boolean> TARGET_SCOREBOARD = () -> AutoHud.targetScoreboard;
+    public static final Supplier<Boolean> TARGET_HOTBAR = () -> AutoHud.targetHotbar;
+    public static final Supplier<Boolean> TARGET_CROSSHAIR = () -> AutoHud.targetCrosshair;
+    public static final Supplier<Boolean> TARGET_CHAT = () -> AutoHud.targetChat;
 
-    public static Component Armor = new Component("Armor", AutoHud.config.armor(), true);
-    public static Component Health = new Component("Health", AutoHud.config.health(), List.of(Armor), true);
-    public static Component Air = new Component("Air", AutoHud.config.air(), true);
-    public static Component Hunger = new Component("Hunger", AutoHud.config.hunger(), List.of(Air), true);
-    public static Component MountHealth = new Component("MountHealth", AutoHud.config.mountHealth(), List.of(Air), true);
-    public static Component MountJumpBar = new Component("MountJumpBar", AutoHud.config.mountJumpBar(), true);
-    public static Component ExperienceLevel = new Component("Experience", AutoHud.config.experience(), true);
-    public static Component ExperienceBar = new Component("ExperienceBar", AutoHud.config.experienceBar(), List.of(Health, Hunger, MountHealth, ExperienceLevel), true);
-    public static Component Hotbar = new Component("Hotbar", AutoHud.config.hotbar(), List.of(ExperienceBar), true);
-    public static Component Tooltip = new Component("Tooltip", AutoHud.config.hotbar(), true);
-    public static Component Scoreboard = new Component("Scoreboard", AutoHud.config.scoreboard());
-    public static Component Crosshair = new Component("Crosshair", AutoHud.config.crosshair());
-    public static Component Chat = new Component("Chat", AutoHud.config.chat());
-    public static Component ChatIndicator = new Component("ChatIndicator", AutoHud.config.chatIndicator());
-    public static Component ActionBar = new Component("ActionBar", AutoHud.config.actionBar());
-    public static Component BossBar = new Component("BossBar", AutoHud.config.bossBar());
+    public static Component Armor = builder("Armor").isTargeted(TARGET_STATUS_BARS).config(AutoHud.config.armor()).inMainHud().build();
+    public static Component Health = builder("Health").isTargeted(TARGET_STATUS_BARS).config(AutoHud.config.health()).stackComponents(Armor).inMainHud().build();
+    public static Component Air = builder("Air").isTargeted(TARGET_STATUS_BARS).config(AutoHud.config.air()).inMainHud().build();
+    public static Component Hunger = builder("Hunger").isTargeted(TARGET_STATUS_BARS).config(AutoHud.config.hunger()).stackComponents(Air).inMainHud().build();
+    public static Component MountHealth = builder("MountHealth").isTargeted(TARGET_STATUS_BARS).config(AutoHud.config.mountHealth()).stackComponents(Air).inMainHud().build();
+    public static Component MountJumpBar = builder("MountJumpBar").isTargeted(TARGET_STATUS_BARS).config(AutoHud.config.mountJumpBar()).inMainHud().build();
+    public static Component ExperienceLevel = builder("Experience").isTargeted(TARGET_EXPERIENCE_BAR).config(AutoHud.config.experience()).inMainHud().build();
+    public static Component ExperienceBar = builder("ExperienceBar").isTargeted(TARGET_EXPERIENCE_BAR).config(AutoHud.config.experienceBar()).stackComponents(Health, Hunger, MountHealth, ExperienceLevel).inMainHud().build();
+    public static Component Hotbar = builder("Hotbar").isTargeted(TARGET_HOTBAR).config(AutoHud.config.hotbar()).stackComponents(ExperienceBar).inMainHud().build();
+    public static Component Tooltip = builder("Tooltip").isTargeted(TARGET_HOTBAR).config(AutoHud.config.hotbar()).inMainHud().build();
+    public static Component Scoreboard = builder("Scoreboard").isTargeted(TARGET_SCOREBOARD).config(AutoHud.config.scoreboard()).build();
+    public static Component Crosshair = builder("Crosshair").isTargeted(TARGET_CROSSHAIR).config(AutoHud.config.crosshair()).build();
+    public static Component Chat = builder("Chat").isTargeted(TARGET_CHAT).config(AutoHud.config.chat()).build();
+    public static Component ChatIndicator = builder("ChatIndicator").isTargeted(TARGET_CHAT).config(AutoHud.config.chatIndicator()).build();
+    public static Component ActionBar = builder("ActionBar").config(AutoHud.config.actionBar()).build();
+    public static Component BossBar = builder("BossBar").config(AutoHud.config.bossBar()).build();
 
     //? if <1.20.5 {
     private static final Map<StatusEffect, Component> statusEffectComponents = new HashMap<>();
@@ -93,8 +100,9 @@ public class Component {
         }
     }
 
-    public Component(String name, ConfigHandler.IComponent config, final List<Component> stackComponents, boolean inMainHud) {
+    private Component(String name, Supplier<Boolean> isTargeted, ConfigHandler.IComponent config, final List<Component> stackComponents, boolean inMainHud) {
         this.name = name;
+        this.isTargeted = isTargeted;
         this.config = config;
         this.stackComponents = new ArrayList<>(stackComponents);
         this.inMainHud = inMainHud;
@@ -102,31 +110,58 @@ public class Component {
             mainHudComponents.add(this);
         }
     }
-    public Component(String name) {
-        this(name, List.of(), false);
+
+    public static Builder builder(String name) {
+        return new Builder(name);
     }
-    public Component(String name, boolean inMainHud) {
-        this(name, List.of(), inMainHud);
-    }
-    public Component(String name, ConfigHandler.IComponent config) {
-        this(name, config, List.of(), false);
-    }
-    public Component(String name, ConfigHandler.IComponent config, boolean inMainHud) {
-        this(name, config, List.of(), inMainHud);
-    }
-    public Component(String name, final List<Component> stackComponents) {
-        this(name, ConfigHandler.None, stackComponents, false);
-    }
-    public Component(String name, final List<Component> stackComponents, boolean inMainHud) {
-        this(name, ConfigHandler.None, stackComponents, inMainHud);
-    }
-    public Component(String name, ConfigHandler.IComponent config, final List<Component> stackComponents) {
-        this(name, config, stackComponents, false);
+
+    public static class Builder {
+        String name;
+        Supplier<Boolean> isTargeted = () -> true;
+        ConfigHandler.IComponent config = ConfigHandler.None;
+        List<Component> stackComponents = List.of();
+        boolean inMainHud = false;
+
+        private Builder(String name) {
+            this.name = name;
+        }
+
+        public Builder isTargeted(Supplier<Boolean> isTargeted) {
+            this.isTargeted = isTargeted;
+            return this;
+        }
+
+        public Builder config(ConfigHandler.IComponent config) {
+            this.config = config;
+            return this;
+        }
+
+        public Builder stackComponents(Component... stackComponents) {
+            return stackComponents(Arrays.stream(stackComponents).toList());
+        }
+
+        public Builder stackComponents(List<Component> stackComponents) {
+            this.stackComponents = stackComponents;
+            return this;
+        }
+
+        public Builder inMainHud() {
+            return inMainHud(true);
+        }
+
+        public Builder inMainHud(boolean inMainHud) {
+            this.inMainHud = inMainHud;
+            return this;
+        }
+
+        public Component build() {
+            return new Component(name, isTargeted, config, stackComponents, inMainHud);
+        }
     }
 
     public static void register(/*? if <1.20.5 {*/StatusEffect/*?} else {*//*RegistryEntry<StatusEffect>*//*?}*/ effect) {
         if (!statusEffectComponents.containsKey(effect)) {
-            Component c = new Component(effect/*? if >=1.20.5 {*//*.value()*//*?}*/.getTranslationKey(), AutoHud.config.statusEffects());
+            Component c = builder(effect/*? if >=1.20.5 {*//*.value()*//*?}*/.getTranslationKey()).config(AutoHud.config.statusEffects()).build();
             c.offset = 1.0d;
             c.alpha = 0.0d;
             statusEffectComponents.put(effect, c);
@@ -160,6 +195,7 @@ public class Component {
     private double offset = 0;
     private double offsetDelta = 0;
     public final String name;
+    private final Supplier<Boolean> isTargeted;
     private final boolean inMainHud;
     private float visibleTime = 1;
 
@@ -186,6 +222,10 @@ public class Component {
 
     public boolean isHidden() {
         return !fullyRevealed();
+    }
+
+    public boolean isActive() {
+        return config.active() && isTargeted.get();
     }
 
     /**
@@ -224,7 +264,7 @@ public class Component {
     }
     public void revealCombined(float visibleTime) {
         this.visibleTime = visibleTime;
-        if (config.active()) {
+        if (isActive()) {
             switch (AutoHud.config.revealType()) {
                 case Combined -> components.forEach(c -> c.visibleTime = Math.max(c.visibleTime, visibleTime));
                 case HideCombined -> components.forEach(c -> c.keepRevealed(visibleTime));
@@ -275,7 +315,7 @@ public class Component {
      * Hides the component. If not hidden yet, starts an animation.
      */
     public void hide() {
-        if (!config.active()) return;
+        if (!isActive()) return;
         visibleTime = 0;
         // Check next tick whether we actually want to hide.
         // This ensures that components that are set to always-show do not get hidden indefinitely.
@@ -284,7 +324,7 @@ public class Component {
         }
     }
     public void forceHide() {
-        if (!config.active()) return;
+        if (!isActive()) return;
         visibleTime = 0;
     }
     public boolean fullyRevealed() {
@@ -296,11 +336,16 @@ public class Component {
 
     // This method is used to ensure that linked components start their hide animation at the same time
     private void keepRevealed(float time) {
-        if (config.active() && visibleTime > 0 && visibleTime < time) {
+        if (isActive() && visibleTime > 0 && visibleTime < time) {
             visibleTime = time;
         }
     }
 
+    public void synchronizeFrom(Component a, Component b) {
+        offset = Math.min(offset, Math.min(a.offset, b.offset));
+        alpha = Math.max(alpha, Math.max(a.alpha, b.alpha));
+        visibleTime = Math.max(visibleTime, Math.max(a.visibleTime, b.visibleTime));
+    }
     public void synchronizeFrom(Component other) {
         offset = Math.min(offset, other.offset);
         alpha = Math.max(alpha, other.alpha);
@@ -347,7 +392,7 @@ public class Component {
     }
 
     public void revealIf(boolean trigger) {
-        if (!config.active() || config.onChange() && trigger) {
+        if (!isActive() || config.onChange() && trigger) {
             revealCombined();
         }
     }
@@ -393,7 +438,7 @@ public class Component {
                 alphaDelta = 0;
             }
         }
-        if (config.active() && Hud.actDynamic() && visibleTime > 0) {
+        if (isActive() && Hud.actDynamic() && visibleTime > 0) {
             // this is where the component gets "ticked" to ensure smooth start to hide animation
             visibleTime = Math.max(0, visibleTime - 1);
             // if we would unhide next tick, update state again to make sure

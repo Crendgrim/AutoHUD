@@ -7,7 +7,7 @@ import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Hud;
 import mod.crend.autohud.render.AutoHudRenderer;
-import mod.crend.libbamboo.render.CustomFramebufferRenderer;
+import mod.crend.autohud.render.RenderWrapper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.screen.Screen;
@@ -29,19 +29,18 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
-	//? if >=1.21 {
-	/*@Inject(method="render", at=@At("HEAD"))
-	private void autoHud$preRender(DrawContext context, RenderTickCounter tickDelta, CallbackInfo ci) {
+	@Inject(method="render", at=@At("HEAD"))
+	private void autoHud$preRender(DrawContext context, /*? if <1.20.5 {*/float/*?} else {*//*RenderTickCounter*//*?}*/ tickDelta, CallbackInfo ci) {
 		AutoHudRenderer.startRender(context, tickDelta);
 	}
 	@Inject(method="render", at=@At("RETURN"))
-	private void autoHud$postRender(DrawContext context, RenderTickCounter tickDelta, CallbackInfo ci) {
+	private void autoHud$postRender(DrawContext context, /*? if <1.20.5 {*/float/*?} else {*//*RenderTickCounter*//*?}*/ tickDelta, CallbackInfo ci) {
 		AutoHudRenderer.endRender();
 	}
-	*///?}
 
 	// Hotbar
 	@Inject(method = "renderHotbar", at = @At("HEAD"))
@@ -100,21 +99,7 @@ public class InGameHudMixin {
 			int seed,
 			Operation<Void> original
 	) {
-		if (!AutoHudRenderer.shouldRenderHotbarItems()) return;
-		if (AutoHud.targetHotbar && AutoHud.config.animationFade()) {
-			// We need to reset the renderer because otherwise the first item gets drawn with double alpha
-			AutoHudRenderer.postInjectFade();
-			// Setup custom framebuffer
-			CustomFramebufferRenderer.init();
-			// Have the original call draw onto the custom framebuffer
-			original.call(instance, context, x, y, tickCounter, player, stack, seed);
-			// Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
-			AutoHudRenderer.preInjectFadeWithReverseTranslation(context, Component.Hotbar, AutoHud.config.getHotbarItemsMaximumFade());
-			CustomFramebufferRenderer.draw(context);
-			AutoHudRenderer.postInjectFadeWithReverseTranslation(context);
-		} else {
-			original.call(instance, context, x, y, tickCounter, player, stack, seed);
-		}
+		RenderWrapper.HOTBAR_ITEMS.wrap(context, () -> original.call(instance, context, x, y, tickCounter, player, stack, seed));
 	}
 
 	// Scoreboard
@@ -174,11 +159,7 @@ public class InGameHudMixin {
 			)
 	)
 	private void autoHud$renderCrosshair(DrawContext context, Identifier texture, int x, int y, /*? if <1.21 {*/int u, int v,/*?}*/ int width, int height, Operation<Void> original) {
-		if (AutoHudRenderer.shouldRenderCrosshair()) {
-			AutoHudRenderer.preInjectCrosshair();
-			original.call(context, texture, x, y, /*? if <1.21 {*/u, v,/*?}*/ width, height);
-			AutoHudRenderer.postInjectCrosshair(context);
-		}
+		RenderWrapper.CROSSHAIR.wrap(context, () -> original.call(context, texture, x, y, /*? if <1.21 {*/u, v,/*?}*/ width, height));
 	}
 
 	// Status Effects
@@ -193,43 +174,23 @@ public class InGameHudMixin {
 			)
 	)
 	private void autoHud$statusEffectBackground(DrawContext context, Identifier texture, int x, int y, /*? if <1.21 {*/int u, int v,/*?}*/ int width, int height, Operation<Void> original, @Local StatusEffectInstance statusEffectInstance) {
-		if (AutoHud.targetStatusEffects) {
-			AutoHudRenderer.preInject(context, Component.get(statusEffectInstance.getEffectType()));
-		}
-		original.call(context, texture, x, y, /*? if <1.21 {*/u, v,/*?}*/ width, height);
-		if (AutoHud.targetStatusEffects) {
-			AutoHudRenderer.postInject(context);
-		}
+		RenderWrapper.STATUS_EFFECT.wrap(context, statusEffectInstance, () ->
+			original.call(context, texture, x, y, /*? if <1.21 {*/u, v,/*?}*/ width, height)
+		);
 	}
 
 	@WrapOperation(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/extensions/common/IClientMobEffectExtensions;renderGuiIcon(Lnet/minecraft/entity/effect/StatusEffectInstance;Lnet/minecraft/client/gui/hud/InGameHud;Lnet/minecraft/client/gui/DrawContext;IIFF)Z"))
 	private boolean autoHud$postEffect(IClientMobEffectExtensions instance, StatusEffectInstance statusEffectInstance, InGameHud gui, DrawContext context, int x, int y, float z, float alpha, Operation<Boolean> original) {
-		if (AutoHud.targetStatusEffects) {
-			AutoHudRenderer.preInject(context, Component.get(statusEffectInstance.getEffectType()));
-		}
-		boolean result = original.call(instance, statusEffectInstance, gui, context, x, y, z, alpha);
-		if (AutoHud.targetStatusEffects) {
-			AutoHudRenderer.postInject(context);
-		}
-		return result;
+		AtomicBoolean result = new AtomicBoolean();
+		RenderWrapper.STATUS_EFFECT.wrap(context, statusEffectInstance, () ->
+			result.set(original.call(instance, statusEffectInstance, gui, context, x, y, z, alpha))
+		);
+		return result.get();
 	}
 
-	@Inject(method = "method_18620", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawSprite(IIIIILnet/minecraft/client/texture/Sprite;)V"), require = 0)
-	private static void autoHud$preSprite(DrawContext context, float f, int i, int j, Sprite sprite, CallbackInfo ci) {
-		if (AutoHud.targetStatusEffects) {
-			Component component = Component.findBySprite(sprite);
-			if (component != null) {
-				AutoHudRenderer.preInject(context, component);
-			} else {
-				context.getMatrices().push();
-			}
-		}
-	}
-	@Inject(method = "method_18620", at = @At(value = "RETURN"), require = 0)
-	private static void autoHud$postSprite(DrawContext drawContext, float f, int i, int j, Sprite sprite, CallbackInfo ci) {
-		if (AutoHud.targetStatusEffects) {
-			AutoHudRenderer.postInject(drawContext);
-		}
+	@WrapOperation(method = "method_18620", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawSprite(IIIIILnet/minecraft/client/texture/Sprite;)V"))
+	private static void autoHud$wrapSprite(DrawContext context, int x, int y, int z, int width, int height, Sprite sprite, Operation<Void> original) {
+		RenderWrapper.STATUS_EFFECT.wrap(context, sprite, () -> original.call(context, x, y, z, width, height, sprite));
 	}
 
 	@Redirect(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target="Lnet/minecraft/entity/effect/StatusEffectInstance;shouldShowIcon()Z"))

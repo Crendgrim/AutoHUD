@@ -2,6 +2,7 @@ package mod.crend.autohud.component.state;
 
 
 import mod.crend.autohud.component.Component;
+import mod.crend.autohud.component.Hud;
 
 public class ComponentState {
     protected Component component;
@@ -18,7 +19,7 @@ public class ComponentState {
     }
 
     public void tick() {
-        if (updateNextTick || updateEveryTick) {
+        if (updateNextTick || (updateEveryTick && Hud.actDynamic())) {
             update();
             updateNextTick = false;
         }

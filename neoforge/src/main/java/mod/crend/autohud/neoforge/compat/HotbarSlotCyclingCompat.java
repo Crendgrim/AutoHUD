@@ -19,7 +19,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
 public class HotbarSlotCyclingCompat implements AutoHudApi {
-	public static Component HotbarSlotCyclerComponent = new Component("hotbarslotcycling", AutoHud.config.hotbar());
+	public static Component HotbarSlotCyclerComponent = Component.builder("hotbarslotcycling").config(AutoHud.config.hotbar()).build();
 	public static ItemStack forwardStack = ItemStack.EMPTY;
 
 	@Override
@@ -84,7 +84,7 @@ public class HotbarSlotCyclingCompat implements AutoHudApi {
 			// For some reason, rendering the background texture as transparent does not work. Render them to a texture first instead.
 			if (AutoHud.targetHotbar && AutoHud.config.animationFade()) {
 				if (!HotbarSlotCyclingCompat.HotbarSlotCyclerComponent.fullyHidden()) {
-					AutoHudRenderer.postInjectFade();
+					AutoHudRenderer.postInjectFade(context);
 					CustomFramebufferRenderer.init();
 					parent.renderSlotBackgrounds(context, posX, posY, renderForwardStack, renderBackwardStack, renderToRight);
 					AutoHudRenderer.preInjectFadeWithReverseTranslation(context, HotbarSlotCyclingCompat.HotbarSlotCyclerComponent, 0);
@@ -102,7 +102,7 @@ public class HotbarSlotCyclingCompat implements AutoHudApi {
 				// Don't render items if they're fully invisible anyway
 				if (!HotbarSlotCyclingCompat.HotbarSlotCyclerComponent.fullyHidden() || AutoHud.config.getHotbarItemsMaximumFade() > 0.0f) {
 					// We need to reset the renderer because otherwise the first item gets drawn with double alpha
-					AutoHudRenderer.postInjectFade();
+					AutoHudRenderer.postInjectFade(context);
 					// Setup custom framebuffer
 					CustomFramebufferRenderer.init();
 					// Have the original call draw onto the custom framebuffer

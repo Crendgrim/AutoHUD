@@ -23,6 +23,8 @@ public class AutoHud {
     public static boolean targetStatusBars = true;
     public static boolean targetScoreboard = true;
     public static boolean targetStatusEffects = true;
+    public static boolean targetCrosshair = true;
+    public static boolean targetChat = true;
 
     public static void init() {
         config = new ConfigHandler();

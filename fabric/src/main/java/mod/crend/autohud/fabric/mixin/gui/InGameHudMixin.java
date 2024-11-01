@@ -25,13 +25,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.function.Function;
 
 @Mixin(value = InGameHud.class, priority = 800)
-public class InGameHudMixin {
+public abstract class InGameHudMixin {
 
     //? if <1.20.6 {
     @Inject(method="render", at=@At("HEAD"))
@@ -43,24 +44,28 @@ public class InGameHudMixin {
         AutoHudRenderer.endRender();
     }
     //?} else {
-    
-    /*@WrapOperation(
+
+    /*@Shadow public abstract void render(DrawContext par1, RenderTickCounter par2);
+
+    @Shadow protected abstract void renderExperienceLevel(DrawContext par1, RenderTickCounter par2);
+
+    @WrapOperation(
             method = "render",
             at = @At(
                     value = "INVOKE",
                     //? if <1.21 {
-                    target = "Lnet/minecraft/client/gui/LayeredDrawer;render(Lnet/minecraft/client/gui/DrawContext;F)V"
-                    //?} else
-                    //target = "Lnet/minecraft/client/gui/LayeredDrawer;render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V"
+                    /^target = "Lnet/minecraft/client/gui/LayeredDrawer;render(Lnet/minecraft/client/gui/DrawContext;F)V"
+                    ^///?} else
+                    target = "Lnet/minecraft/client/gui/LayeredDrawer;render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V"
             )
     )
     private void autoHud$render(
             LayeredDrawer instance,
             DrawContext context,
             //? if <1.21 {
-            float tickCounter,
-            //?} else
-            /^RenderTickCounter tickCounter,^/
+            /^float tickCounter,
+            ^///?} else
+            RenderTickCounter tickCounter,
             Operation<Void> original
     ) {
         AutoHudRenderer.startRender(context, tickCounter);
@@ -297,7 +302,7 @@ public class InGameHudMixin {
     }
 
     //? if <1.21.2 {
-    @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;enableBlend()V", shift = At.Shift.AFTER))
+    /^@Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;enableBlend()V", shift = At.Shift.AFTER))
     private void autoHud$preAirBar(DrawContext context, CallbackInfo ci) {
         RenderWrapper.AIR.beginRender(context);
     }
@@ -305,11 +310,11 @@ public class InGameHudMixin {
     private void autoHud$postAirBar(DrawContext context, CallbackInfo ci) {
         RenderWrapper.AIR.endRender(context);
     }
-    //?} else {
-    /^@WrapOperation(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderAirBubbles(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/player/PlayerEntity;III)V"))
+    ^///?} else {
+    @WrapOperation(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderAirBubbles(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/player/PlayerEntity;III)V"))
     private void autoHud$airBar(InGameHud instance, DrawContext context, PlayerEntity player, int heartCount, int top, int left, Operation<Void> original) {
         RenderWrapper.AIR.wrap(context, () -> original.call(instance, context, player, heartCount, top, left));
-    }^///?}
+    }//?}
     *///?}
 
     // Mount Health
@@ -361,8 +366,11 @@ public class InGameHudMixin {
     @ModifyArg(
             //? if <1.20.5 {
             method = "renderScoreboardSidebar",
-            //?} else
-            /*method = "method_55440",*/
+            //?} else if <1.21.2 {
+            /*method = "method_55440",
+            *///?} else {
+            /*method = "renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/scoreboard/ScoreboardObjective;)V",
+            *///?}
             at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;IIIZ)I"),
             index = 4
     )
@@ -375,8 +383,11 @@ public class InGameHudMixin {
     @ModifyArg(
             //? if <1.20.5 {
             method = "renderScoreboardSidebar",
-            //?} else
-            /*method = "method_55440",*/
+            //?} else if <1.21.2 {
+            /*method = "method_55440",
+            *///?} else {
+            /*method = "renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/scoreboard/ScoreboardObjective;)V",
+            *///?}
             at=@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V"),
             index=4
     )
@@ -390,6 +401,7 @@ public class InGameHudMixin {
     // Crosshair
     @WrapOperation(method = "renderCrosshair",
             slice = @Slice(
+                //? if <1.21.2
                 from = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;blendFuncSeparate(Lcom/mojang/blaze3d/platform/GlStateManager$SrcFactor;Lcom/mojang/blaze3d/platform/GlStateManager$DstFactor;Lcom/mojang/blaze3d/platform/GlStateManager$SrcFactor;Lcom/mojang/blaze3d/platform/GlStateManager$DstFactor;)V"),
                 to = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getAttackIndicator()Lnet/minecraft/client/option/SimpleOption;")
             ),
@@ -397,14 +409,16 @@ public class InGameHudMixin {
                     value = "INVOKE",
                     //? if <1.20.5 {
                     target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V"
-                    //?} else
-                    /*target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V"*/
+                    //?} else if <1.21.2 {
+                    /*target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V"
+                    *///?} else
+                    /*target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Ljava/util/function/Function;Lnet/minecraft/util/Identifier;IIII)V"*/
             )
     )
     private void autoHud$renderCrosshair(
             DrawContext context,
             //? if >=1.21.2
-            //Function<Identifier, RenderLayer> renderLayers,
+            /*Function<Identifier, RenderLayer> renderLayers,*/
             Identifier texture,
             int x, int y,
             //? if <1.20.5
@@ -414,10 +428,10 @@ public class InGameHudMixin {
     ) {
         RenderWrapper.CROSSHAIR.wrap(context, () -> {
             //? if >=1.21.2
-            //Function<Identifier, RenderLayer> renderLayerFunction = RenderLayer::getGuiTextured;
+            /*Function<Identifier, RenderLayer> renderLayerFunction = RenderLayer::getGuiTextured;*/
             original.call(context,
                     //? if >=1.21.2
-                    //renderLayerFunction
+                    /*renderLayerFunction,*/
                     texture, x, y,
                     //? if <1.20.5
                     u, v,
@@ -426,7 +440,7 @@ public class InGameHudMixin {
         }, () -> {
             original.call(context,
                     //? if >=1.21.2
-                    //renderLayers
+                    /*renderLayers,*/
                     texture, x, y,
                     //? if <1.20.5
                     u, v,
@@ -449,12 +463,16 @@ public class InGameHudMixin {
                     value = "INVOKE",
                     //? if <1.20.5 {
                     target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V"
-                    //?} else
-                    /*target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V"*/
+                    //?} else if <1.21.2 {
+                    /*target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V"
+                    *///?} else
+                    /*target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Ljava/util/function/Function;Lnet/minecraft/util/Identifier;IIII)V"*/
             )
     )
     private void autoHud$wrapStatusEffect(
             DrawContext context,
+            //? if >=1.21.2
+            /*Function<Identifier, RenderLayer> renderLayer,*/
             Identifier texture,
             int x, int y,
             //? if <1.20.5
@@ -466,6 +484,8 @@ public class InGameHudMixin {
         RenderWrapper.STATUS_EFFECT.wrap(context, statusEffectInstance,
                 () -> original.call(
                         context,
+                        //? if >=1.21.2
+                        /*renderLayer,*/
                         texture,
                         x, y,
                         //? if <1.20.5
@@ -476,10 +496,31 @@ public class InGameHudMixin {
     }
     @WrapOperation(
             method = "method_18620",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawSprite(IIIIILnet/minecraft/client/texture/Sprite;)V")
+            at = @At(
+                    value = "INVOKE",
+                    //? if <1.21.2 {
+                    target = "Lnet/minecraft/client/gui/DrawContext;drawSprite(IIIIILnet/minecraft/client/texture/Sprite;)V"
+                    //?} else
+                    /*target = "Lnet/minecraft/client/gui/DrawContext;drawSpriteStretched(Ljava/util/function/Function;Lnet/minecraft/client/texture/Sprite;IIIII)V"*/
+            )
     )
-    private static void autoHud$wrapSprite(DrawContext context, int x, int y, int z, int width, int height, Sprite sprite, Operation<Void> original) {
-        RenderWrapper.STATUS_EFFECT.wrap(context, sprite, () -> original.call(context, x, y, z, width, height, sprite));
+    private static void autoHud$wrapSprite(
+            DrawContext context,
+            //? if >=1.21.2 {
+            /*Function<Identifier, RenderLayer> renderLayer,
+            Sprite sprite,
+            *///?}
+            int x, int y, int z,
+            int width, int height,
+            //? if <1.21.2
+            Sprite sprite,
+            Operation<Void> original) {
+        RenderWrapper.STATUS_EFFECT.wrap(context, sprite,
+                //? if <1.21.2 {
+                () -> original.call(context, x, y, z, width, height, sprite)
+                //?} else
+                /*() -> original.call(context, renderLayer, sprite, x, y, z, width, height)*/
+        );
     }
 
     // Chat

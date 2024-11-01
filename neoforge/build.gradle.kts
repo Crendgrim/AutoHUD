@@ -52,14 +52,19 @@ dependencies {
     })
     "neoForge"("net.neoforged:neoforge:${common.mod.dep("neoforge_loader")}")
 
-    if (!common.mod.dep("hotbarslotcycling").startsWith("[")) {
-        modCompileOnly("fuzs.hotbarslotcycling:hotbarslotcycling-neoforge:${common.mod.dep("hotbarslotcycling")}")
+    mapOf(
+        "hotbarslotcycling" to "fuzs.hotbarslotcycling:hotbarslotcycling-neoforge:{}",
+        "raised" to "maven.modrinth:raised:NeoForge-${common.mod.dep("raised_artifact")}-{}",
+    ).map { (modName, url) ->
+        common.mod.dep(modName) to url.replace("{}", common.mod.dep(modName))
+    }.filterNot { (version, _) ->
+        version.startsWith("[")
+    }.forEach { (_, url) ->
+        modCompileOnly(url)
     }
 
     modImplementation(name="libbamboo", group="mod.crend.libbamboo", version="neoforge-${common.mod.dep("libbamboo")}")
     include(name="libbamboo", group="mod.crend.libbamboo", version="neoforge-${common.mod.dep("libbamboo")}")
-
-    modImplementation("maven.modrinth:raised:NeoForge-${common.mod.dep("raised")}")
 
     commonBundle(project(common.path, "namedElements")) { isTransitive = false }
     shadowBundle(project(common.path, "transformProductionNeoForge")) { isTransitive = false }

@@ -1,5 +1,6 @@
 package mod.crend.autohud.compat.mixin.statuseffectbars;
 
+//? if statuseffectbars {
 import io.github.a5b84.statuseffectbars.StatusEffectBarRenderer;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.render.AutoHudRenderer;
@@ -16,10 +17,18 @@ public class StatusEffectBarRendererMixin {
 			at = @At("HEAD"),
 			ordinal = 1,
 			argsOnly = true)
-	private static int autoHud$renderWithOffset(int y, DrawContext context, float tickDelta, StatusEffectInstance effect) {
+	private static int autoHud$renderWithOffset(int y, DrawContext context, StatusEffectInstance effect) {
 		if (AutoHudRenderer.inRender) {
 			return y + (int) Component.get(effect.getEffectType()).getOffsetY(AutoHudRenderer.tickDelta);
 		}
 		return y;
 	}
 }
+//?} else {
+/*import mod.crend.libbamboo.VersionUtils;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(value = VersionUtils.class, remap = false)
+public class StatusEffectBarRendererMixin {
+}
+*///?}

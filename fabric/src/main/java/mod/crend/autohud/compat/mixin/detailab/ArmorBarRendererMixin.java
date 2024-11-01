@@ -1,5 +1,6 @@
 package mod.crend.autohud.compat.mixin.detailab;
 
+//? if detailab {
 import com.redlimerl.detailab.render.ArmorBarRenderer;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
@@ -26,3 +27,11 @@ public class ArmorBarRendererMixin {
 		}
 	}
 }
+//?} else {
+/*import mod.crend.libbamboo.VersionUtils;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(VersionUtils.class)
+public class ArmorBarRendererMixin {
+}
+*///?}

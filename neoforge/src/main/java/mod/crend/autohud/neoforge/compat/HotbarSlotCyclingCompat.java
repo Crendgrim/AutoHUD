@@ -1,10 +1,6 @@
 package mod.crend.autohud.neoforge.compat;
 
-//? if <1.21 {
-public class HotbarSlotCyclingCompat {
-	public static void init() { }
-}
-//?} else {
+//? if hotbarslotcycling {
 /*import fuzs.hotbarslotcycling.api.v1.client.CyclingSlotsRenderer;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.api.AutoHudApi;
@@ -19,7 +15,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
 public class HotbarSlotCyclingCompat implements AutoHudApi {
-	public static Component HotbarSlotCyclerComponent = Component.builder("hotbarslotcycling").config(AutoHud.config.hotbar()).build();
+	public static Component HotbarSlotCyclerComponent = Component.builder("hotbarslotcycling").isTargeted(() -> AutoHud.targetHotbar).config(AutoHud.config.hotbar()).build();
 	public static ItemStack forwardStack = ItemStack.EMPTY;
 
 	@Override
@@ -123,4 +119,8 @@ public class HotbarSlotCyclingCompat implements AutoHudApi {
 		}
 	}
 }
-*///?}
+*///?} else {
+public class HotbarSlotCyclingCompat {
+	public static void init() { }
+}
+//?}

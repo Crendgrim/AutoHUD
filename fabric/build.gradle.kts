@@ -57,21 +57,21 @@ dependencies {
     modImplementation("com.terraformersmc:modmenu:${common.mod.dep("modmenu")}")
 
     mapOf(
-        "appleskin" to "squeek.appleskin:appleskin-fabric:{}",
+        "appleskin" to "squeek.appleskin:appleskin-fabric:${common.mod.dep("appleskin_artifact")}-{}",
         "armorchroma" to "maven.modrinth:armor-chroma-for-fabric:{}",
         "detailab" to "maven.modrinth:detail-armor-bar:{}",
         "dehydration" to "maven.modrinth:dehydration:{}",
         "environmentz" to "maven.modrinth:environmentz:{}",
         "hotbarslotcycling" to "fuzs.hotbarslotcycling:hotbarslotcycling-fabric:{}",
         "onebar" to "maven.modrinth:onebar:{}",
-        "raised" to "maven.modrinth:raised:Fabric-{}",
+        "raised" to "maven.modrinth:raised:Fabric-${common.mod.dep("raised_artifact")}-{}",
         "statuseffectbars" to "maven.modrinth:status-effect-bars:{}"
-    ).forEach { (version, url) ->
-        run {
-            if (!common.mod.dep(version).startsWith("[")) {
-                modCompileOnly(url.replace("{}", common.mod.dep(version)))
-            }
-        }
+    ).map { (modName, url) ->
+        common.mod.dep(modName) to url.replace("{}", common.mod.dep(modName))
+    }.filterNot { (version, _) ->
+        version.startsWith("[")
+    }.forEach { (_, url) ->
+        modCompileOnly(url)
     }
 
     commonBundle(project(common.path, "namedElements")) { isTransitive = false }

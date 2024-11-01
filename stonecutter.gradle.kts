@@ -57,3 +57,30 @@ allprojects {
 
     }
 }
+
+stonecutter parameters {
+    listOf(
+        "appleskin",
+        "armorchroma",
+        "dehydration",
+        "detailab",
+        "environmentz",
+        "hotbarslotcycling",
+        "onebar",
+        "raised",
+        "statuseffectbars"
+    ).map {
+        it to
+                if (node == null)
+                    // :neoforge:1.20.1 is not defined, so we would not be able to switch back to 1.20.1 without
+                    // defining any constants used in the neoforge source set. Just set them all to unsupported.
+                    "[UNSUPPORTED]"
+                else
+                    // For e.g. :fabric:1.20.1, use the property of :1.20.1
+                    (node!!.sibling("") ?: node!!).property("deps.$it").toString()
+    }.forEach { (mod, version) ->
+        val modIsPresent = !version.startsWith("[");
+        const(mod, modIsPresent)
+        dependency(mod, if (modIsPresent) version else "0")
+    }
+}

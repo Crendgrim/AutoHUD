@@ -1,5 +1,6 @@
 package mod.crend.autohud.compat;
 
+//? if onebar {
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.component.Component;
@@ -38,3 +39,6 @@ public class OneBarCompat implements AutoHudApi {
 		OneBarComponent.synchronizeFrom(Component.Armor);
 	}
 }
+//?} else {
+/*public class OneBarCompat { }
+*///?}

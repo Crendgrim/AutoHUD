@@ -55,10 +55,16 @@ dependencies {
         include(it)
     }
 
-    if (!common.mod.dep("hotbarslotcycling").startsWith("[")) {
-        modCompileOnly("fuzs.hotbarslotcycling:hotbarslotcycling-forge:${common.mod.dep("hotbarslotcycling")}")
+    mapOf(
+        "hotbarslotcycling" to "fuzs.hotbarslotcycling:hotbarslotcycling-forge:{}",
+        "raised" to "maven.modrinth:raised:Forge-${common.mod.dep("raised_artifact")}-{}",
+    ).map { (modName, url) ->
+        common.mod.dep(modName) to url.replace("{}", common.mod.dep(modName))
+    }.filterNot { (version, _) ->
+        version.startsWith("[")
+    }.forEach { (_, url) ->
+        modCompileOnly(url)
     }
-    modImplementation("maven.modrinth:raised:Forge-${common.mod.dep("raised")}")
 
     modImplementation(name="libbamboo", group="mod.crend.libbamboo", version="forge-${common.mod.dep("libbamboo")}")
     include(name="libbamboo", group="mod.crend.libbamboo", version="forge-${common.mod.dep("libbamboo")}")

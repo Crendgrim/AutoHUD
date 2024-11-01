@@ -1,13 +1,6 @@
 package mod.crend.autohud.compat.mixin.environmentz;
 
-//? if 1.20.6 {
-/*import mod.crend.libbamboo.VersionUtils;
-import org.spongepowered.asm.mixin.Mixin;
-
-@Mixin(value = VersionUtils.class, remap = false)
-public class TemperatureHudRenderingMixin {
-}
-*///?} else {
+//? if environmentz {
 import mod.crend.autohud.compat.EnvironmentZCompat;
 import mod.crend.autohud.render.AutoHudRenderer;
 import net.environmentz.temperature.TemperatureHudRendering;
@@ -47,4 +40,11 @@ public class TemperatureHudRenderingMixin {
 	}
 
 }
-//?}
+//?} else {
+/*import mod.crend.libbamboo.VersionUtils;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(value = VersionUtils.class, remap = false)
+public class TemperatureHudRenderingMixin {
+}
+*///?}

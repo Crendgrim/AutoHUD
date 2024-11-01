@@ -1,10 +1,6 @@
 package mod.crend.autohud.compat;
 
-//? if <1.21 {
-public class HotbarSlotCyclingCompat {
-	public static void init() { }
-}
-//?} else {
+//? if hotbarslotcycling {
 /*import fuzs.hotbarslotcycling.api.v1.client.CyclingSlotsRenderer;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.api.AutoHudApi;
@@ -129,4 +125,8 @@ public class HotbarSlotCyclingCompat implements AutoHudApi {
 		}
 	}
 }
-*///?}
+*///?} else {
+public class HotbarSlotCyclingCompat {
+	public static void init() { }
+}
+//?}

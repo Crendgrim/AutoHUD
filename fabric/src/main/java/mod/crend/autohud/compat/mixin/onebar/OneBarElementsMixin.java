@@ -1,5 +1,6 @@
 package mod.crend.autohud.compat.mixin.onebar;
 
+//? if onebar {
 import io.github.madis0.OneBarElements;
 import mod.crend.autohud.compat.OneBarCompat;
 import mod.crend.autohud.component.Component;
@@ -72,3 +73,11 @@ public abstract class OneBarElementsMixin {
 		return AutoHudRenderer.modifyArgb(color);
 	}
 }
+//?} else {
+/*import mod.crend.libbamboo.VersionUtils;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(value = VersionUtils.class, remap = false)
+public class OneBarElementsMixin {
+}
+*///?}

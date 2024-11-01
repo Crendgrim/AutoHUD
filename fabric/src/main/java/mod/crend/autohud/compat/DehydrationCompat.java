@@ -1,8 +1,6 @@
 package mod.crend.autohud.compat;
 
-//? if 1.20.6 {
-/*public class DehydrationCompat { }
-*///?} else {
+//? if dehydration {
 
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.api.AutoHudApi;
@@ -57,4 +55,6 @@ public class DehydrationCompat implements AutoHudApi {
         }
     }
 }
-//?}
+//?} else {
+/*public class DehydrationCompat { }
+*///?}

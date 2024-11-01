@@ -1,5 +1,6 @@
 package mod.crend.autohud.compat.mixin.armorchroma;
 
+//? if armorchroma {
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.render.AutoHudRenderer;
@@ -35,3 +36,11 @@ public class GuiArmorMixin {
 		}
 	}
 }
+//?} else {
+/*import mod.crend.libbamboo.VersionUtils;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(VersionUtils.class)
+public class GuiArmorMixin {
+}
+*///?}

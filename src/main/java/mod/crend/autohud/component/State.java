@@ -5,8 +5,8 @@ import mod.crend.autohud.component.state.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 //? if >=1.21.2
-/*import net.minecraft.component.type.EquippableComponent;
-*/
+/*import net.minecraft.component.type.EquippableComponent;*/
+
 //? if >=1.20.5 {
 /*import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.FoodComponent;
@@ -15,6 +15,7 @@ import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+//? if <1.21.3
 import net.minecraft.item.Equipment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PotionItem;
@@ -102,8 +103,8 @@ public class State {
         //?} else if <1.21.2 {
         /*return itemStack.contains(DataComponentTypes.FOOD);
         *///?} else
-        /*return itemStack.contains(DataComponentTypes.CONSUMABLE);
-         */
+        /*return itemStack.contains(DataComponentTypes.CONSUMABLE);*/
+         
     }
 
     private boolean isHealEffect(StatusEffectInstance effect) {
@@ -141,8 +142,8 @@ public class State {
                         }
                     }
                 }
-            }*/
-            //?}
+            }
+            *///?}
         } else if (itemStack.getItem() instanceof PotionItem) {
             //? if <1.20.5 {
             Potion potion = PotionUtil.getPotion(itemStack);

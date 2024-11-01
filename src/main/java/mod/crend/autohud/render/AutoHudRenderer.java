@@ -75,7 +75,7 @@ public class AutoHudRenderer {
 	public static void postInjectFade(DrawContext context) {
 		if (AutoHud.config.animationFade()) {
 			//? if >=1.21.2
-			//context.draw();
+			/*context.draw();*/
 			alpha = 1.0f;
 			RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
 		}

@@ -14,15 +14,19 @@ plugins {
     id("dev.kikugie.stonecutter") version "0.5-beta.3"
 }
 
+var fabricVersions = linkedSetOf("1.20.1", "1.20.6", "1.21.1", "1.21.3")
+var forgeVersions = linkedSetOf("1.20.1")
+var neoforgeVersions = linkedSetOf("1.20.6", "1.21.1", "1.21.3")
+
 stonecutter {
     centralScript = "build.gradle.kts"
     kotlinController = true
     create(rootProject) {
         // Root `src/` functions as the 'common' project
-        versions("1.20.1", "1.20.6", "1.21.1")
-        branch("fabric") // Copies versions from root
-        branch("forge") { versions("1.20.1") }
-        branch("neoforge") { versions("1.20.6", "1.21.1") }
+        versions(fabricVersions + forgeVersions + neoforgeVersions)
+        branch("fabric") { versions(fabricVersions) }
+        branch("forge") { versions(forgeVersions) }
+        branch("neoforge") { versions(neoforgeVersions) }
     }
 }
 

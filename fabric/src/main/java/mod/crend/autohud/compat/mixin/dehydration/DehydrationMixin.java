@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class DehydrationMixin {
     @Mixin(value = InGameHud.class, priority = 900)
     public static class EarlyMixin {
-        //? if !=1.20.6 {
+        //? if dehydration {
         @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", ordinal = 1))
         private void autoHud$preThirst(DrawContext context, CallbackInfo ci) {
             AutoHudRenderer.postInject(context);
@@ -23,7 +23,7 @@ public class DehydrationMixin {
     }
     @Mixin(value = InGameHud.class, priority = 1200)
     public static class LateMixin {
-        //? if !=1.20.6 {
+        //? if dehydration {
         @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", ordinal = 1))
         private void autoHud$postThirst(DrawContext context, CallbackInfo ci) {
             AutoHudRenderer.postInject(context);

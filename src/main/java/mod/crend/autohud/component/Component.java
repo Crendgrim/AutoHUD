@@ -7,8 +7,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.StatusEffectSpriteManager;
 import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.registry.Registry;
 import net.minecraft.registry.entry.RegistryEntry;
 
 import java.util.*;
@@ -190,10 +188,10 @@ public class Component {
     public final ConfigHandler.IComponent config;
     public ComponentState state = null;
     private final List<Component> stackComponents;
-    private double alpha = 1;
-    private double alphaDelta = 0;
-    private double offset = 0;
-    private double offsetDelta = 0;
+    public double alpha = 1;
+    public double alphaDelta = 0;
+    public double offset = 0;
+    public double offsetDelta = 0;
     public final String name;
     private final Supplier<Boolean> isTargeted;
     private final boolean inMainHud;
@@ -225,7 +223,7 @@ public class Component {
     }
 
     public boolean isActive() {
-        return config.active() && isTargeted.get();
+        return config.active(); // && isTargeted.get();
     }
 
     /**
@@ -341,6 +339,40 @@ public class Component {
         }
     }
 
+    private void synchronize(float newVisibleTime, double newOffset, double newAlpha, double newOffsetDelta, double newAlphaDelta, Component... components) {
+        double minOffsetDelta = Math.min(newOffsetDelta, 0d);
+        double maxOffsetDelta = Math.max(newOffsetDelta, 0d);
+        double minAlphaDelta = Math.min(newAlphaDelta, 0d);
+        double maxAlphaDelta = Math.max(newAlphaDelta, 0d);
+        for (Component component : components) {
+            newVisibleTime = Math.max(newVisibleTime, component.visibleTime);
+            newOffset = Math.min(newOffset, component.offset);
+            newAlpha = Math.max(newAlpha, component.alpha);
+            if (component.offsetDelta < 0) {
+                minOffsetDelta = Math.min(minOffsetDelta, component.offsetDelta);
+            } else {
+                maxOffsetDelta = Math.max(maxOffsetDelta, component.offsetDelta);
+            }
+            if (component.alphaDelta < 0) {
+                minAlphaDelta = Math.min(minAlphaDelta, component.alphaDelta);
+            } else {
+                maxAlphaDelta = Math.max(maxAlphaDelta, component.alphaDelta);
+            }
+        }
+        visibleTime = newVisibleTime;
+        offset = newOffset;
+        alpha = newAlpha;
+        // Moving in takes precedence
+        offsetDelta = (minOffsetDelta < 0 ? minOffsetDelta : maxOffsetDelta);
+        alphaDelta = (minAlphaDelta < 0 ? minAlphaDelta : maxAlphaDelta);
+    }
+    public void synchronizeFromHidden(Component... components) {
+        synchronize(0, 1.0d, 0.0d, 0d, 0d, components);
+    }
+    public void synchronizeFrom(Component... components) {
+        synchronize(visibleTime, offset, alpha, offsetDelta, alphaDelta, components);
+    }
+    /*
     public void synchronizeFrom(Component a, Component b) {
         offset = Math.min(offset, Math.min(a.offset, b.offset));
         alpha = Math.max(alpha, Math.max(a.alpha, b.alpha));
@@ -357,7 +389,7 @@ public class Component {
             alphaDelta = Math.min(alphaDelta, other.alphaDelta);
         }
         visibleTime = Math.max(visibleTime, other.visibleTime);
-    }
+    }*/
     private void moveIn() {
         offset = Math.max(0, offset + offsetDelta);
         alpha = Math.min(1, alpha + alphaDelta);

@@ -6,16 +6,12 @@ import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.state.PolicyComponentState;
+import mod.crend.autohud.render.RenderWrapper;
 import net.dehydration.access.ThirstManagerAccess;
-import net.dehydration.effect.ThirstEffect;
 import net.dehydration.init.EffectInit;
 import net.dehydration.misc.ThirstTooltipData;
 import net.dehydration.thirst.ThirstManager;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.registry.entry.RegistryEntry;
-
-import java.util.List;
 
 public class DehydrationCompat implements AutoHudApi {
 
@@ -26,6 +22,7 @@ public class DehydrationCompat implements AutoHudApi {
 
     // We bind this to the hunger config, as that is the most closely related one.
     public static Component Thirst = Component.builder("Thirst").config(AutoHud.config.hunger()).stackComponents(Component.Air).inMainHud().build();
+    public static RenderWrapper THIRST_WRAPPER = new RenderWrapper.ComponentRenderer(Thirst).withCustomFramebuffer();
     static {
         // Fake this API being inserted via entry point
         AutoHud.addApi(new DehydrationCompat());

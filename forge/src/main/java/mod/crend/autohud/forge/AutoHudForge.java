@@ -2,7 +2,7 @@ package mod.crend.autohud.forge;
 
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.ModKeyBindings;
-import mod.crend.autohud.forge.compat.RaisedCompat;
+import mod.crend.autohud.compat.RaisedCompat;
 import net.minecraft.client.MinecraftClient;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;

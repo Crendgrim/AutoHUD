@@ -2,6 +2,7 @@ package mod.crend.autohud.compat;
 
 //? if hotbarslotcycling {
 /*import fuzs.hotbarslotcycling.api.v1.client.CyclingSlotsRenderer;
+import fuzs.hotbarslotcycling.api.v1.client.HotbarCyclingProvider;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.component.Component;
@@ -16,7 +17,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
 public class HotbarSlotCyclingCompat implements AutoHudApi {
-	public static Component HOTBAR_SLOT_CYCLING_COMPONENT = Component.builder("hotbarslotcycling").isTargeted(() -> AutoHud.targetHotbar).config(AutoHud.config.hotbar()).build();
+	public static Component HOTBAR_SLOT_CYCLING_COMPONENT = Component.builder("hotbarslotcycling")
+			.isTargeted(() -> AutoHud.targetHotbar)
+			.config(AutoHud.config.hotbar())
+			.inMainHud()
+			.build();
 	public static RenderWrapper COMPONENT_WRAPPER = new RenderWrapper.ComponentRenderer(HOTBAR_SLOT_CYCLING_COMPONENT);
 	public static RenderWrapper BACKGROUND_WRAPPER = new RenderWrapper.CustomRenderer(
 			() -> HOTBAR_SLOT_CYCLING_COMPONENT.isActive() && AutoHud.config.animationFade(),
@@ -26,7 +31,7 @@ public class HotbarSlotCyclingCompat implements AutoHudApi {
 				AutoHudRenderer.postInjectFade(context);
 				CustomFramebufferRenderer.init();
 			}, context -> {
-				AutoHudRenderer.preInjectFadeWithReverseTranslation(context, HOTBAR_SLOT_CYCLING_COMPONENT, 0);
+				AutoHudRenderer.preInjectFadeWithReverseTranslation(HOTBAR_SLOT_CYCLING_COMPONENT, context, 0);
 				CustomFramebufferRenderer.draw(context);
 				AutoHudRenderer.postInjectFadeWithReverseTranslation(context);
 			}
@@ -51,12 +56,11 @@ public class HotbarSlotCyclingCompat implements AutoHudApi {
 			},
 			context -> {
 				// Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
-				AutoHudRenderer.preInjectFadeWithReverseTranslation(context, HOTBAR_SLOT_CYCLING_COMPONENT, AutoHud.config.getHotbarItemsMaximumFade());
+				AutoHudRenderer.preInjectFadeWithReverseTranslation(HOTBAR_SLOT_CYCLING_COMPONENT, context, AutoHud.config.getHotbarItemsMaximumFade());
 				CustomFramebufferRenderer.draw(context);
 				AutoHudRenderer.postInjectFadeWithReverseTranslation(context);
 			}
 	);
-	public static ItemStack forwardStack = ItemStack.EMPTY;
 
 	@Override
 	public String modId() {
@@ -66,7 +70,11 @@ public class HotbarSlotCyclingCompat implements AutoHudApi {
 	@Override
 	public void initState(ClientPlayerEntity player) {
 		Component.registerComponent(HOTBAR_SLOT_CYCLING_COMPONENT);
-		HOTBAR_SLOT_CYCLING_COMPONENT.state = new ItemStackComponentState(HOTBAR_SLOT_CYCLING_COMPONENT, () -> forwardStack, true);
+		HOTBAR_SLOT_CYCLING_COMPONENT.state = new ItemStackComponentState(
+				HOTBAR_SLOT_CYCLING_COMPONENT,
+				() -> HotbarCyclingProvider.GLOBAL_PROVIDER[0].apply(player).getForwardStack(),
+				true
+		);
 		HOTBAR_SLOT_CYCLING_COMPONENT.reveal();
 	}
 
@@ -102,7 +110,6 @@ public class HotbarSlotCyclingCompat implements AutoHudApi {
 		public boolean testValidStacks(ItemStack backwardStack, ItemStack selectedStack, ItemStack forwardStack) {
 			boolean original = parent.testValidStacks(backwardStack, selectedStack, forwardStack);
 			if (!AutoHud.targetHotbar) return original;
-			HotbarSlotCyclingCompat.forwardStack = forwardStack;
 			if (!original) {
 				HOTBAR_SLOT_CYCLING_COMPONENT.forceHide();
 			}

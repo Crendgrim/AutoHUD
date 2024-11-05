@@ -2,7 +2,7 @@ package mod.crend.autohud.neoforge;
 
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.ModKeyBindings;
-import mod.crend.autohud.neoforge.compat.RaisedCompat;
+import mod.crend.autohud.compat.RaisedCompat;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.render.AutoHudRenderer;
 import net.minecraft.client.MinecraftClient;

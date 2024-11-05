@@ -5,6 +5,7 @@ import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.state.ComponentState;
+import mod.crend.autohud.render.RenderWrapper;
 import net.minecraft.client.network.ClientPlayerEntity;
 
 public class OneBarCompat implements AutoHudApi {
@@ -14,6 +15,7 @@ public class OneBarCompat implements AutoHudApi {
 	}
 
 	public static Component OneBarComponent = Component.builder("OneBar").config(AutoHud.config.health()).inMainHud().build();
+	public static final RenderWrapper ONE_BAR_WRAPPER = new RenderWrapper.ComponentRenderer(OneBarComponent);
 	static {
 		// Fake this API being inserted via entry point
 		AutoHud.addApi(new OneBarCompat());
@@ -33,10 +35,12 @@ public class OneBarCompat implements AutoHudApi {
 
 	@Override
 	public void tickState(ClientPlayerEntity player) {
-		OneBarComponent.synchronizeFrom(Component.Health);
-		OneBarComponent.synchronizeFrom(Component.Hunger);
-		OneBarComponent.synchronizeFrom(Component.Air);
-		OneBarComponent.synchronizeFrom(Component.Armor);
+		OneBarComponent.synchronizeFromHidden(
+				Component.Health,
+				Component.Hunger,
+				Component.Air,
+				Component.Armor
+		);
 	}
 }
 //?} else {

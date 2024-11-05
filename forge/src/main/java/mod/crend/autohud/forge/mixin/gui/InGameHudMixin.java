@@ -188,7 +188,7 @@ public class InGameHudMixin {
 		return result.get();
 	}
 
-	@WrapOperation(method = "method_18620", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawSprite(IIIIILnet/minecraft/client/texture/Sprite;)V"))
+	@WrapOperation(method = {"m_279741_", "method_18620"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawSprite(IIIIILnet/minecraft/client/texture/Sprite;)V"), require = 0)
 	private static void autoHud$wrapSprite(DrawContext context, int x, int y, int z, int width, int height, Sprite sprite, Operation<Void> original) {
 		RenderWrapper.STATUS_EFFECT.wrap(context, sprite, () -> original.call(context, x, y, z, width, height, sprite));
 	}

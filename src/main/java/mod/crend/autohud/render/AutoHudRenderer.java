@@ -1,12 +1,13 @@
 package mod.crend.autohud.render;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
-import mod.crend.libbamboo.render.CustomFramebufferRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AutoHudRenderer {
 	public static boolean inRender;
@@ -26,7 +27,7 @@ public class AutoHudRenderer {
 			RenderSystem.setShaderColor(color[0], color[1], color[2], color[3] * alpha);
 		}
 	}
-	public static void preInjectFadeWithReverseTranslation(DrawContext context, Component component, float minAlpha) {
+	public static void preInjectFadeWithReverseTranslation(Component component, DrawContext context, float minAlpha) {
 		preInjectFade(component, minAlpha);
 		if (AutoHud.config.animationMove()) {
 			context.getMatrices().push();
@@ -40,11 +41,8 @@ public class AutoHudRenderer {
 		}
 	}
 	public static void preInject(Component component, DrawContext context) {
-		preInject(context, component);
-	}
-	public static void preInject(DrawContext context, Component component) {
 		preInjectFade(component);
-		// Undo any translations we had before
+		active.add(component);
 		if (AutoHud.config.animationMove() || !AutoHud.config.animationFade()) {
 			context.getMatrices().push();
 			if (component.isHidden()) {
@@ -89,10 +87,8 @@ public class AutoHudRenderer {
 			context.getMatrices().pop();
 		}
 	}
-	public static void postInject(Component ignored, DrawContext context) {
-		postInject(context);
-	}
-	public static void postInject(DrawContext context) {
+	public static void postInject(Component component, DrawContext context) {
+		active.remove(component);
 		postInjectFade(context);
 		if (AutoHud.config.animationMove() || !AutoHud.config.animationFade()) {
 			context.getMatrices().pop();
@@ -145,13 +141,22 @@ public class AutoHudRenderer {
 		}
 	}
 
+	static List<Component> active = new ArrayList<>();
+
 	public static void startRender(DrawContext context, /*? if <1.21 {*/float/*?} else {*//*RenderTickCounter*//*?}*/ renderTickCounter) {
 		inRender = true;
 		tickDelta = renderTickCounter/*? if >=1.21 {*//*.getTickDelta(true)*//*?}*/;
-		ChatMessageIndicator.render(context);
+		active.clear();
+	}
+
+	public static void renderChatMessageIndicator(DrawContext context, /*? if <1.21 {*/float/*?} else {*//*RenderTickCounter*//*?}*/ ignored) {
+		RenderWrapper.CHAT_MESSAGE_INDICATOR.wrap(context, ChatMessageIndicator::render);
 	}
 
 	public static void endRender() {
+		for (Component component : active) {
+			System.err.println("Not cleaned up: " + component.name);
+		}
 		inRender = false;
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		RenderSystem.defaultBlendFunc();

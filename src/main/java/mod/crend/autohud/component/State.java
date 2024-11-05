@@ -9,7 +9,6 @@ import net.minecraft.client.network.ClientPlayerEntity;
 
 //? if >=1.20.5 {
 /*import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.FoodComponent;
 import net.minecraft.component.type.PotionContentsComponent;
 *///?}
 import net.minecraft.entity.effect.StatusEffect;
@@ -28,13 +27,10 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Pair;
 import net.minecraft.util.hit.HitResult;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class State {
 

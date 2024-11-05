@@ -1,19 +1,20 @@
 package mod.crend.autohud.compat.mixin.onebar;
 
 //? if onebar {
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.madis0.OneBarElements;
 import mod.crend.autohud.compat.OneBarCompat;
-import mod.crend.autohud.component.Component;
 import mod.crend.autohud.render.AutoHudRenderer;
+import mod.crend.autohud.render.RenderWrapper;
 import net.minecraft.client.gui.DrawContext;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = OneBarElements.class, remap = false)
 public abstract class OneBarElementsMixin {
@@ -21,26 +22,22 @@ public abstract class OneBarElementsMixin {
 	@Final
 	private DrawContext drawContext;
 
-	@Inject(method = "renderOneBar", at=@At("HEAD"))
-	private void autoHud$preRenderOneBar(CallbackInfo ci) {
-		AutoHudRenderer.preInject(drawContext, OneBarCompat.OneBarComponent);
+	@WrapMethod(method = "renderOneBar")
+	private void autoHud$wrapOneBar(Operation<Void> original) {
+		/*
+		// In 1.20.1, mixin order makes it so we have to reset the context.
+		// Presumably, something is getting canceled before we can clean up.
+		//? if onebar: <4.1.0
+		AutoHudRenderer.postInject(drawContext);
+		 */
+		OneBarCompat.ONE_BAR_WRAPPER.wrap(drawContext, () -> original.call());
 	}
 
-	@Inject(method = "xpBar", at=@At("HEAD"))
-	private void autoHud$preXpBar(CallbackInfo ci) {
-		AutoHudRenderer.postInject(drawContext);
-		AutoHudRenderer.preInject(drawContext, Component.ExperienceBar);
-	}
-
-	@Inject(method = "xpBar", at=@At("TAIL"))
-	private void autoHud$postXpBar(CallbackInfo ci) {
-		AutoHudRenderer.postInject(drawContext);
-		AutoHudRenderer.preInject(drawContext, OneBarCompat.OneBarComponent);
-	}
-
-	@Inject(method = "renderOneBar", at=@At("TAIL"))
-	private void autoHud$postRenderOneBar(CallbackInfo ci) {
-		AutoHudRenderer.postInject(drawContext);
+	@WrapOperation(method = "renderOneBar", at = @At(value = "INVOKE", target = "Lio/github/madis0/OneBarElements;xpBar()V"))
+	private void autoHud$wrapXpBar(OneBarElements instance, Operation<Void> original) {
+		OneBarCompat.ONE_BAR_WRAPPER.endRender(drawContext);
+		RenderWrapper.EXPERIENCE_BAR.wrap(drawContext, () -> original.call(instance));
+		OneBarCompat.ONE_BAR_WRAPPER.beginRender(drawContext);
 	}
 
 	@ModifyVariable(method = "renderBar", at = @At("HEAD"), ordinal = 4, argsOnly = true)

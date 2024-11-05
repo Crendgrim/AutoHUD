@@ -3,9 +3,9 @@ package mod.crend.autohud.forge;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.ModKeyBindings;
 import mod.crend.autohud.api.AutoHudApi;
+import mod.crend.autohud.compat.HotbarSlotCyclingCompat;
 import mod.crend.autohud.config.ConfigHandler;
-import mod.crend.autohud.forge.compat.HotbarSlotCyclingCompat;
-import mod.crend.autohud.render.ChatMessageIndicator;
+import mod.crend.autohud.render.AutoHudRenderer;
 import mod.crend.libbamboo.forge.ConfigScreen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
@@ -47,7 +47,7 @@ public class AutoHudModEvents {
 
 	@SubscribeEvent
 	static void onRegisterOverlaysEvent(RegisterGuiOverlaysEvent event) {
-		event.registerAboveAll(NEW_CHAT_MESSAGE_INDICATOR, (forgeGui, context, f, i, j) -> ChatMessageIndicator.render(context));
+		event.registerAboveAll(NEW_CHAT_MESSAGE_INDICATOR, (forgeGui, context, f, i, j) -> AutoHudRenderer.renderChatMessageIndicator(context, f));
 	}
 
 }

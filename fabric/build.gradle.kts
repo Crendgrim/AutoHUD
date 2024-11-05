@@ -40,7 +40,6 @@ configurations {
 }
 
 repositories {
-    maven("https://maven.terraformersmc.com/")
 }
 
 dependencies {
@@ -48,8 +47,13 @@ dependencies {
     mappings("net.fabricmc:yarn:$minecraft+build.${common.mod.dep("yarn_build")}:v2")
     modImplementation("net.fabricmc:fabric-loader:${mod.dep("fabric_loader")}")
 
-    modImplementation(fabricApi.module("fabric-key-binding-api-v1", common.mod.dep("fabric_api")))
-    modImplementation(fabricApi.module("fabric-lifecycle-events-v1", common.mod.dep("fabric_api")))
+    listOf(
+        "fabric-key-binding-api-v1",
+        "fabric-lifecycle-events-v1",
+        "fabric-rendering-v1"
+    ).forEach {
+        modImplementation(fabricApi.module(it, common.mod.dep("fabric_api")))
+    }
 
     modImplementation(name="libbamboo", group="mod.crend.libbamboo", version="fabric-${common.mod.dep("libbamboo")}")
     include(name="libbamboo", group="mod.crend.libbamboo", version="fabric-${common.mod.dep("libbamboo")}")

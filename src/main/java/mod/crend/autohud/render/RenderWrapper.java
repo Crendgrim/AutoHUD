@@ -4,7 +4,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
-import mod.crend.autohud.component.Hud;
 import mod.crend.libbamboo.render.CustomFramebufferRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.texture.Sprite;
@@ -30,7 +29,7 @@ public interface RenderWrapper {
 			},
 			context -> {
 				// Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
-				AutoHudRenderer.preInjectFadeWithReverseTranslation(context, Component.Hotbar, AutoHud.config.getHotbarItemsMaximumFade());
+				AutoHudRenderer.preInjectFadeWithReverseTranslation(Component.Hotbar, context, AutoHud.config.getHotbarItemsMaximumFade());
 				CustomFramebufferRenderer.draw(context);
 				AutoHudRenderer.postInjectFadeWithReverseTranslation(context);
 			}
@@ -64,11 +63,19 @@ public interface RenderWrapper {
 	RenderWrapper BOSS_BAR = new ComponentRenderer(Component.BossBar);
 	RenderWrapper ACTION_BAR = new ComponentRenderer(Component.ActionBar);
 	StatusEffectRenderWrapper STATUS_EFFECT = new StatusEffectRenderWrapper();
+	RenderWrapper CHAT_MESSAGE_INDICATOR = new ComponentRenderer(Component.ChatIndicator);
 
+	RenderWrapper withCustomFramebuffer();
 	void beginRender(DrawContext context);
 	void endRender(DrawContext context);
 	void wrap(DrawContext context, Runnable customRenderCall, Runnable originalRenderCall);
+	default void wrap(DrawContext context, Consumer<DrawContext> customRenderCall, Consumer<DrawContext> originalRenderCall) {
+		wrap(context, () -> customRenderCall.accept(context), () -> originalRenderCall.accept(context));
+	}
 	default void wrap(DrawContext context, Runnable renderCall) {
+		wrap(context, renderCall, renderCall);
+	}
+	default void wrap(DrawContext context, Consumer<DrawContext> renderCall) {
 		wrap(context, renderCall, renderCall);
 	}
 	boolean isActive();
@@ -78,6 +85,7 @@ public interface RenderWrapper {
 		private final Component component;
 		private final BiConsumer<Component, DrawContext> beginRender;
 		private final BiConsumer<Component, DrawContext> endRender;
+		private final FramebufferRenderer framebufferRenderer;
 
 		public ComponentRenderer(Component component) {
 			this(component, AutoHudRenderer::preInject, AutoHudRenderer::postInject);
@@ -86,6 +94,18 @@ public interface RenderWrapper {
 			this.component = component;
 			this.beginRender = beginRender;
 			this.endRender = endRender;
+			this.framebufferRenderer = new FramebufferRenderer(
+					this,
+					context -> {
+						AutoHudRenderer.preInjectFade(component, (float) component.config.maximumFade());
+					},
+					AutoHudRenderer::postInjectFade
+			);
+		}
+
+		@Override
+		public RenderWrapper withCustomFramebuffer() {
+			return framebufferRenderer;
 		}
 
 		@Override
@@ -100,14 +120,14 @@ public interface RenderWrapper {
 
 		@Override
 		public void beginRender(DrawContext context) {
-			if (isActive() && doRender()) {
+			if (isActive()) {
 				this.beginRender.accept(this.component, context);
 			}
 		}
 
 		@Override
 		public void endRender(DrawContext context) {
-			if (isActive() && doRender()) {
+			if (isActive()) {
 				this.endRender.accept(this.component, context);
 			}
 		}
@@ -126,17 +146,89 @@ public interface RenderWrapper {
 		}
 	}
 
+	class FramebufferRenderer implements RenderWrapper {
+		RenderWrapper wrappedRenderWrapper;
+		private final Consumer<DrawContext> framebufferSetup;
+		private final Consumer<DrawContext> framebufferTeardown;
+
+		public FramebufferRenderer(RenderWrapper wrappedRenderWrapper, Consumer<DrawContext> framebufferSetup, Consumer<DrawContext> framebufferTeardown) {
+			this.wrappedRenderWrapper = wrappedRenderWrapper;
+			this.framebufferSetup = framebufferSetup;
+			this.framebufferTeardown = framebufferTeardown;
+		}
+
+		@Override
+		public RenderWrapper withCustomFramebuffer() {
+			return this;
+		}
+
+		@Override
+		public void beginRender(DrawContext context) {
+			if (isActive()) {
+				CustomFramebufferRenderer.init();
+				wrappedRenderWrapper.beginRender(context);
+			}
+		}
+
+		@Override
+		public void endRender(DrawContext context) {
+			if (isActive()) {
+				wrappedRenderWrapper.endRender(context);
+				framebufferSetup.accept(context);
+				CustomFramebufferRenderer.draw(context);
+				framebufferTeardown.accept(context);
+			}
+		}
+
+		@Override
+		public void wrap(DrawContext context, Runnable customRenderCall, Runnable originalRenderCall) {
+			if (isActive()) {
+				if (doRender()) {
+					CustomFramebufferRenderer.init();
+					wrappedRenderWrapper.wrap(context, customRenderCall, originalRenderCall);
+					framebufferSetup.accept(context);
+					CustomFramebufferRenderer.draw(context);
+					framebufferTeardown.accept(context);
+				}
+			} else {
+				originalRenderCall.run();
+			}
+		}
+
+		@Override
+		public boolean isActive() {
+			return wrappedRenderWrapper.isActive();
+		}
+
+		@Override
+		public boolean doRender() {
+			return wrappedRenderWrapper.doRender();
+		}
+	}
+
 	class CustomRenderer implements RenderWrapper {
 		private final Consumer<DrawContext> beginRender;
 		private final Consumer<DrawContext> endRender;
 		private final Supplier<Boolean> doRender;
 		private final Supplier<Boolean> isActive;
+		private final FramebufferRenderer framebufferRenderer;
 
-		public CustomRenderer(Supplier<Boolean> isActive, Supplier<Boolean> doRender, Consumer<DrawContext> beginRender, Consumer<DrawContext> endRender) {
+		public CustomRenderer(
+				Supplier<Boolean> isActive,
+				Supplier<Boolean> doRender,
+				Consumer<DrawContext> beginRender,
+				Consumer<DrawContext> endRender
+		) {
 			this.isActive = isActive;
 			this.doRender = doRender;
 			this.beginRender = beginRender;
 			this.endRender = endRender;
+			this.framebufferRenderer = new FramebufferRenderer(this, context -> {}, context -> {});
+		}
+
+		@Override
+		public RenderWrapper withCustomFramebuffer() {
+			return framebufferRenderer;
 		}
 
 		@Override
@@ -186,7 +278,8 @@ public interface RenderWrapper {
 		}
 
 		public boolean doRender(StatusEffectInstance instance) {
-			return Hud.shouldShowIcon(instance);
+			Component component = Component.get(instance.getEffectType());
+			return component != null && !component.fullyHidden();
 		}
 		public boolean doRender(Sprite sprite) {
 			Component component = Component.findBySprite(sprite);
@@ -195,7 +288,7 @@ public interface RenderWrapper {
 
 		public void preInject(DrawContext context, StatusEffectInstance instance) {
 			if (isActive() && doRender(instance)) {
-				AutoHudRenderer.preInject(context, Component.get(instance.getEffectType()));
+				AutoHudRenderer.preInject(Component.get(instance.getEffectType()), context);
 			}
 		}
 
@@ -203,7 +296,7 @@ public interface RenderWrapper {
 			if (isActive()) {
 				Component component = Component.findBySprite(sprite);
 				if (component != null && !component.fullyHidden()) {
-					AutoHudRenderer.preInject(context, component);
+					AutoHudRenderer.preInject(component, context);
 				}
 			}
 		}
@@ -212,7 +305,7 @@ public interface RenderWrapper {
 			if (isActive()) {
 				Component component = Component.findBySprite(sprite);
 				if (component != null && !component.fullyHidden()) {
-					AutoHudRenderer.postInject(context);
+					AutoHudRenderer.postInject(component, context);
 				}
 			}
 		}
@@ -221,9 +314,9 @@ public interface RenderWrapper {
 			if (isActive()) {
 				Component component = Component.findBySprite(sprite);
 				if (component != null) {
-					AutoHudRenderer.preInject(context, component);
+					AutoHudRenderer.preInject(component, context);
 					renderCall.run();
-					AutoHudRenderer.postInject(context);
+					AutoHudRenderer.postInject(component, context);
 				}
 			} else {
 				renderCall.run();
@@ -232,9 +325,10 @@ public interface RenderWrapper {
 		public void wrap(DrawContext context, StatusEffectInstance instance, Runnable renderCall) {
 			if (isActive()) {
 				if (doRender(instance)) {
-					AutoHudRenderer.preInject(context, Component.get(instance.getEffectType()));
+					Component component = Component.get(instance.getEffectType());
+					AutoHudRenderer.preInject(component, context);
 					renderCall.run();
-					AutoHudRenderer.postInject(context);
+					AutoHudRenderer.postInject(component, context);
 				}
 			} else {
 				renderCall.run();

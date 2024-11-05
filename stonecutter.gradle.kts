@@ -6,6 +6,7 @@ plugins {
 }
 stonecutter active "1.20.1" /* [SC] DO NOT EDIT */
 stonecutter.automaticPlatformConstants = true
+stonecutter.debug = true
 
 // Builds every version into `build/libs/{mod.version}/{loader}`
 stonecutter registerChiseled tasks.register("chiseledBuild", stonecutter.chiseled) {
@@ -38,6 +39,7 @@ for (it in stonecutter.tree.nodes) {
 allprojects {
     repositories {
         maven("https://maven.isxander.dev/releases")
+        maven("https://maven.terraformersmc.com/")
         maven {
             name = "Fuzs Mod Resources"
             setUrl("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/")

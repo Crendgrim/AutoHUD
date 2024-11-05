@@ -8,8 +8,11 @@ import mod.crend.autohud.render.AutoHudRenderer;
 import net.minecraft.client.MinecraftClient;
 
 public class RaisedCompat {
-	public static void tick(MinecraftClient client) {
+	public static void tick() {
 		//? if raised
 		AutoHudRenderer.globalOffsetY = RaisedApi.getY(Element.HOTBAR);
+	}
+	public static void tick(MinecraftClient client) {
+		tick();
 	}
 }

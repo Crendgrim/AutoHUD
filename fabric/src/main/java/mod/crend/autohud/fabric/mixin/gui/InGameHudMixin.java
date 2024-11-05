@@ -19,6 +19,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.entity.JumpingMount;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -34,7 +35,10 @@ import java.util.function.Function;
 @Mixin(value = InGameHud.class, priority = 800)
 public abstract class InGameHudMixin {
 
-    //? if <1.20.6 {
+    //? if <1.20.5 {
+    @Shadow protected abstract int getHeartCount(LivingEntity entity);
+    @Shadow protected abstract LivingEntity getRiddenEntity();
+
     @Inject(method="render", at=@At("HEAD"))
     private void autoHud$preRender(DrawContext context, float tickDelta, CallbackInfo ci) {
         AutoHudRenderer.startRender(context, tickDelta);
@@ -45,27 +49,24 @@ public abstract class InGameHudMixin {
     }
     //?} else {
 
-    /*@Shadow public abstract void render(DrawContext par1, RenderTickCounter par2);
-
-    @Shadow protected abstract void renderExperienceLevel(DrawContext par1, RenderTickCounter par2);
-
+/*
     @WrapOperation(
             method = "render",
             at = @At(
                     value = "INVOKE",
                     //? if <1.21 {
-                    /^target = "Lnet/minecraft/client/gui/LayeredDrawer;render(Lnet/minecraft/client/gui/DrawContext;F)V"
-                    ^///?} else
-                    target = "Lnet/minecraft/client/gui/LayeredDrawer;render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V"
+                    target = "Lnet/minecraft/client/gui/LayeredDrawer;render(Lnet/minecraft/client/gui/DrawContext;F)V"
+                    //?} else
+                    /^target = "Lnet/minecraft/client/gui/LayeredDrawer;render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V"^/
             )
     )
     private void autoHud$render(
             LayeredDrawer instance,
             DrawContext context,
             //? if <1.21 {
-            /^float tickCounter,
-            ^///?} else
-            RenderTickCounter tickCounter,
+            float tickCounter,
+            //?} else
+            /^RenderTickCounter tickCounter,^/
             Operation<Void> original
     ) {
         AutoHudRenderer.startRender(context, tickCounter);
@@ -155,11 +156,19 @@ public abstract class InGameHudMixin {
     }
 
     // Experience Bar
-    @WrapOperation(
-            //? if <1.20.5 {
-            method = "render",
-            //?} else
-            /*method = "renderMainHud",*/
+    //? if <1.20.5 {
+    // Inject at getNextLevelExperience instead of HEAD so OneBar canceling at HEAD does not affect us
+    @Inject(method = "renderExperienceBar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getNextLevelExperience()I"))
+    private void autoHud$preExperienceBar(DrawContext context, int x, CallbackInfo ci) {
+        RenderWrapper.EXPERIENCE_BAR.beginRender(context);
+    }
+    @Inject(method = "renderExperienceBar", at = @At(value="INVOKE", target="Lnet/minecraft/util/profiler/Profiler;pop()V", ordinal = 0))
+    private void autoHud$postExperienceBar(DrawContext context, int x, CallbackInfo ci) {
+        RenderWrapper.EXPERIENCE_BAR.endRender(context);
+    }
+    //?} else {
+    /*@WrapOperation(
+            method = "renderMainHud",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/gui/hud/InGameHud;renderExperienceBar(Lnet/minecraft/client/gui/DrawContext;I)V"
@@ -171,12 +180,10 @@ public abstract class InGameHudMixin {
         RenderWrapper.EXPERIENCE_BAR.wrap(context, () -> original.call(instance, context, x));
     }
 
-    //? if >1.20.1 {
-    /*@ModifyReturnValue(
+    @ModifyReturnValue(
             method = "shouldRenderExperience",
             at = @At("RETURN")
     )
-    *///?}
     private boolean autoHud$shouldRenderExperienceLevel(boolean original) {
         if (AutoHud.targetExperienceBar) {
             if (AutoHud.config.revealExperienceTextWithHotbar() && !Component.Hotbar.fullyHidden()) {
@@ -186,6 +193,7 @@ public abstract class InGameHudMixin {
         }
         return original;
     }
+    *///?}
 
     @Inject(
             //? if <1.20.5 {
@@ -215,7 +223,12 @@ public abstract class InGameHudMixin {
             method = "renderExperienceBar",
             //?} else
             /*method = "renderExperienceLevel",*/
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;pop()V")
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/util/profiler/Profiler;pop()V"
+                    //? if <1.20.5
+                    , ordinal = 1
+            )
     )
     private void autoHud$postExperienceText(
             DrawContext context,
@@ -262,18 +275,25 @@ public abstract class InGameHudMixin {
     @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;getProfiler()Lnet/minecraft/util/profiler/Profiler;", ordinal = 1))
     private void autoHud$postArmorBar(final DrawContext context, final CallbackInfo ci) {
         RenderWrapper.ARMOR.endRender(context);
-        RenderWrapper.HEALTH.beginRender(context);
+    }
+
+    @WrapOperation(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHealthBar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/player/PlayerEntity;IIIIFIIIZ)V"))
+    private void autoHud$wrapHealthBar(InGameHud instance, DrawContext context, PlayerEntity player, int flag4, int x, int y, int lines, float maxHealth, int lastHealth, int health, int absorption, boolean blinking, Operation<Void> original) {
+        RenderWrapper.HEALTH.wrap(context, () ->
+                original.call(instance, context, player, flag4, x, y, lines, maxHealth, lastHealth, health, absorption, blinking)
+        );
     }
 
     @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;getProfiler()Lnet/minecraft/util/profiler/Profiler;", ordinal = 2))
-    private void autoHud$postHealthBar(final DrawContext context, final CallbackInfo ci) {
-        RenderWrapper.HEALTH.endRender(context);
+    private void autoHud$preHungerBar(final DrawContext context, final CallbackInfo ci) {
         RenderWrapper.HUNGER.beginRender(context);
     }
 
     @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;getProfiler()Lnet/minecraft/util/profiler/Profiler;", ordinal = 3))
-    private void autoHud$postFoodBar(final DrawContext context, final CallbackInfo ci) {
-        RenderWrapper.HEALTH.endRender(context);
+    private void autoHud$preAirBar(final DrawContext context, final CallbackInfo ci) {
+        if (getHeartCount(getRiddenEntity()) == 0) {
+            RenderWrapper.HUNGER.endRender(context);
+        }
         RenderWrapper.AIR.beginRender(context);
     }
 
@@ -302,19 +322,19 @@ public abstract class InGameHudMixin {
     }
 
     //? if <1.21.2 {
-    /^@Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;enableBlend()V", shift = At.Shift.AFTER))
+    @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;getMaxAir()I", shift = At.Shift.AFTER))
     private void autoHud$preAirBar(DrawContext context, CallbackInfo ci) {
         RenderWrapper.AIR.beginRender(context);
     }
-    @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;disableBlend()V"))
+    @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;pop()V"))
     private void autoHud$postAirBar(DrawContext context, CallbackInfo ci) {
         RenderWrapper.AIR.endRender(context);
     }
-    ^///?} else {
-    @WrapOperation(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderAirBubbles(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/player/PlayerEntity;III)V"))
+    //?} else {
+    /^@WrapOperation(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderAirBubbles(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/player/PlayerEntity;III)V"))
     private void autoHud$airBar(InGameHud instance, DrawContext context, PlayerEntity player, int heartCount, int top, int left, Operation<Void> original) {
         RenderWrapper.AIR.wrap(context, () -> original.call(instance, context, player, heartCount, top, left));
-    }//?}
+    }^///?}
     *///?}
 
     // Mount Health

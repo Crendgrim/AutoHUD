@@ -4,9 +4,9 @@ import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.ModKeyBindings;
 import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.config.ConfigHandler;
-//? if >1.21
-/*import mod.crend.autohud.neoforge.compat.HotbarSlotCyclingCompat;*/
-import mod.crend.autohud.render.ChatMessageIndicator;
+//? if hotbarslotcycling
+/*import mod.crend.autohud.compat.HotbarSlotCyclingCompat;*/
+import mod.crend.autohud.render.AutoHudRenderer;
 import mod.crend.libbamboo.neoforge.ConfigScreen;
 import net.minecraft.util.Identifier;
 import net.neoforged.api.distmarker.Dist;
@@ -31,7 +31,7 @@ public class AutoHudModEvents {
 		ConfigScreen.register(ConfigHandler.CONFIG_STORE);
 		NeoForge.EVENT_BUS.register(new AutoHudGui());
 		if (ModList.get().isLoaded("hotbarslotcycling")) {
-			//? if >1.21
+			//? if hotbarslotcycling
 			/*HotbarSlotCyclingCompat.init();*/
 		}
 	}
@@ -50,7 +50,7 @@ public class AutoHudModEvents {
 
 	@SubscribeEvent
 	static void onRegisterOverlaysEvent(RegisterGuiLayersEvent event) {
-		event.registerAboveAll(NEW_CHAT_MESSAGE_INDICATOR, (context, tickDelta) -> ChatMessageIndicator.render(context));
+		event.registerAboveAll(NEW_CHAT_MESSAGE_INDICATOR, AutoHudRenderer::renderChatMessageIndicator);
 	}
 
 }

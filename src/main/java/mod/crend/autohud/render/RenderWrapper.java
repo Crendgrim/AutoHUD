@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
+import mod.crend.autohud.component.Components;
 import mod.crend.libbamboo.render.CustomFramebufferRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.texture.Sprite;
@@ -14,35 +15,35 @@ import java.util.function.Supplier;
 
 public class RenderWrapper {
 
-	public static RenderWrapper HOTBAR = of(Component.Hotbar);
-	public static RenderWrapper TOOLTIP = of(Component.Tooltip);
-	public static RenderWrapper HOTBAR_ITEMS = builder(Component.Hotbar)
+	public static RenderWrapper HOTBAR = of(Components.Hotbar);
+	public static RenderWrapper TOOLTIP = of(Components.Tooltip);
+	public static RenderWrapper HOTBAR_ITEMS = builder(Components.Hotbar)
 			.fade()
-			.isActive(() -> Component.Hotbar.isActive() && AutoHud.config.animationFade())
+			.isActive(() -> Components.Hotbar.isActive() && AutoHud.config.animationFade())
 			.doRender(AutoHudRenderer::shouldRenderHotbarItems)
 			.withCustomFramebuffer(true)
 			.maximumFade(AutoHud.config::getHotbarItemsMaximumFade)
 			// We need to reset the renderer because otherwise the first item gets drawn with double alpha
 			.beginRender(AutoHudRenderer::postInjectFade)
 			.build();
-	public static RenderWrapper EXPERIENCE_BAR = of(Component.ExperienceBar);
-	public static RenderWrapper EXPERIENCE_LEVEL = of(Component.ExperienceLevel);
-	public static RenderWrapper ARMOR = of(Component.Armor);
-	public static RenderWrapper ARMOR_FADE = builder(Component.Armor)
+	public static RenderWrapper EXPERIENCE_BAR = of(Components.ExperienceBar);
+	public static RenderWrapper EXPERIENCE_LEVEL = of(Components.ExperienceLevel);
+	public static RenderWrapper ARMOR = of(Components.Armor);
+	public static RenderWrapper ARMOR_FADE = builder(Components.Armor)
 			.fade()
 			.withCustomFramebuffer(true)
 			.build();
-	public static RenderWrapper HEALTH = of(Component.Health);
-	public static RenderWrapper HUNGER = of(Component.Hunger);
-	public static RenderWrapper AIR = of(Component.Air);
-	public static RenderWrapper MOUNT_HEALTH = of(Component.MountHealth);
-	public static RenderWrapper MOUNT_JUMP_BAR = of(Component.MountJumpBar);
-	public static RenderWrapper SCOREBOARD = of(Component.Scoreboard);
-	public static RenderWrapper CROSSHAIR = builder(Component.Crosshair)
+	public static RenderWrapper HEALTH = of(Components.Health);
+	public static RenderWrapper HUNGER = of(Components.Hunger);
+	public static RenderWrapper AIR = of(Components.Air);
+	public static RenderWrapper MOUNT_HEALTH = of(Components.MountHealth);
+	public static RenderWrapper MOUNT_JUMP_BAR = of(Components.MountJumpBar);
+	public static RenderWrapper SCOREBOARD = of(Components.Scoreboard);
+	public static RenderWrapper CROSSHAIR = builder(Components.Crosshair)
 			.withCustomFramebuffer(false)
 			.beginRender(context -> {
 				RenderSystem.defaultBlendFunc();
-				AutoHudRenderer.preInjectFade(Component.Crosshair, context, (float) Component.Crosshair.config.maximumFade());
+				AutoHudRenderer.preInjectFade(Components.Crosshair, context, (float) Components.Crosshair.config.maximumFade());
 			})
 			.endRender(context -> {
 				AutoHudRenderer.postInjectFade(context);
@@ -50,11 +51,11 @@ public class RenderWrapper {
 				RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.ONE_MINUS_DST_COLOR, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
 			})
 			.build();
-	public static RenderWrapper CHAT = of(Component.Chat);
-	public static RenderWrapper BOSS_BAR = of(Component.BossBar);
-	public static RenderWrapper ACTION_BAR = of(Component.ActionBar);
+	public static RenderWrapper CHAT = of(Components.Chat);
+	public static RenderWrapper BOSS_BAR = of(Components.BossBar);
+	public static RenderWrapper ACTION_BAR = of(Components.ActionBar);
 	public static StatusEffectRenderWrapper STATUS_EFFECT = new StatusEffectRenderWrapper();
-	public static RenderWrapper CHAT_MESSAGE_INDICATOR = of(Component.ChatIndicator);
+	public static RenderWrapper CHAT_MESSAGE_INDICATOR = of(Components.ChatIndicator);
 
 
 	public static Builder builder(Component component) {

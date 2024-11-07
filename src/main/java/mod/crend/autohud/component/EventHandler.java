@@ -11,8 +11,8 @@ import net.minecraft.util.hit.HitResult;
 public class EventHandler {
 	public static void registerEvents() {
 		ScreenEvent.CHAT.register(() -> {
-			Component.Chat.revealNow();
-			Component.ChatIndicator.hide();
+			Components.Chat.revealNow();
+			Components.ChatIndicator.hide();
 		});
 		ScreenEvent.OPEN.register(screen -> {
 			if (AutoHud.config.onScreenOpen() == EventPolicy.Hide) Component.forceHideAll();
@@ -81,37 +81,37 @@ public class EventHandler {
 			}
 		});
 
-		StatusEvent.HEALTH.register((value, old, max) -> Component.Health.updateState());
-		StatusEvent.FOOD.register((value, old, max) -> Component.Hunger.updateState());
-		StatusEvent.AIR.register((value, old, max) -> Component.Air.updateState());
+		StatusEvent.HEALTH.register((value, old, max) -> Components.Health.updateState());
+		StatusEvent.FOOD.register((value, old, max) -> Components.Hunger.updateState());
+		StatusEvent.AIR.register((value, old, max) -> Components.Air.updateState());
 		StatusEvent.EXPERIENCE.register((progress, total, level) -> {
-			Component.ExperienceLevel.updateState();
-			Component.ExperienceBar.updateState();
+			Components.ExperienceLevel.updateState();
+			Components.ExperienceBar.updateState();
 		});
 		HotbarEvent.MAIN_HAND_CHANGE.register(stack -> {
-			Component.Health.state.updateNextTick();
-			Component.Hunger.state.updateNextTick();
-			Component.Armor.state.updateNextTick();
+			Components.Health.state.updateNextTick();
+			Components.Hunger.state.updateNextTick();
+			Components.Armor.state.updateNextTick();
 		});
 		HotbarEvent.SELECTED_SLOT_CHANGE.register(() -> {
 			if (AutoHud.config.isHotbarOnSlotChange()) {
-				Component.Hotbar.revealCombined();
+				Components.Hotbar.revealCombined();
 
 				if (AutoHud.config.revealExperienceTextWithHotbar()) {
-					Component.ExperienceLevel.synchronizeFrom(Component.Hotbar);
+					Components.ExperienceLevel.synchronizeFrom(Components.Hotbar);
 				}
 			}
 		});
 
 		MountEvent.START.register((player, vehicle) -> {
-			Component.MountHealth.state = new PolicyComponentState(Component.MountHealth, () -> (int) vehicle.getHealth(), () -> (int) vehicle.getMaxHealth());
-			Component.MountHealth.revealCombined();
+			Components.MountHealth.state = new PolicyComponentState(Components.MountHealth, () -> (int) vehicle.getHealth(), () -> (int) vehicle.getMaxHealth());
+			Components.MountHealth.revealCombined();
 		});
-		MountEvent.MOUNT_HEALTH_CHANGE.register((value, old, max) -> Component.MountHealth.updateState());
+		MountEvent.MOUNT_HEALTH_CHANGE.register((value, old, max) -> Components.MountHealth.updateState());
 		MountEvent.MOUNT_JUMP.register(vehicle -> {
-			if (AutoHud.config.mountJumpBar().onChange()) Component.MountJumpBar.revealNow();
+			if (AutoHud.config.mountJumpBar().onChange()) Components.MountJumpBar.revealNow();
 		});
-		MountEvent.STOP.register(player -> Component.MountHealth.state = null);
+		MountEvent.STOP.register(player -> Components.MountHealth.state = null);
 
 		InteractionEvent.USING_ITEM_TICK.register(player -> {
 			if (AutoHud.config.onUsingItem()) {
@@ -134,7 +134,7 @@ public class EventHandler {
 		TargetEvent.TARGETED_BLOCK_TICK.register(((blockPos, blockState) -> {
 			if (AutoHud.config.revealExperienceTextOnTargetingEnchantingBlock()) {
 				if (blockState.getBlock() == Blocks.ENCHANTING_TABLE || blockState.isIn(BlockTags.ANVIL)) {
-					Component.ExperienceLevel.reveal();
+					Components.ExperienceLevel.reveal();
 				}
 			}
 		}));

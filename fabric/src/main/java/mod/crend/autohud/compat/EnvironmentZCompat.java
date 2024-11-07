@@ -21,8 +21,16 @@ public class EnvironmentZCompat implements AutoHudApi {
 		return "environmentz";
 	}
 
-	public static Component Temperature = Component.builder("Player Temperature").config(ConfigHandler.DummyPolicyComponent).inMainHud().build();
-	public static Component Thermometer = Component.builder("Thermometer").config(ConfigHandler.DummyPolicyComponent).inMainHud().build();
+	public static Component Temperature = Component.builder("Player Temperature")
+			.config(ConfigHandler.DummyPolicyComponent)
+			.inMainHud()
+			.state(player -> new EnvironmentZState(EnvironmentZCompat.Temperature, EnvironmentZCompat::temperatureState))
+			.build();
+	public static Component Thermometer = Component.builder("Thermometer")
+			.config(ConfigHandler.DummyPolicyComponent)
+			.inMainHud()
+			.state(player -> new EnvironmentZState(EnvironmentZCompat.Thermometer, EnvironmentZCompat::thermometerState))
+			.build();
 	public static RenderWrapper TEMPERATURE_WRAPPER = RenderWrapper.of(Temperature);
 	public static RenderWrapper THERMOMETER_WRAPPER = RenderWrapper.of(Thermometer);
 
@@ -79,15 +87,6 @@ public class EnvironmentZCompat implements AutoHudApi {
 		}
 	}
 
-
-	@Override
-	public void initState(ClientPlayerEntity player) {
-		Component.registerComponent(Temperature);
-		Component.registerComponent(Thermometer);
-
-		Temperature.state = new EnvironmentZState(Temperature, EnvironmentZCompat::temperatureState);
-		Thermometer.state = new EnvironmentZState(Thermometer, EnvironmentZCompat::thermometerState);
-	}
 
 	@Override
 	public void tickState(ClientPlayerEntity player) {

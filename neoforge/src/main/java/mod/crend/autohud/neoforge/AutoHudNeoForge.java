@@ -3,7 +3,7 @@ package mod.crend.autohud.neoforge;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.ModKeyBindings;
 import mod.crend.autohud.compat.RaisedCompat;
-import mod.crend.autohud.component.Component;
+import mod.crend.autohud.component.Components;
 import mod.crend.autohud.render.AutoHudRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.neoforged.api.distmarker.Dist;
@@ -38,8 +38,8 @@ public class AutoHudNeoForge {
 
     @SubscribeEvent
     static void onChatMessageReceived(ClientChatReceivedEvent event) {
-        if (Component.Chat.config.active() && Component.ChatIndicator.config.active() && Component.Chat.isHidden()) {
-            Component.ChatIndicator.reveal();
+        if (Components.Chat.config.active() && Components.ChatIndicator.config.active() && Components.Chat.isHidden()) {
+            Components.ChatIndicator.reveal();
         }
     }
 

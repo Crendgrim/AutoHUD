@@ -3,6 +3,7 @@ package mod.crend.autohud.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
+import mod.crend.autohud.component.Components;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 
@@ -62,7 +63,7 @@ public class AutoHudRenderer {
 		// Render items when we're not doing anything with the hotbar
 		return !AutoHud.targetHotbar
 				// Render items when they're not fully hidden (in other words, visible in some way)
-				|| !Component.Hotbar.fullyHidden()
+				|| !Components.Hotbar.fullyHidden()
 				// If we are in fade mode, only render items if they're not fully transparent.
 				|| (AutoHud.config.animationFade() && AutoHud.config.getHotbarItemsMaximumFade() > 0.0f)
 				// If we are neither in fade nor move mode, skip rendering if it's hidden.
@@ -102,28 +103,28 @@ public class AutoHudRenderer {
 	}
 
 	public static boolean experienceLevelOverridesBar() {
-		return (AutoHud.config.revealExperienceTextWithHotbar() && Component.Hotbar.shouldRender())
+		return (AutoHud.config.revealExperienceTextWithHotbar() && Components.Hotbar.shouldRender())
 				|| (AutoHud.config.experience().onChange() && !AutoHud.config.experienceBar().onChange());
 	}
 	public static void moveExperienceText(DrawContext context) {
-		Component experienceTextComponent = Component.ExperienceLevel;
-		if (AutoHud.config.revealExperienceTextWithHotbar() && Component.Hotbar.isMoreVisibleThan(Component.ExperienceLevel)) {
-			experienceTextComponent = Component.Hotbar;
+		Component experienceTextComponent = Components.ExperienceLevel;
+		if (AutoHud.config.revealExperienceTextWithHotbar() && Components.Hotbar.isMoreVisibleThan(Components.ExperienceLevel)) {
+			experienceTextComponent = Components.Hotbar;
 		}
 		context.getMatrices().translate(
-				experienceTextComponent.getOffsetX(tickDelta) - Component.ExperienceBar.getOffsetX(tickDelta),
-				experienceTextComponent.getOffsetY(tickDelta) - Component.ExperienceBar.getOffsetY(tickDelta),
+				experienceTextComponent.getOffsetX(tickDelta) - Components.ExperienceBar.getOffsetX(tickDelta),
+				experienceTextComponent.getOffsetY(tickDelta) - Components.ExperienceBar.getOffsetY(tickDelta),
 				0);
 		AutoHudRenderer.preInjectFade(experienceTextComponent, context);
 	}
 	public static void moveBackExperienceText(DrawContext context) {
-		Component experienceTextComponent = Component.ExperienceLevel;
-		if (AutoHud.config.revealExperienceTextWithHotbar() && Component.Hotbar.isMoreVisibleThan(Component.ExperienceLevel)) {
-			experienceTextComponent = Component.Hotbar;
+		Component experienceTextComponent = Components.ExperienceLevel;
+		if (AutoHud.config.revealExperienceTextWithHotbar() && Components.Hotbar.isMoreVisibleThan(Components.ExperienceLevel)) {
+			experienceTextComponent = Components.Hotbar;
 		}
 		context.getMatrices().translate(
-				Component.ExperienceBar.getOffsetX(tickDelta) - experienceTextComponent.getOffsetX(tickDelta),
-				Component.ExperienceBar.getOffsetY(tickDelta) - experienceTextComponent.getOffsetY(tickDelta),
+				Components.ExperienceBar.getOffsetX(tickDelta) - experienceTextComponent.getOffsetX(tickDelta),
+				Components.ExperienceBar.getOffsetY(tickDelta) - experienceTextComponent.getOffsetY(tickDelta),
 				0);
 	}
 

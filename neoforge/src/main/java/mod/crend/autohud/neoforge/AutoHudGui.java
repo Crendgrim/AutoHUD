@@ -1,11 +1,9 @@
 package mod.crend.autohud.neoforge;
 
-import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
+import mod.crend.autohud.component.Components;
 import mod.crend.autohud.render.AutoHudRenderer;
 import mod.crend.autohud.render.RenderWrapper;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -37,18 +35,6 @@ public class AutoHudGui {
 		RENDER_WRAPPERS.put(CHAT, RenderWrapper.CHAT);
 		RENDER_WRAPPERS.put(TITLE, RenderWrapper.ACTION_BAR);
 		RENDER_WRAPPERS.put(BOSS_OVERLAY, RenderWrapper.BOSS_BAR);
-	}
-
-	static Map<Identifier, Component> STATUS_BAR_COMPONENTS = new HashMap<>();
-	static {
-		STATUS_BAR_COMPONENTS.put(PLAYER_HEALTH, Component.Health);
-		STATUS_BAR_COMPONENTS.put(ARMOR_LEVEL, Component.Armor);
-		STATUS_BAR_COMPONENTS.put(FOOD_LEVEL, Component.Hunger);
-		STATUS_BAR_COMPONENTS.put(AIR_LEVEL, Component.Air);
-		STATUS_BAR_COMPONENTS.put(VEHICLE_HEALTH, Component.MountHealth);
-		STATUS_BAR_COMPONENTS.put(JUMP_METER, Component.MountJumpBar);
-		STATUS_BAR_COMPONENTS.put(EXPERIENCE_BAR, Component.ExperienceBar);
-		STATUS_BAR_COMPONENTS.put(EXPERIENCE_LEVEL, Component.ExperienceLevel);
 	}
 
 	/*
@@ -92,8 +78,8 @@ public class AutoHudGui {
 
 	@SubscribeEvent
 	public void preChat(CustomizeGuiOverlayEvent.Chat event) {
-		if (Component.Chat.config.active()) {
-			AutoHudRenderer.preInjectFade(Component.Chat, event.getGuiGraphics());
+		if (Components.Chat.config.active()) {
+			AutoHudRenderer.preInjectFade(Components.Chat, event.getGuiGraphics());
 		}
 	}
 }

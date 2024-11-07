@@ -5,6 +5,7 @@ package mod.crend.autohud.compat;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.component.Component;
+import mod.crend.autohud.component.Components;
 import mod.crend.autohud.component.state.PolicyComponentState;
 import mod.crend.autohud.render.RenderWrapper;
 import net.dehydration.access.ThirstManagerAccess;
@@ -21,7 +22,18 @@ public class DehydrationCompat implements AutoHudApi {
     }
 
     // We bind this to the hunger config, as that is the most closely related one.
-    public static Component Thirst = Component.builder("Thirst").config(AutoHud.config.hunger()).stackComponents(Component.Air).inMainHud().build();
+    public static Component Thirst = Component.builder("Thirst")
+            .config(AutoHud.config.hunger())
+            .stackComponents(Components.Air)
+            .inMainHud()
+            .state(player -> {
+                ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager();
+                if (thirstManager.hasThirst()) {
+                    return new PolicyComponentState(DehydrationCompat.Thirst, thirstManager::getThirstLevel, 20);
+                }
+                return null;
+            })
+            .build();
     public static RenderWrapper THIRST_WRAPPER = RenderWrapper.builder(Thirst)
             .move()
             .fade()
@@ -34,13 +46,7 @@ public class DehydrationCompat implements AutoHudApi {
 
     @Override
     public void initState(ClientPlayerEntity player) {
-        Component.registerComponent(Thirst);
-        Component.Hunger.addStackComponent(Thirst);
-
-        ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager();
-        if (thirstManager.hasThirst()) {
-            Thirst.state = new PolicyComponentState(Thirst, thirstManager::getThirstLevel, 20);
-        }
+        Components.Hunger.addStackComponent(Thirst);
     }
 
     @Override

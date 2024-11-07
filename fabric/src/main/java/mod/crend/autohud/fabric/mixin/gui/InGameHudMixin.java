@@ -5,7 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import mod.crend.autohud.AutoHud;
-import mod.crend.autohud.component.Component;
+import mod.crend.autohud.component.Components;
 import mod.crend.autohud.component.Hud;
 import mod.crend.autohud.render.AutoHudRenderer;
 import mod.crend.autohud.render.RenderWrapper;
@@ -186,10 +186,10 @@ public abstract class InGameHudMixin {
     )
     private boolean autoHud$shouldRenderExperienceLevel(boolean original) {
         if (AutoHud.targetExperienceBar) {
-            if (AutoHud.config.revealExperienceTextWithHotbar() && Component.Hotbar.shouldRender()) {
+            if (AutoHud.config.revealExperienceTextWithHotbar() && Components.Hotbar.shouldRender()) {
                 return true;
             }
-            return Component.ExperienceBar.shouldRender();
+            return Components.ExperienceBar.shouldRender();
         }
         return original;
     }

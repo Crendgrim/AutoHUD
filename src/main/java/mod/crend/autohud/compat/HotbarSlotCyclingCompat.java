@@ -6,6 +6,7 @@ import fuzs.hotbarslotcycling.api.v1.client.HotbarCyclingProvider;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.component.Component;
+import mod.crend.autohud.component.Components;
 import mod.crend.autohud.component.state.ItemStackComponentState;
 import mod.crend.autohud.render.AutoHudRenderer;
 import mod.crend.autohud.render.RenderWrapper;
@@ -20,6 +21,11 @@ public class HotbarSlotCyclingCompat implements AutoHudApi {
 			.isTargeted(() -> AutoHud.targetHotbar)
 			.config(AutoHud.config.hotbar())
 			.inMainHud()
+			.state(player -> new ItemStackComponentState(
+					HotbarSlotCyclingCompat.HOTBAR_SLOT_CYCLING_COMPONENT,
+					() -> HotbarCyclingProvider.GLOBAL_PROVIDER[0].apply(player).getForwardStack(),
+					true
+			))
 			.build();
 	public static RenderWrapper COMPONENT_WRAPPER = RenderWrapper.of(HOTBAR_SLOT_CYCLING_COMPONENT);
 	public static RenderWrapper BACKGROUND_WRAPPER = RenderWrapper.builder(HOTBAR_SLOT_CYCLING_COMPONENT)
@@ -52,12 +58,6 @@ public class HotbarSlotCyclingCompat implements AutoHudApi {
 
 	@Override
 	public void initState(ClientPlayerEntity player) {
-		Component.registerComponent(HOTBAR_SLOT_CYCLING_COMPONENT);
-		HOTBAR_SLOT_CYCLING_COMPONENT.state = new ItemStackComponentState(
-				HOTBAR_SLOT_CYCLING_COMPONENT,
-				() -> HotbarCyclingProvider.GLOBAL_PROVIDER[0].apply(player).getForwardStack(),
-				true
-		);
 		HOTBAR_SLOT_CYCLING_COMPONENT.reveal();
 	}
 
@@ -66,7 +66,7 @@ public class HotbarSlotCyclingCompat implements AutoHudApi {
 		// With bad timing, we can sometimes be one tick off from the hotbar.
 		// That will make the slot cycler start moving just a bit earlier, which looks bad.
 		if (HOTBAR_SLOT_CYCLING_COMPONENT.fullyRevealed()) {
-			HOTBAR_SLOT_CYCLING_COMPONENT.synchronizeFrom(Component.Hotbar);
+			HOTBAR_SLOT_CYCLING_COMPONENT.synchronizeFrom(Components.Hotbar);
 		}
 	}
 

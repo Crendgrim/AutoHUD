@@ -4,16 +4,13 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import mod.crend.autohud.AutoHud;
-import mod.crend.autohud.component.Component;
+import mod.crend.autohud.component.Components;
 import mod.crend.autohud.component.Hud;
 import mod.crend.autohud.render.AutoHudRenderer;
 import mod.crend.autohud.render.RenderWrapper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.StatusEffectSpriteManager;
 import net.minecraft.entity.JumpingMount;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,11 +21,7 @@ import net.minecraftforge.client.extensions.common.IClientMobEffectExtensions;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Mixin(InGameHud.class)
@@ -53,7 +46,7 @@ public class InGameHudMixin {
 			CallbackInfo ci
 	) {
 		if (AutoHud.targetHotbar) {
-			AutoHudRenderer.preInjectFade(Component.Hotbar, context);
+			AutoHudRenderer.preInjectFade(Components.Hotbar, context);
 		}
 	}
 
@@ -73,7 +66,7 @@ public class InGameHudMixin {
 	@Inject(method = "renderHeldItemTooltip", at = @At("HEAD"))
 	private void autoHud$preTooltip(DrawContext context, CallbackInfo ci) {
 		if (AutoHud.targetHotbar) {
-			AutoHudRenderer.preInjectFade(Component.Tooltip, context);
+			AutoHudRenderer.preInjectFade(Components.Tooltip, context);
 		}
 	}
 
@@ -106,7 +99,7 @@ public class InGameHudMixin {
 	@Inject(method = "renderScoreboardSidebar", at=@At("HEAD"))
 	private void autoHud$preScoreboardSidebar(DrawContext context, ScoreboardObjective objective, CallbackInfo ci) {
 		if (AutoHud.targetScoreboard) {
-			AutoHudRenderer.preInjectFade(Component.Scoreboard, context);
+			AutoHudRenderer.preInjectFade(Components.Scoreboard, context);
 		}
 	}
 
@@ -114,7 +107,7 @@ public class InGameHudMixin {
 	@Inject(method = "renderMountJumpBar", at=@At("HEAD"))
 	private void autoHud$preMountJumpBar(JumpingMount mount, DrawContext context, int x, CallbackInfo ci) {
 		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.preInjectFade(Component.MountJumpBar, context);
+			AutoHudRenderer.preInjectFade(Components.MountJumpBar, context);
 		}
 	}
 
@@ -122,7 +115,7 @@ public class InGameHudMixin {
 	@Inject(method = "renderExperienceBar", at=@At("HEAD"))
 	private void autoHud$preExperienceBar(DrawContext context, int x, CallbackInfo ci) {
 		if (AutoHud.targetExperienceBar) {
-			AutoHudRenderer.preInjectFade(Component.ExperienceBar, context);
+			AutoHudRenderer.preInjectFade(Components.ExperienceBar, context);
 		}
 	}
 	@Inject(

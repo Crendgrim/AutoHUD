@@ -71,10 +71,10 @@ public class ScoreboardHelper {
 
     // The next two methods are used to cut down on unnecessary duplicate code
     private static boolean canUpdate() {
-        return Component.Scoreboard.config.active() && Component.Scoreboard.state != null;
+        return Components.Scoreboard.config.active() && Components.Scoreboard.state != null;
     }
 
     private static ScoreboardComponentState getScoreboardComponent() {
-        return (ScoreboardComponentState)Component.Scoreboard.state;
+        return (ScoreboardComponentState) Components.Scoreboard.state;
     }
 }

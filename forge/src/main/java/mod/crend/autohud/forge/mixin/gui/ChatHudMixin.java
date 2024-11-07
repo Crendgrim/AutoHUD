@@ -1,6 +1,6 @@
 package mod.crend.autohud.forge.mixin.gui;
 
-import mod.crend.autohud.component.Component;
+import mod.crend.autohud.component.Components;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.gui.hud.MessageIndicator;
 import net.minecraft.network.message.MessageSignatureData;
@@ -15,8 +15,8 @@ public class ChatHudMixin {
 
 	@Inject(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;Lnet/minecraft/client/gui/hud/MessageIndicator;)V", at = @At("TAIL"))
 	private void autoHud$showChatMessageIndicator(Text message, MessageSignatureData signature, MessageIndicator indicator, CallbackInfo ci) {
-		if (Component.Chat.config.active() && Component.ChatIndicator.config.active() && Component.Chat.isHidden()) {
-			Component.ChatIndicator.reveal();
+		if (Components.Chat.config.active() && Components.ChatIndicator.config.active() && Components.Chat.isHidden()) {
+			Components.ChatIndicator.reveal();
 		}
 	}
 

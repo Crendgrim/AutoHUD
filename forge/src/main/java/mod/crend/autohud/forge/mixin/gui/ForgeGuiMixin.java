@@ -27,35 +27,35 @@ public class ForgeGuiMixin {
 	@Inject(method = "renderHealth", at = @At("HEAD"))
 	private void autoHud$preHealth(int width, int height, DrawContext context, CallbackInfo ci) {
 		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.preInjectFade(Component.Health);
+			AutoHudRenderer.preInjectFade(Component.Health, context);
 		}
 	}
 
 	@Inject(method = "renderArmor", at = @At("HEAD"))
 	private void autoHud$preArmor(DrawContext context, int width, int height, CallbackInfo ci) {
 		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.preInjectFade(Component.Armor);
+			AutoHudRenderer.preInjectFade(Component.Armor, context);
 		}
 	}
 
 	@Inject(method = "renderFood", at = @At("HEAD"))
 	private void autoHud$preFood(int width, int height, DrawContext context, CallbackInfo ci) {
 		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.preInjectFade(Component.Hunger);
+			AutoHudRenderer.preInjectFade(Component.Hunger, context);
 		}
 	}
 
 	@Inject(method = "renderAir", at  = @At("HEAD"))
 	private void autoHud$preAir(int width, int height, DrawContext context, CallbackInfo ci) {
 		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.preInjectFade(Component.Air);
+			AutoHudRenderer.preInjectFade(Component.Air, context);
 		}
 	}
 
 	@Inject(method = "renderHealthMount", at  = @At("HEAD"))
 	private void autoHud$preRenderHealthMount(int width, int height, DrawContext context, CallbackInfo ci) {
 		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.preInjectFade(Component.MountHealth);
+			AutoHudRenderer.preInjectFade(Component.MountHealth, context);
 		}
 	}
 }

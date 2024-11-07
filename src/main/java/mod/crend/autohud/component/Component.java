@@ -331,6 +331,13 @@ public class Component {
     public boolean fullyHidden() {
         return offset == 1 && alpha == 0;
     }
+    public boolean shouldRender() {
+        if (!config.active()) return true;
+        if (AutoHud.config.animationFade()) {
+            return !fullyHidden() || config.maximumFade() > 0;
+        }
+        return !isHidden();
+    }
 
     // This method is used to ensure that linked components start their hide animation at the same time
     private void keepRevealed(float time) {

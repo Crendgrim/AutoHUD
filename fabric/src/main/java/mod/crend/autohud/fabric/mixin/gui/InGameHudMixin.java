@@ -49,24 +49,24 @@ public abstract class InGameHudMixin {
     }
     //?} else {
 
-/*
-    @WrapOperation(
+
+    /*@WrapOperation(
             method = "render",
             at = @At(
                     value = "INVOKE",
                     //? if <1.21 {
-                    target = "Lnet/minecraft/client/gui/LayeredDrawer;render(Lnet/minecraft/client/gui/DrawContext;F)V"
-                    //?} else
-                    /^target = "Lnet/minecraft/client/gui/LayeredDrawer;render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V"^/
+                    /^target = "Lnet/minecraft/client/gui/LayeredDrawer;render(Lnet/minecraft/client/gui/DrawContext;F)V"
+                    ^///?} else
+                    target = "Lnet/minecraft/client/gui/LayeredDrawer;render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V"
             )
     )
     private void autoHud$render(
             LayeredDrawer instance,
             DrawContext context,
             //? if <1.21 {
-            float tickCounter,
-            //?} else
-            /^RenderTickCounter tickCounter,^/
+            /^float tickCounter,
+            ^///?} else
+            RenderTickCounter tickCounter,
             Operation<Void> original
     ) {
         AutoHudRenderer.startRender(context, tickCounter);
@@ -176,7 +176,7 @@ public abstract class InGameHudMixin {
     )
     private void autoHud$wrapExperienceBar(InGameHud instance, DrawContext context, int x, Operation<Void> original) {
         //? if <=1.20.1
-        if (!autoHud$shouldRenderExperienceLevel(true)) return;
+        /^if (!autoHud$shouldRenderExperienceLevel(true)) return;^/
         RenderWrapper.EXPERIENCE_BAR.wrap(context, () -> original.call(instance, context, x));
     }
 
@@ -186,10 +186,10 @@ public abstract class InGameHudMixin {
     )
     private boolean autoHud$shouldRenderExperienceLevel(boolean original) {
         if (AutoHud.targetExperienceBar) {
-            if (AutoHud.config.revealExperienceTextWithHotbar() && !Component.Hotbar.fullyHidden()) {
+            if (AutoHud.config.revealExperienceTextWithHotbar() && Component.Hotbar.shouldRender()) {
                 return true;
             }
-            return !Component.ExperienceBar.fullyHidden();
+            return Component.ExperienceBar.shouldRender();
         }
         return original;
     }

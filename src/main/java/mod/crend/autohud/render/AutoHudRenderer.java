@@ -16,10 +16,11 @@ public class AutoHudRenderer {
 	public static float globalOffsetX = 0;
 	public static float globalOffsetY = 0;
 
-	public static void preInjectFade(Component component) {
-		preInjectFade(component, 0.0f);
+
+	public static void preInjectFade(Component component, DrawContext context) {
+		preInjectFade(component, context, (float) component.config.maximumFade());
 	}
-	public static void preInjectFade(Component component, float minAlpha) {
+	public static void preInjectFade(Component component, DrawContext context, float minAlpha) {
 		if (AutoHud.config.animationFade()) {
 			alpha = Math.max(component.getAlpha(tickDelta), minAlpha);
 			RenderSystem.enableBlend();
@@ -27,8 +28,11 @@ public class AutoHudRenderer {
 			RenderSystem.setShaderColor(color[0], color[1], color[2], color[3] * alpha);
 		}
 	}
+	public static void preInjectFadeWithReverseTranslation(Component component, DrawContext context) {
+		preInjectFadeWithReverseTranslation(component, context, (float) component.config.maximumFade());
+	}
 	public static void preInjectFadeWithReverseTranslation(Component component, DrawContext context, float minAlpha) {
-		preInjectFade(component, minAlpha);
+		preInjectFade(component, context, minAlpha);
 		if (AutoHud.config.animationMove()) {
 			context.getMatrices().push();
 			if (component.isHidden()) {
@@ -41,7 +45,10 @@ public class AutoHudRenderer {
 		}
 	}
 	public static void preInject(Component component, DrawContext context) {
-		preInjectFade(component);
+		preInject(component, context, (float) component.config.maximumFade());
+	}
+	public static void preInject(Component component, DrawContext context, float minAlpha) {
+		preInjectFade(component, context, minAlpha);
 		active.add(component);
 		if (AutoHud.config.animationMove() || !AutoHud.config.animationFade()) {
 			context.getMatrices().push();
@@ -62,14 +69,10 @@ public class AutoHudRenderer {
 				// If we are in move mode, the items may still be visible in the "hidden" state!
 				|| (!AutoHud.config.animationFade() && AutoHud.config.animationMove());
 	}
-	public static boolean shouldRenderCrosshair() {
-		if (!Component.Crosshair.config.active()) return true;
-		if (AutoHud.config.animationFade()) {
-			return !Component.Crosshair.fullyHidden() || Component.Crosshair.config.maximumFade() > 0;
-		}
-		return !Component.Crosshair.isHidden();
-	}
 
+	public static void postInjectFade(Component ignored, DrawContext context) {
+		postInjectFade(context);
+	}
 	public static void postInjectFade(DrawContext context) {
 		if (AutoHud.config.animationFade()) {
 			//? if >=1.21.2
@@ -77,6 +80,9 @@ public class AutoHudRenderer {
 			alpha = 1.0f;
 			RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
 		}
+	}
+	public static void postInjectFadeWithReverseTranslation(Component ignored, DrawContext context) {
+		postInjectFadeWithReverseTranslation(context);
 	}
 	public static void postInjectFadeWithReverseTranslation(DrawContext context) {
 		postInjectFade(context);
@@ -96,7 +102,7 @@ public class AutoHudRenderer {
 	}
 
 	public static boolean experienceLevelOverridesBar() {
-		return (AutoHud.config.revealExperienceTextWithHotbar() && !Component.Hotbar.fullyHidden())
+		return (AutoHud.config.revealExperienceTextWithHotbar() && Component.Hotbar.shouldRender())
 				|| (AutoHud.config.experience().onChange() && !AutoHud.config.experienceBar().onChange());
 	}
 	public static void moveExperienceText(DrawContext context) {
@@ -108,7 +114,7 @@ public class AutoHudRenderer {
 				experienceTextComponent.getOffsetX(tickDelta) - Component.ExperienceBar.getOffsetX(tickDelta),
 				experienceTextComponent.getOffsetY(tickDelta) - Component.ExperienceBar.getOffsetY(tickDelta),
 				0);
-		AutoHudRenderer.preInjectFade(experienceTextComponent);
+		AutoHudRenderer.preInjectFade(experienceTextComponent, context);
 	}
 	public static void moveBackExperienceText(DrawContext context) {
 		Component experienceTextComponent = Component.ExperienceLevel;
@@ -161,5 +167,4 @@ public class AutoHudRenderer {
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		RenderSystem.defaultBlendFunc();
 	}
-
 }

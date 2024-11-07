@@ -15,7 +15,7 @@ public class OneBarCompat implements AutoHudApi {
 	}
 
 	public static Component OneBarComponent = Component.builder("OneBar").config(AutoHud.config.health()).inMainHud().build();
-	public static final RenderWrapper ONE_BAR_WRAPPER = new RenderWrapper.ComponentRenderer(OneBarComponent);
+	public static final RenderWrapper ONE_BAR_WRAPPER = RenderWrapper.of(OneBarComponent);
 	static {
 		// Fake this API being inserted via entry point
 		AutoHud.addApi(new OneBarCompat());

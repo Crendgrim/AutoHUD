@@ -22,8 +22,8 @@ public class StatusEffectBarRendererMixin {
 			int y,
 			DrawContext context,
 			//? if >=1.21 {
-			/*RenderTickCounter renderTickCounter,*/
-			//?} else if >=1.20.5
+			/*RenderTickCounter renderTickCounter,
+			*///?} else if >=1.20.5
 			/*float tickDelta,*/
 			StatusEffectInstance effect
 	) {

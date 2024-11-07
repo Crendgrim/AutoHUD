@@ -22,7 +22,11 @@ public class DehydrationCompat implements AutoHudApi {
 
     // We bind this to the hunger config, as that is the most closely related one.
     public static Component Thirst = Component.builder("Thirst").config(AutoHud.config.hunger()).stackComponents(Component.Air).inMainHud().build();
-    public static RenderWrapper THIRST_WRAPPER = new RenderWrapper.ComponentRenderer(Thirst).withCustomFramebuffer();
+    public static RenderWrapper THIRST_WRAPPER = RenderWrapper.builder(Thirst)
+            .move()
+            .fade()
+            .withCustomFramebuffer(false)
+            .build();
     static {
         // Fake this API being inserted via entry point
         AutoHud.addApi(new DehydrationCompat());

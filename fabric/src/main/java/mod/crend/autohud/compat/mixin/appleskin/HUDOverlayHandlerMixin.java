@@ -29,12 +29,14 @@ public class HUDOverlayHandlerMixin {
 			CallbackInfo ci
 	) {
 		if (AutoHud.config.animationFade()) {
-			AutoHudRenderer.preInjectFade(Component.Hunger);
+			AutoHudRenderer.preInjectFade(Component.Hunger, context);
 		}
 	}
 
+	//? if <1.21.2 {
 	@ModifyVariable(method = "enableAlpha", at=@At("HEAD"), argsOnly = true)
 	float autoHud$modifyAlpha(float alpha) {
 		return AutoHudRenderer.inRender ? AutoHudRenderer.alpha * alpha : alpha;
 	}
+	//?}
 }

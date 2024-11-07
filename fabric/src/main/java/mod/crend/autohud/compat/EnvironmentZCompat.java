@@ -23,8 +23,8 @@ public class EnvironmentZCompat implements AutoHudApi {
 
 	public static Component Temperature = Component.builder("Player Temperature").config(ConfigHandler.DummyPolicyComponent).inMainHud().build();
 	public static Component Thermometer = Component.builder("Thermometer").config(ConfigHandler.DummyPolicyComponent).inMainHud().build();
-	public static RenderWrapper TEMPERATURE_WRAPPER = new RenderWrapper.ComponentRenderer(Temperature);
-	public static RenderWrapper THERMOMETER_WRAPPER = new RenderWrapper.ComponentRenderer(Thermometer);
+	public static RenderWrapper TEMPERATURE_WRAPPER = RenderWrapper.of(Temperature);
+	public static RenderWrapper THERMOMETER_WRAPPER = RenderWrapper.of(Thermometer);
 
 	static {
 		// Fake this API being inserted via entry point

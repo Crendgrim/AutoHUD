@@ -52,10 +52,10 @@ public class AutoHudGui {
 	}
 
 	/*
-	 * NOTE: NeoForge handles events differently to Forge.
+	 * NOTE: NeoForge up to 1.21.3 handles events differently to Forge.
 	 * In Forge, canceling the event here would still call the handler below, so we would have to still do the
 	 * preRender step (and then immediately undo it in the other event).
-	 * In NeoForge, this does not happen, and the second handler does not get invoked. So we can skip the matrix
+	 * In older NeoForge, this does not happen, and the second handler does not get invoked. So we can skip the matrix
 	 * translation right away.
 	 * We still keep the second event subscriber to hopefully catch any situation where another mod cancels one
 	 * of the handled overlay events.
@@ -66,7 +66,10 @@ public class AutoHudGui {
 				wrapper -> {
 					if (wrapper.isActive() && !wrapper.doRender()) {
 						event.setCanceled(true);
-					} else {
+					}
+					//? if <1.21.3
+					else
+					{
 						wrapper.beginRender(event.getGuiGraphics());
 					}
 				}
@@ -90,7 +93,7 @@ public class AutoHudGui {
 	@SubscribeEvent
 	public void preChat(CustomizeGuiOverlayEvent.Chat event) {
 		if (Component.Chat.config.active()) {
-			AutoHudRenderer.preInjectFade(Component.Chat);
+			AutoHudRenderer.preInjectFade(Component.Chat, event.getGuiGraphics());
 		}
 	}
 }

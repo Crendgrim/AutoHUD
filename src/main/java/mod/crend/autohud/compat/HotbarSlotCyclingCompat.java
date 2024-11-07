@@ -9,7 +9,6 @@ import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.state.ItemStackComponentState;
 import mod.crend.autohud.render.AutoHudRenderer;
 import mod.crend.autohud.render.RenderWrapper;
-import mod.crend.libbamboo.render.CustomFramebufferRenderer;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -22,45 +21,29 @@ public class HotbarSlotCyclingCompat implements AutoHudApi {
 			.config(AutoHud.config.hotbar())
 			.inMainHud()
 			.build();
-	public static RenderWrapper COMPONENT_WRAPPER = new RenderWrapper.ComponentRenderer(HOTBAR_SLOT_CYCLING_COMPONENT);
-	public static RenderWrapper BACKGROUND_WRAPPER = new RenderWrapper.CustomRenderer(
-			() -> HOTBAR_SLOT_CYCLING_COMPONENT.isActive() && AutoHud.config.animationFade(),
-			AutoHudRenderer::shouldRenderHotbarItems,
-			context -> {
-				// For some reason, rendering the background texture as transparent does not work. Render them to a texture first instead.
-				AutoHudRenderer.postInjectFade(context);
-				CustomFramebufferRenderer.init();
-			}, context -> {
-				AutoHudRenderer.preInjectFadeWithReverseTranslation(HOTBAR_SLOT_CYCLING_COMPONENT, context, 0);
-				CustomFramebufferRenderer.draw(context);
-				AutoHudRenderer.postInjectFadeWithReverseTranslation(context);
-			}
-	);
-	public static RenderWrapper ITEM_WRAPPER = new RenderWrapper.CustomRenderer(
-			() -> HOTBAR_SLOT_CYCLING_COMPONENT.isActive() && AutoHud.config.animationFade(),
-			() -> (
-				// Render items when they're not fully hidden (in other words, visible in some way)
-				!HOTBAR_SLOT_CYCLING_COMPONENT.fullyHidden()
-				// If we are in fade mode, only render items if they're not fully transparent.
-				|| (AutoHud.config.animationFade() && AutoHud.config.getHotbarItemsMaximumFade() > 0.0f)
-				// If we are neither in fade nor move mode, skip rendering if it's hidden.
-				// If we are in move mode, the items may still be visible in the "hidden" state!
-				|| (!AutoHud.config.animationFade() && AutoHud.config.animationMove())
-			),
-			context -> {
-				// We need to reset the renderer because otherwise the first item gets drawn with double alpha
-				AutoHudRenderer.postInjectFade(context);
-				// Setup custom framebuffer
-				CustomFramebufferRenderer.init();
-				// Have the original call draw onto the custom framebuffer
-			},
-			context -> {
-				// Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
-				AutoHudRenderer.preInjectFadeWithReverseTranslation(HOTBAR_SLOT_CYCLING_COMPONENT, context, AutoHud.config.getHotbarItemsMaximumFade());
-				CustomFramebufferRenderer.draw(context);
-				AutoHudRenderer.postInjectFadeWithReverseTranslation(context);
-			}
-	);
+	public static RenderWrapper COMPONENT_WRAPPER = RenderWrapper.of(HOTBAR_SLOT_CYCLING_COMPONENT);
+	public static RenderWrapper BACKGROUND_WRAPPER = RenderWrapper.builder(HOTBAR_SLOT_CYCLING_COMPONENT)
+			.fade()
+			.isActive(() -> HOTBAR_SLOT_CYCLING_COMPONENT.isActive() && AutoHud.config.animationFade())
+			.doRender(AutoHudRenderer::shouldRenderHotbarItems)
+			.withCustomFramebuffer(true)
+			.beginRender(AutoHudRenderer::postInjectFade)
+			.build();
+	public static RenderWrapper ITEM_WRAPPER = RenderWrapper.builder(HOTBAR_SLOT_CYCLING_COMPONENT)
+			.fade()
+			.isActive(() -> HOTBAR_SLOT_CYCLING_COMPONENT.isActive() && AutoHud.config.animationFade())
+			.doRender(() -> (
+					// Render items when they're not fully hidden (in other words, visible in some way)
+					!HOTBAR_SLOT_CYCLING_COMPONENT.fullyHidden()
+							// If we are in fade mode, only render items if they're not fully transparent.
+							|| (AutoHud.config.animationFade() && AutoHud.config.getHotbarItemsMaximumFade() > 0.0f)
+							// If we are neither in fade nor move mode, skip rendering if it's hidden.
+							// If we are in move mode, the items may still be visible in the "hidden" state!
+							|| (!AutoHud.config.animationFade() && AutoHud.config.animationMove())
+			))
+			.withCustomFramebuffer(true)
+			.beginRender(AutoHudRenderer::postInjectFade)
+			.build();
 
 	@Override
 	public String modId() {

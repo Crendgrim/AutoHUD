@@ -9,267 +9,248 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.entity.effect.StatusEffectInstance;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public interface RenderWrapper {
+public class RenderWrapper {
 
-	RenderWrapper HOTBAR = new ComponentRenderer(Component.Hotbar);
-	RenderWrapper TOOLTIP = new ComponentRenderer(Component.Tooltip);
-	RenderWrapper HOTBAR_ITEMS = new CustomRenderer(
-			() -> Component.Hotbar.isActive() && AutoHud.config.animationFade(),
-			AutoHudRenderer::shouldRenderHotbarItems,
-			context -> {
-				// We need to reset the renderer because otherwise the first item gets drawn with double alpha
-				AutoHudRenderer.postInjectFade(context);
-				// Setup custom framebuffer
-				CustomFramebufferRenderer.init();
-				// Have the original call draw onto the custom framebuffer
-			},
-			context -> {
-				// Render the contents of the custom framebuffer as a texture with transparency onto the main framebuffer
-				AutoHudRenderer.preInjectFadeWithReverseTranslation(Component.Hotbar, context, AutoHud.config.getHotbarItemsMaximumFade());
-				CustomFramebufferRenderer.draw(context);
-				AutoHudRenderer.postInjectFadeWithReverseTranslation(context);
-			}
-	);
-	RenderWrapper EXPERIENCE_BAR = new ComponentRenderer(Component.ExperienceBar);
-	RenderWrapper EXPERIENCE_LEVEL = new ComponentRenderer(Component.ExperienceLevel);
-	RenderWrapper ARMOR = new ComponentRenderer(Component.Armor);
-	RenderWrapper HEALTH = new ComponentRenderer(Component.Health);
-	RenderWrapper HUNGER = new ComponentRenderer(Component.Hunger);
-	RenderWrapper AIR = new ComponentRenderer(Component.Air);
-	RenderWrapper MOUNT_HEALTH = new ComponentRenderer(Component.MountHealth);
-	RenderWrapper MOUNT_JUMP_BAR = new ComponentRenderer(Component.MountJumpBar);
-	RenderWrapper SCOREBOARD = new ComponentRenderer(Component.Scoreboard);
-	RenderWrapper CROSSHAIR = new CustomRenderer(
-			() -> Component.Crosshair.isActive(),
-			AutoHudRenderer::shouldRenderCrosshair,
-			context -> {
+	public static RenderWrapper HOTBAR = of(Component.Hotbar);
+	public static RenderWrapper TOOLTIP = of(Component.Tooltip);
+	public static RenderWrapper HOTBAR_ITEMS = builder(Component.Hotbar)
+			.fade()
+			.isActive(() -> Component.Hotbar.isActive() && AutoHud.config.animationFade())
+			.doRender(AutoHudRenderer::shouldRenderHotbarItems)
+			.withCustomFramebuffer(true)
+			.maximumFade(AutoHud.config::getHotbarItemsMaximumFade)
+			// We need to reset the renderer because otherwise the first item gets drawn with double alpha
+			.beginRender(AutoHudRenderer::postInjectFade)
+			.build();
+	public static RenderWrapper EXPERIENCE_BAR = of(Component.ExperienceBar);
+	public static RenderWrapper EXPERIENCE_LEVEL = of(Component.ExperienceLevel);
+	public static RenderWrapper ARMOR = of(Component.Armor);
+	public static RenderWrapper ARMOR_FADE = builder(Component.Armor)
+			.fade()
+			.withCustomFramebuffer(true)
+			.build();
+	public static RenderWrapper HEALTH = of(Component.Health);
+	public static RenderWrapper HUNGER = of(Component.Hunger);
+	public static RenderWrapper AIR = of(Component.Air);
+	public static RenderWrapper MOUNT_HEALTH = of(Component.MountHealth);
+	public static RenderWrapper MOUNT_JUMP_BAR = of(Component.MountJumpBar);
+	public static RenderWrapper SCOREBOARD = of(Component.Scoreboard);
+	public static RenderWrapper CROSSHAIR = builder(Component.Crosshair)
+			.withCustomFramebuffer(false)
+			.beginRender(context -> {
 				RenderSystem.defaultBlendFunc();
-				AutoHudRenderer.preInjectFade(Component.Crosshair, (float) Component.Crosshair.config.maximumFade());
-				CustomFramebufferRenderer.init();
-			},
-			context -> {
+				AutoHudRenderer.preInjectFade(Component.Crosshair, context, (float) Component.Crosshair.config.maximumFade());
+			})
+			.endRender(context -> {
 				AutoHudRenderer.postInjectFade(context);
 				RenderSystem.enableBlend();
 				RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.ONE_MINUS_DST_COLOR, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
-				CustomFramebufferRenderer.draw(context);
-				RenderSystem.defaultBlendFunc();
-			}
-	);
-	RenderWrapper CHAT = new ComponentRenderer(Component.Chat);
-	RenderWrapper BOSS_BAR = new ComponentRenderer(Component.BossBar);
-	RenderWrapper ACTION_BAR = new ComponentRenderer(Component.ActionBar);
-	StatusEffectRenderWrapper STATUS_EFFECT = new StatusEffectRenderWrapper();
-	RenderWrapper CHAT_MESSAGE_INDICATOR = new ComponentRenderer(Component.ChatIndicator);
+			})
+			.build();
+	public static RenderWrapper CHAT = of(Component.Chat);
+	public static RenderWrapper BOSS_BAR = of(Component.BossBar);
+	public static RenderWrapper ACTION_BAR = of(Component.ActionBar);
+	public static StatusEffectRenderWrapper STATUS_EFFECT = new StatusEffectRenderWrapper();
+	public static RenderWrapper CHAT_MESSAGE_INDICATOR = of(Component.ChatIndicator);
 
-	RenderWrapper withCustomFramebuffer();
-	void beginRender(DrawContext context);
-	void endRender(DrawContext context);
-	void wrap(DrawContext context, Runnable customRenderCall, Runnable originalRenderCall);
-	default void wrap(DrawContext context, Consumer<DrawContext> customRenderCall, Consumer<DrawContext> originalRenderCall) {
+
+	public static Builder builder(Component component) {
+		return new Builder(component);
+	}
+
+	public static RenderWrapper of(Component component) {
+		return builder(component).move().fade().build();
+	}
+
+
+	private final Consumer<DrawContext> beginRender;
+	private final Consumer<DrawContext> endRender;
+	private final Supplier<Boolean> doRender;
+	private final Supplier<Boolean> isActive;
+
+	private RenderWrapper(
+			Supplier<Boolean> isActive,
+			Supplier<Boolean> doRender,
+			Consumer<DrawContext> beginRender,
+			Consumer<DrawContext> endRender
+	) {
+		this.isActive = isActive;
+		this.doRender = doRender;
+		this.beginRender = beginRender;
+		this.endRender = endRender;
+	}
+
+	public boolean isActive() {
+		return isActive.get();
+	}
+
+	public boolean doRender() {
+		return doRender.get();
+	}
+
+	public void beginRender(DrawContext context) {
+		if (isActive() && doRender()) {
+			this.beginRender.accept(context);
+		}
+	}
+
+	public void endRender(DrawContext context) {
+		if (isActive() && doRender()) {
+			this.endRender.accept(context);
+		}
+	}
+
+	public void wrap(DrawContext context, Runnable originalRenderCall) {
+		wrap(context, originalRenderCall, originalRenderCall);
+	}
+	public void wrap(DrawContext context, Runnable customRenderCall, Runnable originalRenderCall) {
+		if (isActive()) {
+			if (doRender.get()) {
+				this.beginRender.accept(context);
+				customRenderCall.run();
+				this.endRender.accept(context);
+			}
+		} else {
+			originalRenderCall.run();
+		}
+	}
+	public void wrap(DrawContext context, Consumer<DrawContext> originalRenderCall) {
+		wrap(context, originalRenderCall, originalRenderCall);
+	}
+	public void wrap(DrawContext context, Consumer<DrawContext> customRenderCall, Consumer<DrawContext> originalRenderCall) {
 		wrap(context, () -> customRenderCall.accept(context), () -> originalRenderCall.accept(context));
 	}
-	default void wrap(DrawContext context, Runnable renderCall) {
-		wrap(context, renderCall, renderCall);
-	}
-	default void wrap(DrawContext context, Consumer<DrawContext> renderCall) {
-		wrap(context, renderCall, renderCall);
-	}
-	boolean isActive();
-	boolean doRender();
 
-	class ComponentRenderer implements RenderWrapper {
+	public static class Builder {
 		private final Component component;
-		private final BiConsumer<Component, DrawContext> beginRender;
-		private final BiConsumer<Component, DrawContext> endRender;
-		private final FramebufferRenderer framebufferRenderer;
+		private boolean fade = false;
+		private boolean move = false;
+		private boolean customFramebuffer = false;
+		private boolean containedInMovedComponent = false;
+		private Supplier<Float> maximumFade = null;
+		private Supplier<Boolean> isActive = null;
+		private Supplier<Boolean> doRender = null;
+		private Consumer<DrawContext> beginRender = null;
+		private Consumer<DrawContext> endRender = null;
 
-		public ComponentRenderer(Component component) {
-			this(component, AutoHudRenderer::preInject, AutoHudRenderer::postInject);
-		}
-		public ComponentRenderer(Component component, BiConsumer<Component, DrawContext> beginRender, BiConsumer<Component, DrawContext> endRender) {
+		Builder(Component component) {
 			this.component = component;
-			this.beginRender = beginRender;
-			this.endRender = endRender;
-			this.framebufferRenderer = new FramebufferRenderer(
-					this,
-					context -> {
-						AutoHudRenderer.preInjectFade(component, (float) component.config.maximumFade());
-					},
-					AutoHudRenderer::postInjectFade
-			);
 		}
 
-		@Override
-		public RenderWrapper withCustomFramebuffer() {
-			return framebufferRenderer;
-		}
-
-		@Override
-		public boolean isActive() {
-			return this.component.isActive();
-		}
-
-		@Override
-		public boolean doRender() {
-			return !this.component.fullyHidden();
-		}
-
-		@Override
-		public void beginRender(DrawContext context) {
-			if (isActive()) {
-				this.beginRender.accept(this.component, context);
-			}
-		}
-
-		@Override
-		public void endRender(DrawContext context) {
-			if (isActive()) {
-				this.endRender.accept(this.component, context);
-			}
-		}
-
-		@Override
-		public void wrap(DrawContext context, Runnable customRenderCall, Runnable originalRenderCall) {
-			if (isActive()) {
-				if (doRender()) {
-					this.beginRender.accept(this.component, context);
-					customRenderCall.run();
-					this.endRender.accept(this.component, context);
-				}
-			} else {
-				originalRenderCall.run();
-			}
-		}
-	}
-
-	class FramebufferRenderer implements RenderWrapper {
-		RenderWrapper wrappedRenderWrapper;
-		private final Consumer<DrawContext> framebufferSetup;
-		private final Consumer<DrawContext> framebufferTeardown;
-
-		public FramebufferRenderer(RenderWrapper wrappedRenderWrapper, Consumer<DrawContext> framebufferSetup, Consumer<DrawContext> framebufferTeardown) {
-			this.wrappedRenderWrapper = wrappedRenderWrapper;
-			this.framebufferSetup = framebufferSetup;
-			this.framebufferTeardown = framebufferTeardown;
-		}
-
-		@Override
-		public RenderWrapper withCustomFramebuffer() {
+		public Builder fade() {
+			this.fade = true;
 			return this;
 		}
 
-		@Override
-		public void beginRender(DrawContext context) {
-			if (isActive()) {
-				CustomFramebufferRenderer.init();
-				wrappedRenderWrapper.beginRender(context);
-			}
+		public Builder move() {
+			this.move = true;
+			return this;
 		}
 
-		@Override
-		public void endRender(DrawContext context) {
-			if (isActive()) {
-				wrappedRenderWrapper.endRender(context);
-				framebufferSetup.accept(context);
-				CustomFramebufferRenderer.draw(context);
-				framebufferTeardown.accept(context);
-			}
+		public Builder withCustomFramebuffer(boolean containedInMovedComponent) {
+			this.customFramebuffer = true;
+			this.containedInMovedComponent = containedInMovedComponent;
+			return this;
 		}
 
-		@Override
-		public void wrap(DrawContext context, Runnable customRenderCall, Runnable originalRenderCall) {
-			if (isActive()) {
-				if (doRender()) {
-					CustomFramebufferRenderer.init();
-					wrappedRenderWrapper.wrap(context, customRenderCall, originalRenderCall);
-					framebufferSetup.accept(context);
-					CustomFramebufferRenderer.draw(context);
-					framebufferTeardown.accept(context);
-				}
-			} else {
-				originalRenderCall.run();
-			}
+		public Builder maximumFade(Supplier<Float> maximumFade) {
+			this.maximumFade = maximumFade;
+			return this;
 		}
 
-		@Override
-		public boolean isActive() {
-			return wrappedRenderWrapper.isActive();
-		}
-
-		@Override
-		public boolean doRender() {
-			return wrappedRenderWrapper.doRender();
-		}
-	}
-
-	class CustomRenderer implements RenderWrapper {
-		private final Consumer<DrawContext> beginRender;
-		private final Consumer<DrawContext> endRender;
-		private final Supplier<Boolean> doRender;
-		private final Supplier<Boolean> isActive;
-		private final FramebufferRenderer framebufferRenderer;
-
-		public CustomRenderer(
-				Supplier<Boolean> isActive,
-				Supplier<Boolean> doRender,
-				Consumer<DrawContext> beginRender,
-				Consumer<DrawContext> endRender
-		) {
+		public Builder isActive(Supplier<Boolean> isActive) {
 			this.isActive = isActive;
+			return this;
+		}
+
+		public Builder doRender(Supplier<Boolean> doRender) {
 			this.doRender = doRender;
+			return this;
+		}
+
+		public Builder beginRender(Consumer<DrawContext> beginRender) {
 			this.beginRender = beginRender;
+			return this;
+		}
+
+		public Builder endRender(Consumer<DrawContext> endRender) {
 			this.endRender = endRender;
-			this.framebufferRenderer = new FramebufferRenderer(this, context -> {}, context -> {});
+			return this;
 		}
 
-		@Override
-		public RenderWrapper withCustomFramebuffer() {
-			return framebufferRenderer;
-		}
-
-		@Override
-		public boolean isActive() {
-			return isActive.get();
-		}
-
-		@Override
-		public boolean doRender() {
-			return doRender.get();
-		}
-
-		@Override
-		public void beginRender(DrawContext context) {
-			if (isActive() && doRender()) {
-				this.beginRender.accept(context);
+		public RenderWrapper build() {
+			if (isActive == null) {
+				isActive = component::isActive;
 			}
-		}
-
-		@Override
-		public void endRender(DrawContext context) {
-			if (isActive() && doRender()) {
-				this.endRender.accept(context);
+			if (doRender == null) {
+				doRender = component::shouldRender;
 			}
-		}
-
-		@Override
-		public void wrap(DrawContext context, Runnable customRenderCall, Runnable originalRenderCall) {
-			if (isActive()) {
-				if (doRender.get()) {
-					this.beginRender.accept(context);
-					customRenderCall.run();
-					this.endRender.accept(context);
+			if (maximumFade == null) {
+				maximumFade = () -> (float) component.config.maximumFade();
+			}
+			if (beginRender == null) {
+				if (!fade && !move) {
+					beginRender = context -> {};
+				} else {
+					beginRender = move
+							? context -> AutoHudRenderer.preInject(component, context, maximumFade.get())
+							: context -> AutoHudRenderer.preInjectFade(component, context, maximumFade.get());
 				}
-			} else {
-				originalRenderCall.run();
 			}
+			if (endRender == null) {
+				if (!fade && !move) {
+					endRender = context -> {};
+				} else {
+					endRender = move
+							? context -> AutoHudRenderer.postInject(component, context)
+							: context -> AutoHudRenderer.postInjectFade(component, context);
+				}
+			}
+			if (customFramebuffer) {
+				return new RenderWrapper(
+						isActive,
+						doRender,
+						context -> {
+							beginRender.accept(context);
+							CustomFramebufferRenderer.init();
+						},
+						getEndRender()
+				);
+			} else {
+				return new RenderWrapper(isActive, doRender, beginRender, endRender);
+			}
+		}
+
+		private Consumer<DrawContext> getEndRender() {
+			if (fade) {
+				if (containedInMovedComponent) {
+					return context -> {
+						endRender.accept(context);
+						AutoHudRenderer.preInjectFadeWithReverseTranslation(component, context, maximumFade.get());
+						CustomFramebufferRenderer.draw(context);
+						AutoHudRenderer.postInjectFadeWithReverseTranslation(component, context);
+					};
+				}
+				return context -> {
+					endRender.accept(context);
+					AutoHudRenderer.preInjectFade(component, context, maximumFade.get());
+					CustomFramebufferRenderer.draw(context);
+					AutoHudRenderer.postInjectFade(component, context);
+				};
+			}
+			return context -> {
+				endRender.accept(context);
+				CustomFramebufferRenderer.draw(context);
+				RenderSystem.defaultBlendFunc();
+			};
 		}
 	}
 
-	class StatusEffectRenderWrapper {
+
+	public static class StatusEffectRenderWrapper {
 		public StatusEffectRenderWrapper() {
 		}
 
@@ -279,11 +260,12 @@ public interface RenderWrapper {
 
 		public boolean doRender(StatusEffectInstance instance) {
 			Component component = Component.get(instance.getEffectType());
-			return component != null && !component.fullyHidden();
+			return component != null && component.shouldRender();
 		}
+
 		public boolean doRender(Sprite sprite) {
 			Component component = Component.findBySprite(sprite);
-			return component != null && !component.fullyHidden();
+			return component != null && component.shouldRender();
 		}
 
 		public void preInject(DrawContext context, StatusEffectInstance instance) {
@@ -295,7 +277,7 @@ public interface RenderWrapper {
 		public void preInject(DrawContext context, Sprite sprite) {
 			if (isActive()) {
 				Component component = Component.findBySprite(sprite);
-				if (component != null && !component.fullyHidden()) {
+				if (component != null && component.shouldRender()) {
 					AutoHudRenderer.preInject(component, context);
 				}
 			}
@@ -304,7 +286,7 @@ public interface RenderWrapper {
 		public void postInject(DrawContext context, Sprite sprite) {
 			if (isActive()) {
 				Component component = Component.findBySprite(sprite);
-				if (component != null && !component.fullyHidden()) {
+				if (component != null && component.shouldRender()) {
 					AutoHudRenderer.postInject(component, context);
 				}
 			}
@@ -322,6 +304,7 @@ public interface RenderWrapper {
 				renderCall.run();
 			}
 		}
+
 		public void wrap(DrawContext context, StatusEffectInstance instance, Runnable renderCall) {
 			if (isActive()) {
 				if (doRender(instance)) {

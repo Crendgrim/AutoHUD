@@ -13,7 +13,7 @@ public class GuiArmorMixin {
 
 	@WrapMethod(method = "draw")
 	void autoHud$wrapArmor(DrawContext context, int left, int top, Operation<Void> original) {
-		RenderWrapper.ARMOR.withCustomFramebuffer().wrap(context, () -> original.call(context, left, top));
+		RenderWrapper.ARMOR_FADE.wrap(context, () -> original.call(context, left, top));
 	}
 
 }

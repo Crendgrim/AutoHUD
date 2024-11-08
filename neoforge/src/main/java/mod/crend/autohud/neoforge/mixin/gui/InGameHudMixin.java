@@ -7,7 +7,7 @@ import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Hud;
 import mod.crend.autohud.render.AutoHudRenderer;
-import mod.crend.autohud.render.RenderWrapper;
+import mod.crend.autohud.render.ComponentRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 //? if >=1.21
@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
-@Mixin(InGameHud.class)
+@Mixin(value = InGameHud.class, priority = 800)
 public class InGameHudMixin {
 
 	// Hotbar items
@@ -52,7 +52,7 @@ public class InGameHudMixin {
 			int seed,
 			Operation<Void> original
 	) {
-		RenderWrapper.HOTBAR_ITEMS.wrap(context, () -> original.call(instance, context, x, y, tickCounter, player, stack, seed));
+		ComponentRenderer.HOTBAR_ITEMS.wrap(context, () -> original.call(instance, context, x, y, tickCounter, player, stack, seed));
 	}
 
 
@@ -80,7 +80,7 @@ public class InGameHudMixin {
 			int width, int height,
 			Operation<Void> original
 	) {
-		RenderWrapper.CROSSHAIR.wrap(context, () -> original.call(
+		ComponentRenderer.CROSSHAIR.wrap(context, () -> original.call(
 				context,
 				//? if >=1.21.2
 				/*renderLayer,*/
@@ -112,7 +112,7 @@ public class InGameHudMixin {
 			Operation<Void> original,
 			@Local StatusEffectInstance statusEffectInstance
 	) {
-		RenderWrapper.STATUS_EFFECT.wrap(context, statusEffectInstance, () -> original.call(
+		ComponentRenderer.getForStatusEffect(statusEffectInstance).wrap(context, () -> original.call(
 				context,
 				//? if >=1.21.2
 				/*renderLayer,*/
@@ -125,7 +125,7 @@ public class InGameHudMixin {
 	@WrapOperation(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target = "Lnet/neoforged/neoforge/client/extensions/common/IClientMobEffectExtensions;renderGuiIcon(Lnet/minecraft/entity/effect/StatusEffectInstance;Lnet/minecraft/client/gui/hud/InGameHud;Lnet/minecraft/client/gui/DrawContext;IIFF)Z"))
 	private boolean autoHud$postEffect(IClientMobEffectExtensions instance, StatusEffectInstance statusEffectInstance, InGameHud gui, DrawContext context, int x, int y, float z, float alpha, Operation<Boolean> original) {
 		AtomicBoolean result = new AtomicBoolean(false);
-		RenderWrapper.STATUS_EFFECT.wrap(context, statusEffectInstance, () ->
+		ComponentRenderer.getForStatusEffect(statusEffectInstance).wrap(context, () ->
 			result.set(original.call(instance, statusEffectInstance, gui, context, x, y, z, alpha))
 		);
 		return result.get();
@@ -157,7 +157,7 @@ public class InGameHudMixin {
 			Sprite sprite,
 			Operation<Void> original
 	) {
-		RenderWrapper.STATUS_EFFECT.wrap(context, sprite,
+		ComponentRenderer.getForStatusEffect(sprite).wrap(context,
 				//? if <1.21.2 {
 				() -> original.call(context, x, y, z, width, height, sprite)
 				//?} else

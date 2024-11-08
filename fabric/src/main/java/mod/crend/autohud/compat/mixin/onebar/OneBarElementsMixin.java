@@ -7,7 +7,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.madis0.OneBarElements;
 import mod.crend.autohud.compat.OneBarCompat;
 import mod.crend.autohud.render.AutoHudRenderer;
-import mod.crend.autohud.render.RenderWrapper;
+import mod.crend.autohud.render.ComponentRenderer;
 import net.minecraft.client.gui.DrawContext;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,7 +36,7 @@ public abstract class OneBarElementsMixin {
 	@WrapOperation(method = "renderOneBar", at = @At(value = "INVOKE", target = "Lio/github/madis0/OneBarElements;xpBar()V"))
 	private void autoHud$wrapXpBar(OneBarElements instance, Operation<Void> original) {
 		OneBarCompat.ONE_BAR_WRAPPER.endRender(drawContext);
-		RenderWrapper.EXPERIENCE_BAR.wrap(drawContext, () -> original.call(instance));
+		ComponentRenderer.EXPERIENCE_BAR.wrap(drawContext, () -> original.call(instance));
 		OneBarCompat.ONE_BAR_WRAPPER.beginRender(drawContext);
 	}
 

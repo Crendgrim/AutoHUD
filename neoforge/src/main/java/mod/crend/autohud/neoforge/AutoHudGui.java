@@ -3,7 +3,7 @@ package mod.crend.autohud.neoforge;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Components;
 import mod.crend.autohud.render.AutoHudRenderer;
-import mod.crend.autohud.render.RenderWrapper;
+import mod.crend.autohud.render.ComponentRenderer;
 import net.minecraft.util.Identifier;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -18,23 +18,23 @@ import static net.neoforged.neoforge.client.gui.VanillaGuiLayers.*;
 
 public class AutoHudGui {
 
-	static Map<Identifier, RenderWrapper> RENDER_WRAPPERS = new HashMap<>();
+	static Map<Identifier, ComponentRenderer> RENDER_WRAPPERS = new HashMap<>();
 	static {
-		RENDER_WRAPPERS.put(PLAYER_HEALTH, RenderWrapper.HEALTH);
-		RENDER_WRAPPERS.put(ARMOR_LEVEL, RenderWrapper.ARMOR);
-		RENDER_WRAPPERS.put(FOOD_LEVEL, RenderWrapper.HUNGER);
-		RENDER_WRAPPERS.put(AIR_LEVEL, RenderWrapper.AIR);
-		RENDER_WRAPPERS.put(VEHICLE_HEALTH, RenderWrapper.MOUNT_HEALTH);
-		RENDER_WRAPPERS.put(JUMP_METER, RenderWrapper.MOUNT_JUMP_BAR);
-		RENDER_WRAPPERS.put(EXPERIENCE_BAR, RenderWrapper.EXPERIENCE_BAR);
-		RENDER_WRAPPERS.put(EXPERIENCE_LEVEL, RenderWrapper.EXPERIENCE_LEVEL);
+		RENDER_WRAPPERS.put(PLAYER_HEALTH, ComponentRenderer.HEALTH);
+		RENDER_WRAPPERS.put(ARMOR_LEVEL, ComponentRenderer.ARMOR);
+		RENDER_WRAPPERS.put(FOOD_LEVEL, ComponentRenderer.HUNGER);
+		RENDER_WRAPPERS.put(AIR_LEVEL, ComponentRenderer.AIR);
+		RENDER_WRAPPERS.put(VEHICLE_HEALTH, ComponentRenderer.MOUNT_HEALTH);
+		RENDER_WRAPPERS.put(JUMP_METER, ComponentRenderer.MOUNT_JUMP_BAR);
+		RENDER_WRAPPERS.put(EXPERIENCE_BAR, ComponentRenderer.EXPERIENCE_BAR);
+		RENDER_WRAPPERS.put(EXPERIENCE_LEVEL, ComponentRenderer.EXPERIENCE_LEVEL);
 
-		RENDER_WRAPPERS.put(SCOREBOARD_SIDEBAR, RenderWrapper.SCOREBOARD);
-		RENDER_WRAPPERS.put(HOTBAR, RenderWrapper.HOTBAR);
-		RENDER_WRAPPERS.put(SELECTED_ITEM_NAME, RenderWrapper.TOOLTIP);
-		RENDER_WRAPPERS.put(CHAT, RenderWrapper.CHAT);
-		RENDER_WRAPPERS.put(TITLE, RenderWrapper.ACTION_BAR);
-		RENDER_WRAPPERS.put(BOSS_OVERLAY, RenderWrapper.BOSS_BAR);
+		RENDER_WRAPPERS.put(SCOREBOARD_SIDEBAR, ComponentRenderer.SCOREBOARD);
+		RENDER_WRAPPERS.put(HOTBAR, ComponentRenderer.HOTBAR);
+		RENDER_WRAPPERS.put(SELECTED_ITEM_NAME, ComponentRenderer.TOOLTIP);
+		RENDER_WRAPPERS.put(CHAT, ComponentRenderer.CHAT);
+		RENDER_WRAPPERS.put(TITLE, ComponentRenderer.ACTION_BAR);
+		RENDER_WRAPPERS.put(BOSS_OVERLAY, ComponentRenderer.BOSS_BAR);
 	}
 
 	/*
@@ -79,7 +79,7 @@ public class AutoHudGui {
 	@SubscribeEvent
 	public void preChat(CustomizeGuiOverlayEvent.Chat event) {
 		if (Components.Chat.config.active()) {
-			AutoHudRenderer.preInjectFade(Components.Chat, event.getGuiGraphics());
+			ComponentRenderer.CHAT.beginFade(event.getGuiGraphics());
 		}
 	}
 }

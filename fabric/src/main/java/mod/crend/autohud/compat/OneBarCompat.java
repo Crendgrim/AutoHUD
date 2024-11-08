@@ -6,7 +6,7 @@ import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Components;
 import mod.crend.autohud.component.state.ComponentState;
-import mod.crend.autohud.render.RenderWrapper;
+import mod.crend.autohud.render.ComponentRenderer;
 import net.minecraft.client.network.ClientPlayerEntity;
 
 public class OneBarCompat implements AutoHudApi {
@@ -20,7 +20,7 @@ public class OneBarCompat implements AutoHudApi {
 			.inMainHud()
 			.state(player -> new ComponentState(OneBarCompat.OneBarComponent))
 			.build();
-	public static final RenderWrapper ONE_BAR_WRAPPER = RenderWrapper.of(OneBarComponent);
+	public static final ComponentRenderer ONE_BAR_WRAPPER = ComponentRenderer.of(OneBarComponent);
 
 	static {
 		// Fake this API being inserted via entry point

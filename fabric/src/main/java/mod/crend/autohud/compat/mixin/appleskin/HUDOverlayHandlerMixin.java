@@ -3,6 +3,7 @@ package mod.crend.autohud.compat.mixin.appleskin;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Components;
 import mod.crend.autohud.render.AutoHudRenderer;
+import mod.crend.autohud.render.ComponentRenderer;
 import net.minecraft.client.gui.DrawContext;
 //? if >=1.20.5
 /*import net.minecraft.entity.player.PlayerEntity;*/
@@ -29,9 +30,7 @@ public class HUDOverlayHandlerMixin {
 			/*PlayerEntity player, int top, int right,*/
 			CallbackInfo ci
 	) {
-		if (AutoHud.config.animationFade()) {
-			AutoHudRenderer.preInjectFade(Components.Hunger, context);
-		}
+		ComponentRenderer.HUNGER.beginFade(context);
 	}
 
 	//? if <1.21.2 {

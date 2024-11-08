@@ -2,7 +2,7 @@ package mod.crend.autohud.mixin.gui;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import mod.crend.autohud.AutoHud;
-import mod.crend.autohud.render.RenderWrapper;
+import mod.crend.autohud.render.ComponentRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -55,7 +55,7 @@ public abstract class StatusEffectTimerMixin {
     ) {
         list.add(() -> {
             if (AutoHud.config.statusEffectTimer()) {
-                RenderWrapper.STATUS_EFFECT.wrap(context, statusEffectInstance, () -> drawStatusEffectOverlay(context, statusEffectInstance, x, y));
+                ComponentRenderer.getForStatusEffect(statusEffectInstance).wrap(context, () -> drawStatusEffectOverlay(context, statusEffectInstance, x, y));
             }
         });
     }

@@ -9,7 +9,8 @@ import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Components;
 import mod.crend.autohud.component.state.ItemStackComponentState;
 import mod.crend.autohud.render.AutoHudRenderer;
-import mod.crend.autohud.render.RenderWrapper;
+import mod.crend.autohud.render.AutoHudRenderLayer;
+import mod.crend.autohud.render.ComponentRenderer;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -27,15 +28,15 @@ public class HotbarSlotCyclingCompat implements AutoHudApi {
 					true
 			))
 			.build();
-	public static RenderWrapper COMPONENT_WRAPPER = RenderWrapper.of(HOTBAR_SLOT_CYCLING_COMPONENT);
-	public static RenderWrapper BACKGROUND_WRAPPER = RenderWrapper.builder(HOTBAR_SLOT_CYCLING_COMPONENT)
+	public static ComponentRenderer COMPONENT_WRAPPER = ComponentRenderer.of(HOTBAR_SLOT_CYCLING_COMPONENT);
+	public static ComponentRenderer BACKGROUND_WRAPPER = ComponentRenderer.builder(HOTBAR_SLOT_CYCLING_COMPONENT)
 			.fade()
 			.isActive(() -> HOTBAR_SLOT_CYCLING_COMPONENT.isActive() && AutoHud.config.animationFade())
 			.doRender(AutoHudRenderer::shouldRenderHotbarItems)
 			.withCustomFramebuffer(true)
-			.beginRender(AutoHudRenderer::postInjectFade)
+			.beginRender(COMPONENT_WRAPPER::endFade)
 			.build();
-	public static RenderWrapper ITEM_WRAPPER = RenderWrapper.builder(HOTBAR_SLOT_CYCLING_COMPONENT)
+	public static ComponentRenderer ITEM_WRAPPER = ComponentRenderer.builder(HOTBAR_SLOT_CYCLING_COMPONENT)
 			.fade()
 			.isActive(() -> HOTBAR_SLOT_CYCLING_COMPONENT.isActive() && AutoHud.config.animationFade())
 			.doRender(() -> (
@@ -48,7 +49,7 @@ public class HotbarSlotCyclingCompat implements AutoHudApi {
 							|| (!AutoHud.config.animationFade() && AutoHud.config.animationMove())
 			))
 			.withCustomFramebuffer(true)
-			.beginRender(AutoHudRenderer::postInjectFade)
+			.beginRender(COMPONENT_WRAPPER::endFade)
 			.build();
 
 	@Override

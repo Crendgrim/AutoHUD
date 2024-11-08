@@ -7,7 +7,7 @@ import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Components;
 import mod.crend.autohud.component.state.PolicyComponentState;
-import mod.crend.autohud.render.RenderWrapper;
+import mod.crend.autohud.render.ComponentRenderer;
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.init.EffectInit;
 import net.dehydration.misc.ThirstTooltipData;
@@ -34,7 +34,7 @@ public class DehydrationCompat implements AutoHudApi {
                 return null;
             })
             .build();
-    public static RenderWrapper THIRST_WRAPPER = RenderWrapper.builder(Thirst)
+    public static ComponentRenderer THIRST_WRAPPER = ComponentRenderer.builder(Thirst)
             .move()
             .fade()
             .withCustomFramebuffer(false)

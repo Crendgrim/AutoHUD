@@ -3,6 +3,7 @@ package mod.crend.autohud.component;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.config.ConfigHandler;
 import mod.crend.autohud.component.state.ComponentState;
+import mod.crend.autohud.render.ComponentRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.texture.Sprite;
@@ -11,7 +12,7 @@ import net.minecraft.entity.effect.StatusEffect;
 //? if <1.21.2
 import net.minecraft.item.Equipment;
 //? if >=1.20.5
-import net.minecraft.registry.entry.RegistryEntry;
+/*import net.minecraft.registry.entry.RegistryEntry;*/
 
 import java.util.*;
 import java.util.function.Function;
@@ -25,23 +26,7 @@ public class Component {
     //?} else {
     /*private static final Map<RegistryEntry<StatusEffect>, Component> statusEffectComponents = new HashMap<>();
      *///?}
-    private static final List<Component> components = new ArrayList<>(List.of(
-            Components.Hotbar,
-            Components.Tooltip,
-            Components.ExperienceBar,
-            Components.ExperienceLevel,
-            Components.Armor,
-            Components.Health,
-            Components.Hunger,
-            Components.Air,
-            Components.MountHealth,
-            Components.MountJumpBar,
-            Components.Scoreboard,
-            Components.Crosshair,
-            Components.Chat,
-            Components.ActionBar,
-            Components.BossBar
-    ));
+    private static final List<Component> components = new ArrayList<>();
 
     public static void registerComponent(Component component) {
         components.add(component);
@@ -162,20 +147,22 @@ public class Component {
         }
     }
 
-    public static void register(/*? if <1.20.5 {*/StatusEffect/*?} else {*//*RegistryEntry<StatusEffect>*//*?}*/ effect) {
+    public static void registerStatusEffect(/*? if <1.20.5 {*/StatusEffect/*?} else {*//*RegistryEntry<StatusEffect>*//*?}*/ effect) {
         if (!statusEffectComponents.containsKey(effect)) {
             Component c = builder(effect/*? if >=1.20.5 {*//*.value()*//*?}*/.getTranslationKey())
                     .config(AutoHud.config.statusEffects())
+                    .isTargeted(() -> AutoHud.targetStatusEffects)
                     // Don't register as a main component
                     .register(false)
                     .build();
             c.offset = 1.0d;
             c.alpha = 0.0d;
             statusEffectComponents.put(effect, c);
+            ComponentRenderer.registerStatusEffectComponent(c);
         }
     }
     public static Component get(/*? if <1.20.5 {*/StatusEffect/*?} else {*//*RegistryEntry<StatusEffect>*//*?}*/ effect) {
-        register(effect);
+        registerStatusEffect(effect);
         return statusEffectComponents.get(effect);
     }
     public static Collection<Component> getComponents() {
@@ -233,7 +220,7 @@ public class Component {
     }
 
     public boolean isActive() {
-        return config.active(); // && isTargeted.get();
+        return config.active() && isTargeted.get();
     }
 
     /**
@@ -357,31 +344,32 @@ public class Component {
     }
 
     private void synchronize(float newVisibleTime, double newOffset, double newAlpha, double newOffsetDelta, double newAlphaDelta, Component... components) {
-        double minOffsetDelta = Math.min(newOffsetDelta, 0d);
-        double maxOffsetDelta = Math.max(newOffsetDelta, 0d);
-        double minAlphaDelta = Math.min(newAlphaDelta, 0d);
-        double maxAlphaDelta = Math.max(newAlphaDelta, 0d);
         for (Component component : components) {
             newVisibleTime = Math.max(newVisibleTime, component.visibleTime);
-            newOffset = Math.min(newOffset, component.offset);
-            newAlpha = Math.max(newAlpha, component.alpha);
-            if (component.offsetDelta < 0) {
-                minOffsetDelta = Math.min(minOffsetDelta, component.offsetDelta);
-            } else {
-                maxOffsetDelta = Math.max(maxOffsetDelta, component.offsetDelta);
+            if (newOffset >= component.offset) {
+                // we would be more visible next tick than the original
+                if (offset + offsetDelta < component.offset + component.offsetDelta) {
+                    newOffsetDelta = component.offset + component.offsetDelta - offset;
+                } else {
+                    newOffsetDelta = component.offsetDelta;
+                }
+                newOffset = component.offset;
             }
-            if (component.alphaDelta < 0) {
-                minAlphaDelta = Math.min(minAlphaDelta, component.alphaDelta);
-            } else {
-                maxAlphaDelta = Math.max(maxAlphaDelta, component.alphaDelta);
+            if (newAlpha <= component.alpha) {
+                // we would be more visible next tick than the original
+                if (alpha + alphaDelta > component.alpha + component.alphaDelta) {
+                    newAlphaDelta = alpha - (component.alpha + component.alphaDelta);
+                } else {
+                    newAlphaDelta = component.alphaDelta;
+                }
+                newAlpha = component.alpha;
             }
         }
         visibleTime = newVisibleTime;
         offset = newOffset;
         alpha = newAlpha;
-        // Moving in takes precedence
-        offsetDelta = (minOffsetDelta < 0 ? minOffsetDelta : maxOffsetDelta);
-        alphaDelta = (minAlphaDelta < 0 ? minAlphaDelta : maxAlphaDelta);
+        offsetDelta = newOffsetDelta;
+        alphaDelta = newAlphaDelta;
     }
     public void synchronizeFromHidden(Component... components) {
         synchronize(0, 1.0d, 0.0d, 0d, 0d, components);
@@ -447,7 +435,7 @@ public class Component {
     }
 
     public void initState(ClientPlayerEntity player) {
-        this.state = stateProvider.apply(player);
+        if (stateProvider != null) this.state = stateProvider.apply(player);
     }
     public void updateState() {
         if (state != null) {

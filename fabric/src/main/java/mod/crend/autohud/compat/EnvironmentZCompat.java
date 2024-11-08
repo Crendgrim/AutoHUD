@@ -6,7 +6,7 @@ import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.state.ValueComponentState;
 import mod.crend.autohud.config.ConfigHandler;
-import mod.crend.autohud.render.RenderWrapper;
+import mod.crend.autohud.render.ComponentRenderer;
 import net.environmentz.access.TemperatureManagerAccess;
 import net.environmentz.temperature.TemperatureManager;
 import net.environmentz.temperature.Temperatures;
@@ -31,8 +31,8 @@ public class EnvironmentZCompat implements AutoHudApi {
 			.inMainHud()
 			.state(player -> new EnvironmentZState(EnvironmentZCompat.Thermometer, EnvironmentZCompat::thermometerState))
 			.build();
-	public static RenderWrapper TEMPERATURE_WRAPPER = RenderWrapper.of(Temperature);
-	public static RenderWrapper THERMOMETER_WRAPPER = RenderWrapper.of(Thermometer);
+	public static ComponentRenderer TEMPERATURE_WRAPPER = ComponentRenderer.of(Temperature);
+	public static ComponentRenderer THERMOMETER_WRAPPER = ComponentRenderer.of(Thermometer);
 
 	static {
 		// Fake this API being inserted via entry point

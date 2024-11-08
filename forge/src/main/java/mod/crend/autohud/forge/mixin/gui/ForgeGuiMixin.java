@@ -4,6 +4,7 @@ package mod.crend.autohud.forge.mixin.gui;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Components;
 import mod.crend.autohud.render.AutoHudRenderer;
+import mod.crend.autohud.render.ComponentRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,35 +28,35 @@ public class ForgeGuiMixin {
 	@Inject(method = "renderHealth", at = @At("HEAD"))
 	private void autoHud$preHealth(int width, int height, DrawContext context, CallbackInfo ci) {
 		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.preInjectFade(Components.Health, context);
+			ComponentRenderer.HEALTH.beginFade(context);
 		}
 	}
 
 	@Inject(method = "renderArmor", at = @At("HEAD"))
 	private void autoHud$preArmor(DrawContext context, int width, int height, CallbackInfo ci) {
 		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.preInjectFade(Components.Armor, context);
+			ComponentRenderer.ARMOR.beginFade(context);
 		}
 	}
 
 	@Inject(method = "renderFood", at = @At("HEAD"))
 	private void autoHud$preFood(int width, int height, DrawContext context, CallbackInfo ci) {
 		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.preInjectFade(Components.Hunger, context);
+			ComponentRenderer.HUNGER.beginFade(context);
 		}
 	}
 
 	@Inject(method = "renderAir", at  = @At("HEAD"))
 	private void autoHud$preAir(int width, int height, DrawContext context, CallbackInfo ci) {
 		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.preInjectFade(Components.Air, context);
+			ComponentRenderer.AIR.beginFade(context);
 		}
 	}
 
 	@Inject(method = "renderHealthMount", at  = @At("HEAD"))
 	private void autoHud$preRenderHealthMount(int width, int height, DrawContext context, CallbackInfo ci) {
 		if (AutoHud.targetStatusBars) {
-			AutoHudRenderer.preInjectFade(Components.MountHealth, context);
+			ComponentRenderer.MOUNT_HEALTH.beginFade(context);
 		}
 	}
 }

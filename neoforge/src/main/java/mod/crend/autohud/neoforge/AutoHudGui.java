@@ -38,9 +38,9 @@ public class AutoHudGui {
 	}
 
 	/*
-	 * NOTE: NeoForge up to 1.21.3 handles events differently to Forge.
-	 * In Forge, canceling the event here would still call the handler below, so we would have to still do the
-	 * preRender step (and then immediately undo it in the other event).
+	 * NOTE: NeoForge before 1.21 handles events differently to Forge.
+	 * In Forge and modern NeoForge, canceling the event here would still call the handler below, so we would have to
+	 * still do the preRender step (and then immediately undo it in the other event).
 	 * In older NeoForge, this does not happen, and the second handler does not get invoked. So we can skip the matrix
 	 * translation right away.
 	 * We still keep the second event subscriber to hopefully catch any situation where another mod cancels one
@@ -53,7 +53,7 @@ public class AutoHudGui {
 					if (wrapper.isActive() && !wrapper.doRender()) {
 						event.setCanceled(true);
 					}
-					//? if <1.21.3
+					//? if <1.21
 					else
 					{
 						wrapper.beginRender(event.getGuiGraphics());

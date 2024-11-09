@@ -4,21 +4,20 @@ import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.ModKeyBindings;
 import mod.crend.autohud.compat.RaisedCompat;
 import net.minecraft.client.MinecraftClient;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod(AutoHud.MOD_ID)
-@Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class AutoHudForge {
-    @SubscribeEvent
+    static boolean raisedCompat = false;
+
+    // Do not use @SubscribeEvent here because the mod "placebo" forces the game bus to run early for some reason.
+    // This causes the key bindings to get ticked before the config is loaded...
     static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             ModKeyBindings.clientTick(MinecraftClient.getInstance());
 
-            if (ModList.get().isLoaded("raised")) {
+            if (raisedCompat) {
                 RaisedCompat.tick();
             }
         }

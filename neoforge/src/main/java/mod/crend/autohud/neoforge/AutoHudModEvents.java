@@ -34,6 +34,11 @@ public class AutoHudModEvents {
 			//? if hotbarslotcycling
 			/*HotbarSlotCyclingCompat.init();*/
 		}
+		if (ModList.get().isLoaded("raised")) {
+			AutoHudNeoForge.raisedCompat = true;
+		}
+		// Delay initialising the client tick event, see that method.
+		NeoForge.EVENT_BUS.addListener(AutoHudNeoForge::onClientTick);
 	}
 
 	@SubscribeEvent

@@ -18,11 +18,14 @@ import net.neoforged.neoforge.client.event.RenderGuiEvent;
 @Mod(AutoHud.MOD_ID)
 @EventBusSubscriber(value = Dist.CLIENT)
 public class AutoHudNeoForge {
-    @SubscribeEvent
+    static boolean raisedCompat = false;
+
+    // Do not use @SubscribeEvent here because the mod "placebo" forces the game bus to run early for some reason.
+    // This causes the key bindings to get ticked before the config is loaded...
     static void onClientTick(ClientTickEvent.Post event) {
         ModKeyBindings.clientTick(MinecraftClient.getInstance());
 
-        if (ModList.get().isLoaded("raised")) {
+        if (raisedCompat) {
             RaisedCompat.tick();
         }
     }

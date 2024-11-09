@@ -31,6 +31,11 @@ public class AutoHudModEvents {
 		if (ModList.get().isLoaded("hotbarslotcycling")) {
 			HotbarSlotCyclingCompat.init();
 		}
+		if (ModList.get().isLoaded("raised")) {
+			AutoHudForge.raisedCompat = true;
+		}
+		// Delay initialising the client tick event, see that method.
+		MinecraftForge.EVENT_BUS.addListener(AutoHudForge::onClientTick);
 	}
 
 	@SubscribeEvent

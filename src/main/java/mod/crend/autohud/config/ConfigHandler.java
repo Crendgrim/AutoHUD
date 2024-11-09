@@ -152,6 +152,7 @@ public class ConfigHandler {
     public PolicyComponent health() { return health; }
     public PolicyComponent armor() { return armor; }
     public PolicyComponent hunger() { return hunger; }
+    public boolean revealHungerWhenHoldingFoodItem() { return CONFIG_STORE.config().revealHungerWhenHoldingFoodItem; }
     public PolicyComponent air() { return air; }
     public BooleanComponent experience() { return experience; }
     public BooleanComponent experienceBar() { return experienceBar; }

@@ -51,6 +51,7 @@
   "autohud.option.health.policy.description": "Always: always visible\nDisabled: do not automatically reveal\nChanging: reveal when health changes\nIncreasing: reveal when healing\nDecreasing: reveal when hurting\nNot Full: reveal when not at full health\nLow: reveal when at low health",
   "autohud.option.hunger.policy": "Reveal hunger when",
   "autohud.option.hunger.policy.description": "Always: always visible\nDisabled: do not automatically reveal\nChanging: reveal when hunger changes\nIncreasing: reveal when eating\nDecreasing: reveal when gaining hunger\nNot Full: reveal when not at full food bar\nLow: reveal when at low food bar",
+  "autohud.option.revealHungerWhenHoldingFoodItem": "Reveal hunger bar when holding a food item in your hand and the player is not at full hunger.",
   "autohud.option.air.policy": "Reveal air when",
   "autohud.option.air.policy.description": "Always: always visible\nDisabled: do not automatically reveal\nChanging: reveal when air changes\nIncreasing: reveal when gaining air\nDecreasing: reveal when losing air\nNot Full: reveal when not at full health\nLow: reveal when at low health",
   "autohud.option.armor.policy": "Reveal armor when",

@@ -117,6 +117,8 @@ public class Config implements Cloneable {
     @Category(name = "components", group = "statusBars")
     @SerialEntry public PolicyComponent hunger = new PolicyComponent();
     @Category(name = "components", group = "statusBars")
+    @SerialEntry public boolean revealHungerWhenHoldingFoodItem = true;
+    @Category(name = "components", group = "statusBars")
     @SerialEntry public PolicyComponent air = new PolicyComponent();
     @Category(name = "components", group = "statusBars")
     @SerialEntry public PolicyComponent armor = new PolicyComponent();

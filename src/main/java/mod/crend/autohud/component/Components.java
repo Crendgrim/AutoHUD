@@ -78,7 +78,9 @@ public class Components {
 			.state(player -> new EnhancedPolicyComponentState(Components.Hunger,
 					() -> player.getHungerManager().getFoodLevel(),
 					20,
-					() -> player.getHungerManager().getFoodLevel() < 20 && State.isFood(player.getMainHandStack())
+					() -> AutoHud.config.revealHungerWhenHoldingFoodItem()
+							&& player.getHungerManager().getFoodLevel() < 20
+							&& State.isFood(player.getMainHandStack())
 			))
 			.build();
 

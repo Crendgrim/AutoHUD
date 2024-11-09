@@ -27,6 +27,7 @@
   "autohud.group.mountHealth": "Mount Health",
   "autohud.option.health.policy": "在如下条件下显示生命值",
   "autohud.option.hunger.policy": "在如下条件下显示饥饿值",
+  "autohud.option.revealHungerWhenHoldingFoodItem": "Reveal hunger bar when holding a food item in your hand and the player is not at full hunger.",
   "autohud.option.air.policy": "在如下条件下显示氧气值",
   "autohud.option.armor.policy": "在如下条件下显示盔甲",
   "autohud.option.experienceBar.active": "隐藏经验栏",

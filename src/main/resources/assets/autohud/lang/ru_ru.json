@@ -113,6 +113,7 @@
   "autohud.option.hotbar.durabilityPercentage.description": "Percentage below which to reveal",
   "autohud.option.hotbar.durabilityTotal.description": "Durability below which to reveal",
   "autohud.option.hotbar.maximumFadeHotbarItems.description": "Fade-out limit for hotbar items. Set this to non-zero to keep the contents of the hotbar always slightly visible.",
+  "autohud.option.hotbar.hideTooltip": "Always hide the selected item tooltip",
   "autohud.option.statusEffects.active.description": "Dynamically hide status effects",
   "autohud.option.statusEffects.onChange.description": "Reveal active status effects",
   "autohud.option.scoreboard.scoreboard.active.description": "Hide the scoreboard",

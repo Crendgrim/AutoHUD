@@ -88,6 +88,7 @@
   "autohud.option.hotbar.maximumFadeHotbarItems.description": "快捷欄物品的淡出限制。將此設定為非零值可使快捷欄的內容始終稍微可見。",
   "autohud.option.hotbar.revealExperienceTextWithHotbar": "將經驗等級連結到快捷欄",
   "autohud.option.hotbar.revealExperienceTextWithHotbar.description": "在顯示快捷欄時也顯示經驗等級。",
+  "autohud.option.hotbar.hideTooltip": "Always hide the selected item tooltip",
   "autohud.group.statusEffects": "狀態效果",
   "autohud.option.statusEffects.active": "隱藏",
   "autohud.option.statusEffects.active.description": "動態隱藏狀態效果",

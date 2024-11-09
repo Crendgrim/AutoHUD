@@ -42,6 +42,7 @@
   "autohud.option.hotbar.durabilityPercentage": "低于显示的百分比",
   "autohud.option.hotbar.durabilityTotal": "低于显示的耐久",
   "autohud.option.hotbar.maximumFadeHotbarItems": "Fade-out limit for hotbar items",
+  "autohud.option.hotbar.hideTooltip": "Always hide the selected item tooltip",
   "autohud.group.statusEffects": "Status effects",
   "autohud.option.statusEffects.active": "隐藏状态效果",
   "autohud.option.statusEffects.onChange": "显示当前的状态效果",

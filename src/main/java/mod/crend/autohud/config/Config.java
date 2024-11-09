@@ -176,6 +176,7 @@ public class Config implements Cloneable {
         @EnableIf(field = "hotbar.active", value = EnableIf.BooleanPredicate.class)
         @EnableIf(field = "experience.active", value = EnableIf.BooleanPredicate.class)
         @SerialEntry public boolean revealExperienceTextWithHotbar = true;
+        @SerialEntry public boolean hideTooltip = false;
     }
     
     public static class ScoreboardComponents {

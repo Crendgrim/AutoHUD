@@ -65,6 +65,7 @@
   "autohud.option.experienceBar.onChange.description": "Rivela la barra dell'esperienza ogni volta che guadagni esperienza.",
   "autohud.option.revealExperienceTextOnTargetingEnchantingBlock": "Rivela puntando a determinati blocchi",
   "autohud.option.revealExperienceTextOnTargetingEnchantingBlock.description": "Rivela il livello di esperienza quando si guarda un tavolo di incantamento o un'incudine",
+  "autohud.option.hotbar.hideTooltip": "Always hide the selected item tooltip",
   "autohud.option.mountJumpBar.active": "Nascondi barra di salto del mezzo",
   "autohud.option.mountJumpBar.active.description": "Nascondi la barra di salto del mezzo quando non è in carica",
   "autohud.option.mountJumpBar.onChange": "Rivela barra di salto del mezzo",

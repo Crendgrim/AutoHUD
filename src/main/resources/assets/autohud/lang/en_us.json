@@ -88,6 +88,7 @@
   "autohud.option.hotbar.maximumFadeHotbarItems.description": "Fade-out limit for hotbar items. Set this to non-zero to keep the contents of the hotbar always slightly visible.",
   "autohud.option.hotbar.revealExperienceTextWithHotbar": "Link experience level to hotbar",
   "autohud.option.hotbar.revealExperienceTextWithHotbar.description": "Reveal the experience level also when the hotbar is revealed.",
+  "autohud.option.hotbar.hideTooltip": "Always hide the selected item tooltip",
   "autohud.group.statusEffects": "Status effects",
   "autohud.option.statusEffects.active": "Hide",
   "autohud.option.statusEffects.active.description": "Dynamically hide status effects",

@@ -140,6 +140,7 @@ public class ConfigHandler {
     BooleanComponent mountJumpBar;
     PolicyComponent mountHealth;
     BooleanComponent hotbar;
+    IComponent tooltip;
     BooleanComponent statusEffects;
     BooleanComponent scoreboard;
     BooleanFadeOnlyComponent crosshair;
@@ -164,6 +165,7 @@ public class ConfigHandler {
     public float getHotbarItemsMaximumFade() { return CONFIG_STORE.config().hotbar.maximumFadeHotbarItems; }
     public boolean revealExperienceTextWithHotbar() { return CONFIG_STORE.config().hotbar.revealExperienceTextWithHotbar; }
     public boolean revealExperienceTextOnTargetingEnchantingBlock() { return CONFIG_STORE.config().revealExperienceTextOnTargetingEnchantingBlock; }
+    public IComponent tooltip() { return tooltip; }
     public BooleanComponent statusEffects() { return statusEffects; }
     public boolean hidePersistentStatusEffects() { return CONFIG_STORE.config().hidePersistentStatusEffects; }
     public BooleanComponent scoreboard() { return scoreboard; }
@@ -186,6 +188,17 @@ public class ConfigHandler {
         mountJumpBar = new BooleanComponent(CONFIG_STORE.config().mountJumpBar, CONFIG_STORE.config().advanced.mountJumpBar, CONFIG_STORE.config().defaultValues);
         mountHealth = new PolicyComponent(CONFIG_STORE.config().mountHealth, CONFIG_STORE.config().advanced.mountHealth, CONFIG_STORE.config().defaultValues);
         hotbar = new BooleanComponent(CONFIG_STORE.config().hotbar.hotbar, CONFIG_STORE.config().advanced.hotbar, CONFIG_STORE.config().defaultValues);
+        tooltip = new BooleanComponent(CONFIG_STORE.config().hotbar.hotbar, CONFIG_STORE.config().advanced.hotbar, CONFIG_STORE.config().defaultValues) {
+            @Override
+            public boolean active() {
+                return CONFIG_STORE.config().hotbar.hideTooltip || super.active();
+            }
+
+            @Override
+            public boolean onChange() {
+                return !CONFIG_STORE.config().hotbar.hideTooltip && super.onChange();
+            }
+        };
         statusEffects = new BooleanComponent(CONFIG_STORE.config().statusEffects, CONFIG_STORE.config().advanced.statusEffects, CONFIG_STORE.config().defaultValues);
         scoreboard = new BooleanComponent(CONFIG_STORE.config().scoreboard.scoreboard, CONFIG_STORE.config().advanced.scoreboard, CONFIG_STORE.config().defaultValues);
         crosshair = new BooleanFadeOnlyComponent(CONFIG_STORE.config().crosshair, CONFIG_STORE.config().advanced.crosshair, CONFIG_STORE.config().defaultValues);

@@ -124,7 +124,7 @@ public class Components {
 
 	public static Component Tooltip = Component.builder("Tooltip")
 			.isTargeted(TARGET_HOTBAR)
-			.config(AutoHud.config.hotbar())
+			.config(AutoHud.config.tooltip())
 			.inMainHud()
 			.state(player -> new ItemStackComponentState(Components.Tooltip, player::getMainHandStack, true))
 			.build();

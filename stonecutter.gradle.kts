@@ -88,6 +88,7 @@ stonecutter parameters {
         "farmers_delight_refabricated",
         "hotbarslotcycling",
         "onebar",
+        "quark",
         "raised",
         "statuseffectbars"
     ).map {

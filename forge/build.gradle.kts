@@ -58,6 +58,7 @@ dependencies {
     mapOf(
         "hotbarslotcycling" to "fuzs.hotbarslotcycling:hotbarslotcycling-forge:{}",
         "legendary_survival_overhaul" to "curse.maven:legendary-survival-overhaul-840254:{}",
+        "quark" to "maven.modrinth:quark:{}",
         "raised" to "maven.modrinth:raised:Forge-${common.mod.dep("raised_artifact")}-{}",
     ).map { (modName, url) ->
         common.mod.dep(modName) to url.replace("{}", common.mod.dep(modName))

@@ -5,6 +5,7 @@ import mod.crend.autohud.ModKeyBindings;
 import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.compat.HotbarSlotCyclingCompat;
 import mod.crend.autohud.config.ConfigHandler;
+import mod.crend.autohud.forge.compat.QuarkCompat;
 import mod.crend.autohud.forge.compat.legendarysurvivaloverhaul.LSOCompat;
 import mod.crend.autohud.render.AutoHudRenderer;
 import mod.crend.libbamboo.forge.ConfigScreen;
@@ -38,6 +39,9 @@ public class AutoHudModEvents {
 		}
 		if (modList.isLoaded("legendarysurvivaloverhaul")) {
 			AutoHud.addApi(new LSOCompat());
+		}
+		if (modList.isLoaded("quark")) {
+			AutoHud.addApi(new QuarkCompat());
 		}
 		// Delay initialising the client tick event, see that method.
 		MinecraftForge.EVENT_BUS.addListener(AutoHudForge::onClientTick);

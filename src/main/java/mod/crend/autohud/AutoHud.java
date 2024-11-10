@@ -4,6 +4,7 @@ import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.component.EventHandler;
 import mod.crend.autohud.component.Hud;
 import mod.crend.autohud.config.ConfigHandler;
+import mod.crend.libbamboo.PlatformUtils;
 import mod.crend.libbamboo.event.GameEvent;
 
 import java.util.ArrayList;

@@ -12,6 +12,9 @@
     "detailab.ArmorBarRendererMixin",
     "detailab.InGameDrawerMixin",
     "environmentz.TemperatureHudRenderingMixin",
+    "farmersdelight.ComfortHealthOverlayMixin",
+    "farmersdelight.HUDOverlaysMixin",
+    "farmersdelight.NourishmentHungerOverlayMixin",
     "onebar.OneBarElementsMixin",
     "statuseffectbars.StatusEffectBarRendererMixin"
   ],

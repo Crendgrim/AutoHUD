@@ -66,6 +66,7 @@ dependencies {
         "detailab" to "maven.modrinth:detail-armor-bar:{}",
         "dehydration" to "maven.modrinth:dehydration:{}",
         "environmentz" to "maven.modrinth:environmentz:{}",
+        "farmers_delight_refabricated" to "maven.modrinth:farmers-delight-refabricated:{}",
         "hotbarslotcycling" to "fuzs.hotbarslotcycling:hotbarslotcycling-fabric:{}",
         "onebar" to "maven.modrinth:onebar:{}",
         "raised" to "maven.modrinth:raised:Fabric-${common.mod.dep("raised_artifact")}-{}",

@@ -67,6 +67,7 @@ stonecutter parameters {
         "dehydration",
         "detailab",
         "environmentz",
+        "farmers_delight_refabricated",
         "hotbarslotcycling",
         "onebar",
         "raised",

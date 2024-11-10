@@ -1,7 +1,5 @@
 package mod.crend.autohud.forge;
 
-import mod.crend.autohud.AutoHud;
-import mod.crend.autohud.component.Components;
 import mod.crend.autohud.render.ComponentRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
@@ -18,7 +16,7 @@ import static net.minecraftforge.client.gui.overlay.VanillaGuiOverlay.*;
 
 public class AutoHudGui extends ForgeGui {
 
-	static Map<Identifier, ComponentRenderer> COMPONENT_RENDERERS = new HashMap<>();
+	public static final Map<Identifier, ComponentRenderer> COMPONENT_RENDERERS = new HashMap<>();
 	static {
 		COMPONENT_RENDERERS.put(PLAYER_HEALTH.id(), ComponentRenderer.HEALTH);
 		COMPONENT_RENDERERS.put(ARMOR_LEVEL.id(), ComponentRenderer.ARMOR);

@@ -5,6 +5,7 @@ import mod.crend.autohud.ModKeyBindings;
 import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.compat.HotbarSlotCyclingCompat;
 import mod.crend.autohud.config.ConfigHandler;
+import mod.crend.autohud.forge.compat.legendarysurvivaloverhaul.LSOCompat;
 import mod.crend.autohud.render.AutoHudRenderer;
 import mod.crend.libbamboo.forge.ConfigScreen;
 import net.minecraftforge.api.distmarker.Dist;
@@ -28,11 +29,15 @@ public class AutoHudModEvents {
 		AutoHud.init();
 		ConfigScreen.register(ConfigHandler.CONFIG_STORE);
 		MinecraftForge.EVENT_BUS.register(new AutoHudGui());
-		if (ModList.get().isLoaded("hotbarslotcycling")) {
+		ModList modList = ModList.get();
+		if (modList.isLoaded("hotbarslotcycling")) {
 			HotbarSlotCyclingCompat.init();
 		}
-		if (ModList.get().isLoaded("raised")) {
+		if (modList.isLoaded("raised")) {
 			AutoHudForge.raisedCompat = true;
+		}
+		if (modList.isLoaded("legendarysurvivaloverhaul")) {
+			LSOCompat.register();
 		}
 		// Delay initialising the client tick event, see that method.
 		MinecraftForge.EVENT_BUS.addListener(AutoHudForge::onClientTick);

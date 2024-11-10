@@ -48,9 +48,27 @@ allprojects {
         // AppleSkin
         maven("https://maven.ryanliptak.com/")
 
-        maven {
-            name = "Modrinth"
-            setUrl("https://api.modrinth.com/maven")
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = "Modrinth"
+                    setUrl("https://api.modrinth.com/maven")
+                }
+            }
+            filter {
+                includeGroup("maven.modrinth")
+            }
+        }
+
+        exclusiveContent {
+            forRepository {
+                maven {
+                    setUrl("https://cursemaven.com")
+                }
+            }
+            filter {
+                includeGroup("curse.maven")
+            }
         }
 
         flatDir {

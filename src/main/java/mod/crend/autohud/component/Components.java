@@ -26,7 +26,7 @@ public class Components {
 	public static final Supplier<Boolean> TARGET_SCOREBOARD = () -> AutoHud.targetScoreboard;
 	public static final Supplier<Boolean> TARGET_STATUS_BARS = () -> AutoHud.targetStatusBars;
 
-	public static Component Armor = Component.builder("Armor")
+	public static Component Armor = Component.builder("armor")
 			.isTargeted(TARGET_STATUS_BARS)
 			.config(AutoHud.config.armor())
 			.inMainHud()
@@ -51,7 +51,7 @@ public class Components {
 			))
 			.build();
 
-	public static Component Health = Component.builder("Health")
+	public static Component Health = Component.builder("health")
 			.isTargeted(TARGET_STATUS_BARS)
 			.config(AutoHud.config.health())
 			.stackComponents(Armor)
@@ -63,14 +63,14 @@ public class Components {
 			))
 			.build();
 
-	public static Component Air = Component.builder("Air")
+	public static Component Air = Component.builder("air")
 			.isTargeted(TARGET_STATUS_BARS)
 			.config(AutoHud.config.air())
 			.inMainHud()
 			.state(player -> new PolicyComponentState(Components.Air, player::getAir, player::getMaxAir))
 			.build();
 
-	public static Component Hunger = Component.builder("Hunger")
+	public static Component Hunger = Component.builder("hunger")
 			.isTargeted(TARGET_STATUS_BARS)
 			.config(AutoHud.config.hunger())
 			.stackComponents(Air)
@@ -85,14 +85,14 @@ public class Components {
 			.build();
 
 
-	public static Component MountHealth = Component.builder("MountHealth")
+	public static Component MountHealth = Component.builder("mount_health")
 			.isTargeted(TARGET_STATUS_BARS)
 			.config(AutoHud.config.mountHealth())
 			.stackComponents(Air)
 			.inMainHud()
 			.build();
 
-	public static Component MountJumpBar = Component.builder("MountJumpBar")
+	public static Component MountJumpBar = Component.builder("mount_jump_bar")
 			.isTargeted(TARGET_STATUS_BARS)
 			.config(AutoHud.config.mountJumpBar())
 			.inMainHud()
@@ -100,14 +100,14 @@ public class Components {
 			.build();
 
 
-	public static Component ExperienceLevel = Component.builder("Experience")
+	public static Component ExperienceLevel = Component.builder("experience_level")
 			.isTargeted(TARGET_EXPERIENCE_BAR)
 			.config(AutoHud.config.experience())
 			.inMainHud()
 			.state(player -> new ValueComponentState<>(Components.ExperienceLevel, () -> player.experienceLevel, true))
 			.build();
 
-	public static Component ExperienceBar = Component.builder("ExperienceBar")
+	public static Component ExperienceBar = Component.builder("experience_bar")
 			.isTargeted(TARGET_EXPERIENCE_BAR)
 			.config(AutoHud.config.experienceBar())
 			.stackComponents(Health, Hunger, MountHealth, ExperienceLevel)
@@ -116,7 +116,7 @@ public class Components {
 			.build();
 
 
-	public static Component Hotbar = Component.builder("Hotbar")
+	public static Component Hotbar = Component.builder("hotbar")
 			.isTargeted(TARGET_HOTBAR)
 			.config(AutoHud.config.hotbar())
 			.stackComponents(ExperienceBar)
@@ -124,7 +124,7 @@ public class Components {
 			.state(player -> new ItemStackComponentState(Components.Hotbar, player::getMainHandStack, true))
 			.build();
 
-	public static Component Tooltip = Component.builder("Tooltip")
+	public static Component Tooltip = Component.builder("tooltip")
 			.isTargeted(TARGET_HOTBAR)
 			.config(AutoHud.config.tooltip())
 			.inMainHud()
@@ -132,39 +132,39 @@ public class Components {
 			.build();
 
 
-	public static Component Scoreboard = Component.builder("Scoreboard")
+	public static Component Scoreboard = Component.builder("scoreboard")
 			.isTargeted(TARGET_SCOREBOARD)
 			.config(AutoHud.config.scoreboard())
 			.state(player -> new ScoreboardComponentState(Components.Scoreboard))
 			.build();
 
 
-	public static Component Crosshair = Component.builder("Crosshair")
+	public static Component Crosshair = Component.builder("crosshair")
 			.isTargeted(TARGET_CROSSHAIR)
 			.config(AutoHud.config.crosshair())
 			.state(player -> new BooleanComponentState(Components.Crosshair, State::shouldShowCrosshair))
 			.build();
 
 
-	public static Component Chat = Component.builder("Chat")
+	public static Component Chat = Component.builder("chat")
 			.isTargeted(TARGET_CHAT)
 			.config(AutoHud.config.chat())
 			.state(player -> new ComponentState(Components.Chat))
 			.build();
 
-	public static Component ChatIndicator = Component.builder("ChatIndicator")
+	public static Component ChatIndicator = Component.builder("chat_indicator")
 			.isTargeted(TARGET_CHAT)
 			.config(AutoHud.config.chatIndicator())
 			.state(player -> new ComponentState(Components.ChatIndicator))
 			.build();
 
 
-	public static Component ActionBar = Component.builder("ActionBar")
+	public static Component ActionBar = Component.builder("action_bar")
 			.config(AutoHud.config.actionBar())
 			.state(player -> new ComponentState(Components.ActionBar))
 			.build();
 
-	public static Component BossBar = Component.builder("BossBar")
+	public static Component BossBar = Component.builder("boss_bar")
 			.config(AutoHud.config.bossBar())
 			.state(player -> new ComponentState(Components.BossBar))
 			.build();

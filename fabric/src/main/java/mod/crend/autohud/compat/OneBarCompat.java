@@ -10,12 +10,13 @@ import mod.crend.autohud.render.ComponentRenderer;
 import net.minecraft.client.network.ClientPlayerEntity;
 
 public class OneBarCompat implements AutoHudApi {
+	public static final String ONEBAR_MOD_ID = "onebar";
 	@Override
 	public String modId() {
-		return "onebar";
+		return ONEBAR_MOD_ID;
 	}
 
-	public static Component OneBarComponent = Component.builder("OneBar")
+	public static Component OneBarComponent = Component.builder(ONEBAR_MOD_ID, "onebar")
 			.config(AutoHud.config.health())
 			.inMainHud()
 			.state(player -> new ComponentState(OneBarCompat.OneBarComponent))

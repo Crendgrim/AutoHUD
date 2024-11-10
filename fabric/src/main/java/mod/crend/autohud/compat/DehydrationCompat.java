@@ -15,14 +15,15 @@ import net.dehydration.thirst.ThirstManager;
 import net.minecraft.client.network.ClientPlayerEntity;
 
 public class DehydrationCompat implements AutoHudApi {
+    public static final String DEHYDRATION_MOD_ID = "dehydration";
 
     @Override
     public String modId() {
-        return "dehydration";
+        return DEHYDRATION_MOD_ID;
     }
 
     // We bind this to the hunger config, as that is the most closely related one.
-    public static Component Thirst = Component.builder("Thirst")
+    public static Component Thirst = Component.builder(DEHYDRATION_MOD_ID, "thirst")
             .config(AutoHud.config.hunger())
             .stackComponents(Components.Air)
             .inMainHud()

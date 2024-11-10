@@ -3,12 +3,15 @@ package mod.crend.autohud.component;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.config.ConfigHandler;
 import mod.crend.autohud.component.state.ComponentState;
+import mod.crend.autohud.render.AutoHudRenderer;
 import mod.crend.autohud.render.ComponentRenderer;
+import mod.crend.libbamboo.VersionUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.StatusEffectSpriteManager;
 import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.util.Identifier;
 //? if <1.21.2
 import net.minecraft.item.Equipment;
 //? if >=1.20.5
@@ -67,7 +70,7 @@ public class Component {
     }
 
     private Component(
-            String name,
+            Identifier identifier,
             Supplier<Boolean> isTargeted,
             ConfigHandler.IComponent config,
             final List<Component> stackComponents,
@@ -75,7 +78,7 @@ public class Component {
             boolean register,
             Function<ClientPlayerEntity, ComponentState> stateProvider
     ) {
-        this.name = name;
+        this.identifier = identifier;
         this.isTargeted = isTargeted;
         this.config = config;
         this.stackComponents = new ArrayList<>(stackComponents);
@@ -88,11 +91,17 @@ public class Component {
     }
 
     public static Builder builder(String name) {
-        return new Builder(name);
+        return builder(VersionUtils.getIdentifier(AutoHud.MOD_ID, name));
+    }
+    public static Builder builder(String path, String name) {
+        return builder(VersionUtils.getIdentifier(path, name));
+    }
+    public static Builder builder(Identifier identifier) {
+        return new Builder(identifier);
     }
 
     public static class Builder {
-        String name;
+        Identifier identifier;
         Supplier<Boolean> isTargeted = () -> true;
         ConfigHandler.IComponent config = ConfigHandler.None;
         List<Component> stackComponents = List.of();
@@ -100,8 +109,8 @@ public class Component {
         boolean register = true;
         private Function<ClientPlayerEntity, ComponentState> stateProvider;
 
-        private Builder(String name) {
-            this.name = name;
+        private Builder(Identifier identifier) {
+            this.identifier = identifier;
         }
 
         public Builder isTargeted(Supplier<Boolean> isTargeted) {
@@ -143,7 +152,7 @@ public class Component {
         }
 
         public Component build() {
-            return new Component(name, isTargeted, config, stackComponents, inMainHud, register, stateProvider);
+            return new Component(identifier, isTargeted, config, stackComponents, inMainHud, register, stateProvider);
         }
     }
 
@@ -189,7 +198,7 @@ public class Component {
     public double alphaDelta = 0;
     public double offset = 0;
     public double offsetDelta = 0;
-    public final String name;
+    public final Identifier identifier;
     private final Supplier<Boolean> isTargeted;
     private final boolean inMainHud;
     private float visibleTime = 1;

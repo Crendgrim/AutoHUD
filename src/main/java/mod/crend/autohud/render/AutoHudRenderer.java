@@ -5,7 +5,8 @@ import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Components;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
+//? if >1.20.1
+/*import net.minecraft.client.render.RenderTickCounter;*/
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +65,7 @@ public class AutoHudRenderer {
 
 	public static void endRender() {
 		for (Component component : active) {
-			System.err.println("Not cleaned up: " + component.name);
+			System.err.println("Not cleaned up: " + component.identifier);
 		}
 		inRender = false;
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);

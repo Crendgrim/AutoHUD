@@ -16,17 +16,18 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import java.util.function.Supplier;
 
 public class EnvironmentZCompat implements AutoHudApi {
+	public static final String ENVIRONMENTZ_MOD_ID = "environmentz";
 	@Override
 	public String modId() {
-		return "environmentz";
+		return ENVIRONMENTZ_MOD_ID;
 	}
 
-	public static Component Temperature = Component.builder("Player Temperature")
+	public static Component Temperature = Component.builder(ENVIRONMENTZ_MOD_ID, "temperature")
 			.config(ConfigHandler.DummyPolicyComponent)
 			.inMainHud()
 			.state(player -> new EnvironmentZState(EnvironmentZCompat.Temperature, EnvironmentZCompat::temperatureState))
 			.build();
-	public static Component Thermometer = Component.builder("Thermometer")
+	public static Component Thermometer = Component.builder(ENVIRONMENTZ_MOD_ID, "thermometer")
 			.config(ConfigHandler.DummyPolicyComponent)
 			.inMainHud()
 			.state(player -> new EnvironmentZState(EnvironmentZCompat.Thermometer, EnvironmentZCompat::thermometerState))

@@ -9,6 +9,7 @@ import mod.crend.libbamboo.render.CustomFramebufferRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.util.Identifier;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -78,16 +79,16 @@ public class ComponentRenderer {
 	public static ComponentRenderer ACTION_BAR = of(Components.ActionBar);
 	public static ComponentRenderer CHAT_MESSAGE_INDICATOR = of(Components.ChatIndicator);
 
-	static Map<String, ComponentRenderer> statusEffectComponents = new HashMap<>();
+	static Map<Identifier, ComponentRenderer> statusEffectComponents = new HashMap<>();
 
 	public static void registerStatusEffectComponent(Component component) {
-		statusEffectComponents.put(component.name, of(component));
+		statusEffectComponents.put(component.identifier, of(component));
 	}
 	public static ComponentRenderer getForStatusEffect(StatusEffectInstance instance) {
-		return statusEffectComponents.get(Component.get(instance.getEffectType()).name);
+		return statusEffectComponents.get(Component.get(instance.getEffectType()).identifier);
 	}
 	public static ComponentRenderer getForStatusEffect(Sprite sprite) {
-		return statusEffectComponents.get(Objects.requireNonNull(Component.findBySprite(sprite)).name);
+		return statusEffectComponents.get(Objects.requireNonNull(Component.findBySprite(sprite)).identifier);
 	}
 
 	public static Builder builder(Component component) {

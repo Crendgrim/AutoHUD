@@ -53,6 +53,7 @@ dependencies {
     "neoForge"("net.neoforged:neoforge:${common.mod.dep("neoforge_loader")}")
 
     mapOf(
+        "coldsweat" to "maven.modrinth:cold-sweat:${common.mod.dep("coldsweat_artifact")}",
         "hotbarslotcycling" to "fuzs.hotbarslotcycling:hotbarslotcycling-neoforge:{}",
         "raised" to "maven.modrinth:raised:NeoForge-${common.mod.dep("raised_artifact")}-{}",
     ).map { (modName, url) ->

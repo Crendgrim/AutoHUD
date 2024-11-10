@@ -56,6 +56,7 @@ dependencies {
     }
 
     mapOf(
+        "coldsweat" to "maven.modrinth:cold-sweat:${common.mod.dep("coldsweat_artifact")}",
         "hotbarslotcycling" to "fuzs.hotbarslotcycling:hotbarslotcycling-forge:{}",
         "legendary_survival_overhaul" to "curse.maven:legendary-survival-overhaul-840254:{}",
         "quark" to "maven.modrinth:quark:{}",

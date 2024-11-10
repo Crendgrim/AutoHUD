@@ -4,8 +4,8 @@ import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.ModKeyBindings;
 import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.config.ConfigHandler;
-//? if hotbarslotcycling
-/*import mod.crend.autohud.compat.HotbarSlotCyclingCompat;*/
+import mod.crend.autohud.compat.HotbarSlotCyclingCompat;
+import mod.crend.autohud.neoforge.compat.ColdSweatCompat;
 import mod.crend.autohud.render.AutoHudRenderer;
 import mod.crend.libbamboo.neoforge.ConfigScreen;
 import net.minecraft.util.Identifier;
@@ -31,11 +31,13 @@ public class AutoHudModEvents {
 		ConfigScreen.register(ConfigHandler.CONFIG_STORE);
 		NeoForge.EVENT_BUS.register(new AutoHudGui());
 		if (ModList.get().isLoaded("hotbarslotcycling")) {
-			//? if hotbarslotcycling
-			/*AutoHud.addApi(new HotbarSlotCyclingCompat());*/
+			AutoHud.addApi(new HotbarSlotCyclingCompat());
 		}
 		if (ModList.get().isLoaded("raised")) {
 			AutoHudNeoForge.raisedCompat = true;
+		}
+		if (ModList.get().isLoaded("coldsweat")) {
+			AutoHud.addApi(new ColdSweatCompat());
 		}
 		// Delay initialising the client tick event, see that method.
 		NeoForge.EVENT_BUS.addListener(AutoHudNeoForge::onClientTick);

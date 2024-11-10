@@ -82,6 +82,7 @@ stonecutter parameters {
     listOf(
         "appleskin",
         "armorchroma",
+        "coldsweat",
         "dehydration",
         "detailab",
         "environmentz",

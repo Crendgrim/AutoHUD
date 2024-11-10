@@ -1,5 +1,7 @@
 package mod.crend.autohud.compat;
 
+import mod.crend.autohud.api.AutoHudApi;
+
 //? if hotbarslotcycling {
 /*import fuzs.hotbarslotcycling.api.v1.client.CyclingSlotsRenderer;
 import fuzs.hotbarslotcycling.api.v1.client.HotbarCyclingProvider;
@@ -16,8 +18,16 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+*///?}
 
 public class HotbarSlotCyclingCompat implements AutoHudApi {
+	@Override
+	public String modId() {
+		return "hotbarslotcycling";
+	}
+
+//? if hotbarslotcycling {
+/*
 	public static Component HOTBAR_SLOT_CYCLING_COMPONENT = Component.builder("hotbarslotcycling")
 			.isTargeted(() -> AutoHud.targetHotbar)
 			.config(AutoHud.config.hotbar())
@@ -53,8 +63,8 @@ public class HotbarSlotCyclingCompat implements AutoHudApi {
 			.build();
 
 	@Override
-	public String modId() {
-		return "hotbarslotcycling";
+	public void init() {
+		CyclingSlotsRenderer.setSlotsRenderer(new WrappedCyclingSlotsRenderer(CyclingSlotsRenderer.getSlotsRenderer()));
 	}
 
 	@Override
@@ -69,12 +79,6 @@ public class HotbarSlotCyclingCompat implements AutoHudApi {
 		if (HOTBAR_SLOT_CYCLING_COMPONENT.fullyRevealed()) {
 			HOTBAR_SLOT_CYCLING_COMPONENT.synchronizeFrom(Components.Hotbar);
 		}
-	}
-
-	public static void init() {
-		// Fake this API being inserted via entry point
-		AutoHud.addApi(new HotbarSlotCyclingCompat());
-		CyclingSlotsRenderer.setSlotsRenderer(new WrappedCyclingSlotsRenderer(CyclingSlotsRenderer.getSlotsRenderer()));
 	}
 
 	static class WrappedCyclingSlotsRenderer implements CyclingSlotsRenderer {
@@ -115,9 +119,5 @@ public class HotbarSlotCyclingCompat implements AutoHudApi {
 			parent.renderItemInSlot(context, posX, posY, partialTick, font, player, stack);
 		}
 	}
+*///?}
 }
-*///?} else {
-public class HotbarSlotCyclingCompat {
-	public static void init() { }
-}
-//?}

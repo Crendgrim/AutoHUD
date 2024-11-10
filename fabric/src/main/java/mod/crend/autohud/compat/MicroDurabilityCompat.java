@@ -28,7 +28,7 @@ public class MicroDurabilityCompat implements AutoHudApi {
     }
 
     @Override
-    public void initState(ClientPlayerEntity player) {
+    public void init() {
         Components.ExperienceBar.addStackComponent(MicroDurabilityComponent);
     }
 }

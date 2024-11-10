@@ -32,7 +32,7 @@ public class AutoHudModEvents {
 		NeoForge.EVENT_BUS.register(new AutoHudGui());
 		if (ModList.get().isLoaded("hotbarslotcycling")) {
 			//? if hotbarslotcycling
-			/*HotbarSlotCyclingCompat.init();*/
+			/*AutoHud.addApi(new HotbarSlotCyclingCompat());*/
 		}
 		if (ModList.get().isLoaded("raised")) {
 			AutoHudNeoForge.raisedCompat = true;

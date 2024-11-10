@@ -42,6 +42,7 @@ public class AutoHud {
     public static void addApi(AutoHudApi api) {
         if (PlatformUtils.isModLoaded(api.modId())) {
             apis.add(api);
+            api.init();
         }
     }
 }

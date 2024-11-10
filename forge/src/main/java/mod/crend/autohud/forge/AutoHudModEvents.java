@@ -31,13 +31,13 @@ public class AutoHudModEvents {
 		MinecraftForge.EVENT_BUS.register(new AutoHudGui());
 		ModList modList = ModList.get();
 		if (modList.isLoaded("hotbarslotcycling")) {
-			HotbarSlotCyclingCompat.init();
+			AutoHud.addApi(new HotbarSlotCyclingCompat());
 		}
 		if (modList.isLoaded("raised")) {
 			AutoHudForge.raisedCompat = true;
 		}
 		if (modList.isLoaded("legendarysurvivaloverhaul")) {
-			LSOCompat.register();
+			AutoHud.addApi(new LSOCompat());
 		}
 		// Delay initialising the client tick event, see that method.
 		MinecraftForge.EVENT_BUS.addListener(AutoHudForge::onClientTick);

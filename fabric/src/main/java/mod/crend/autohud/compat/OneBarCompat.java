@@ -29,12 +29,16 @@ public class OneBarCompat implements AutoHudApi {
 	}
 
 	@Override
-	public void initState(ClientPlayerEntity player) {
+	public void init() {
 		// Disable vanilla elements that are handled by OneBar
 		AutoHud.targetExperienceBar = false;
 		AutoHud.targetStatusBars = false;
 
 		Components.ExperienceBar.addStackComponent(OneBarComponent);
+	}
+
+	@Override
+	public void initState(ClientPlayerEntity player) {
 		OneBarComponent.hideNow();
 	}
 

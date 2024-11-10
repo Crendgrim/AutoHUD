@@ -46,7 +46,7 @@ public class DehydrationCompat implements AutoHudApi {
     }
 
     @Override
-    public void initState(ClientPlayerEntity player) {
+    public void init() {
         Components.Hunger.addStackComponent(Thirst);
     }
 

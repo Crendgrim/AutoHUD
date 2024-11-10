@@ -10,6 +10,11 @@ public interface AutoHudApi {
     String modId();
 
     /**
+     * Implement this method for a one-time initialisation on game start.
+     */
+    default void init() { }
+
+    /**
      * Implement this method to initialize a component
      * @param player currently active player
      */

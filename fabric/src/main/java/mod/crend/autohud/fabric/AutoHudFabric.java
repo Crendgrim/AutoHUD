@@ -32,7 +32,7 @@ public class AutoHudFabric implements ClientModInitializer {
         }
 
         if (FabricLoader.getInstance().isModLoaded("hotbarslotcycling")) {
-            HotbarSlotCyclingCompat.init();
+            AutoHud.addApi(new HotbarSlotCyclingCompat());
         }
 
     }

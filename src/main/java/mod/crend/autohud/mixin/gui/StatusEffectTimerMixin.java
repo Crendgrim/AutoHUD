@@ -3,6 +3,7 @@ package mod.crend.autohud.mixin.gui;
 import com.llamalad7.mixinextras.sugar.Local;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.render.ComponentRenderer;
+import mod.crend.libbamboo.PlatformUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -50,11 +51,23 @@ public abstract class StatusEffectTimerMixin {
             CallbackInfo c,
             @Local List<Runnable> list,
             @Local StatusEffectInstance statusEffectInstance,
-            @Local(ordinal = 4) int x,
-            @Local(ordinal = 3) int y
+            @Local(ordinal = 2) int i2,
+            @Local(ordinal = 3) int i3,
+            @Local(ordinal = 4) int i4,
+            @Local(ordinal = 5) int i5
     ) {
         list.add(() -> {
             if (AutoHud.config.statusEffectTimer()) {
+                int x = switch (PlatformUtils.getCurrentPlatform()) {
+                    case FABRIC -> i4;
+                    case FORGE -> i5;
+                    case NEOFORGE -> i2;
+                };
+                int y = switch (PlatformUtils.getCurrentPlatform()) {
+                    case FABRIC -> i5;
+                    case FORGE -> i3;
+                    case NEOFORGE -> i3;
+                };
                 ComponentRenderer.getForStatusEffect(statusEffectInstance).wrap(context, () -> drawStatusEffectOverlay(context, statusEffectInstance, x, y));
             }
         });

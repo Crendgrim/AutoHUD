@@ -4,6 +4,7 @@ plugins {
     id("dev.architectury.loom")
     id("architectury-plugin")
     id("com.github.johnrengelman.shadow")
+    id("maven-publish")
 }
 
 val loader = prop("loom.platform")!!
@@ -62,15 +63,15 @@ dependencies {
         "quark" to "maven.modrinth:quark:{}",
         "raised" to "maven.modrinth:raised:Forge-${common.mod.dep("raised_artifact")}-{}",
     ).map { (modName, url) ->
-        common.mod.dep(modName) to url.replace("{}", common.mod.dep(modName))
+        common.mod.dep("forge", modName) to url.replace("{}", common.mod.dep("forge", modName))
     }.filterNot { (version, _) ->
         version.startsWith("[")
     }.forEach { (_, url) ->
         modCompileOnly(url)
     }
 
-    modImplementation(name="libbamboo", group="mod.crend.libbamboo", version="forge-${common.mod.dep("libbamboo")}")
-    include(name="libbamboo", group="mod.crend.libbamboo", version="forge-${common.mod.dep("libbamboo")}")
+    modImplementation(name="libbamboo", group="mod.crend", version="${common.mod.dep("libbamboo")}-forge")
+    include(name="libbamboo", group="mod.crend", version="${common.mod.dep("libbamboo")}-forge")
 
     commonBundle(project(common.path, "namedElements")) { isTransitive = false }
     shadowBundle(project(common.path, "transformProductionForge")) { isTransitive = false }
@@ -86,7 +87,9 @@ loom {
     forge.convertAccessWideners = true
     forge.mixinConfigs(
         "autohud-common.mixins.json",
+        "autohud-common-compat.mixins.json",
         "autohud-forge.mixins.json",
+        "autohud-forge-compat.mixins.json",
     )
 
     runConfigs.all {
@@ -141,4 +144,16 @@ tasks.register<Copy>("buildAndCollect") {
     from(tasks.remapJar.get().archiveFile, tasks.remapSourcesJar.get().archiveFile)
     into(rootProject.layout.buildDirectory.file("libs/${mod.version}/$loader"))
     dependsOn("build")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = mod.prop("group")
+            artifactId = mod.prop("id")
+            version = "${mod.version}+${minecraft}-${loader}"
+
+            from(components["java"])
+        }
+    }
 }

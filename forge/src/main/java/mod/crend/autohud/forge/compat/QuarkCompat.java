@@ -1,3 +1,4 @@
+//? if quark {
 package mod.crend.autohud.forge.compat;
 
 import mod.crend.autohud.api.AutoHudApi;
@@ -19,3 +20,4 @@ public class QuarkCompat implements AutoHudApi {
 		}
 	}
 }
+//?}

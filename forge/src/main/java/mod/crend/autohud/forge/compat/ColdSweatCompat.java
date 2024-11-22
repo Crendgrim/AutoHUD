@@ -1,3 +1,4 @@
+//? if coldsweat {
 package mod.crend.autohud.forge.compat;
 
 import com.momosoftworks.coldsweat.ColdSweat;
@@ -10,6 +11,7 @@ import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.state.ValueComponentState;
 import mod.crend.autohud.config.ConfigHandler;
+//? if <1.20.5
 import mod.crend.autohud.forge.AutoHudGui;
 import mod.crend.autohud.render.ComponentRenderer;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -69,8 +71,11 @@ public class ColdSweatCompat implements AutoHudApi {
 
 	@Override
 	public void init() {
+		//? if <1.20.5 {
 		AutoHudGui.COMPONENT_RENDERERS.put(BODY_TEMP_GAUGE.identifier, BODY_TEMP_RENDERER);
 		AutoHudGui.COMPONENT_RENDERERS.put(WORLD_TEMP_GAUGE.identifier, WORLD_TEMP_RENDERER);
 		AutoHudGui.COMPONENT_RENDERERS.put(VAGUE_TEMP_GAUGE.identifier, VAGUE_TEMP_RENDERER);
+		//?}
 	}
 }
+//?}

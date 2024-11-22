@@ -1,11 +1,9 @@
-package mod.crend.autohud.mixin.gui;
+package mod.crend.autohud.forge.mixin.gui;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.render.ComponentRenderer;
 import mod.crend.libbamboo.PlatformUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -34,11 +32,10 @@ import java.util.List;
  */
 
 // Set priority to 500, to load before default at 1000. This is to better cooperate with HUDTweaks.
-@Environment(EnvType.CLIENT)
 @Mixin(value = InGameHud.class, priority = 500)
 public abstract class StatusEffectTimerMixin {
     @Shadow @Final
-    private MinecraftClient client;
+	protected MinecraftClient client;
 
     @Inject(method = "renderStatusEffectOverlay",
             at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", shift = At.Shift.AFTER))

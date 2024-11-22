@@ -15,7 +15,7 @@ public class ScoreboardMixin {
         ScoreboardHelper.onObjectiveUpdate(objective);
     }
 
-    //? if <1.20.5 {
+    //? if <1.20.3 {
     @Inject(method="updateScore", at=@At("HEAD"))
     public void autoHud$onPlayerScoreUpdate(ScoreboardPlayerScore score, CallbackInfo ci) {
         ScoreboardHelper.onPlayerScoreUpdate(score);

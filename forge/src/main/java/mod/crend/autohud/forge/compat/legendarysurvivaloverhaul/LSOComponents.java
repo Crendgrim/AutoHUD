@@ -1,3 +1,4 @@
+//? if legendary_survival_overhaul {
 package mod.crend.autohud.forge.compat.legendarysurvivaloverhaul;
 
 import mod.crend.autohud.AutoHud;
@@ -37,3 +38,4 @@ public class LSOComponents {
 			.build();
 
 }
+//?}

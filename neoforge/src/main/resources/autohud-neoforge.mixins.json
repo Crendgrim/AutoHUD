@@ -4,7 +4,8 @@
   "package": "mod.crend.autohud.neoforge.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "gui.InGameHudMixin"
+    "gui.InGameHudMixin",
+    "gui.StatusEffectTimerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

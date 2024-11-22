@@ -50,30 +50,30 @@ public abstract class InGameHudMixin {
         AutoHudRenderer.endRender();
     }
     //?} else {
-
     /*@WrapOperation(
             method = "render",
             at = @At(
                     value = "INVOKE",
                     //? if <1.21 {
-                    /^target = "Lnet/minecraft/client/gui/LayeredDrawer;render(Lnet/minecraft/client/gui/DrawContext;F)V"
-                    ^///?} else
-                    target = "Lnet/minecraft/client/gui/LayeredDrawer;render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V"
+                    target = "Lnet/minecraft/client/gui/LayeredDrawer;render(Lnet/minecraft/client/gui/DrawContext;F)V"
+                    //?} else
+                    /^target = "Lnet/minecraft/client/gui/LayeredDrawer;render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V"^/
             )
     )
     private void autoHud$render(
             LayeredDrawer instance,
             DrawContext context,
             //? if <1.21 {
-            /^float tickCounter,
-            ^///?} else
-            RenderTickCounter tickCounter,
+            float tickCounter,
+            //?} else
+            /^RenderTickCounter tickCounter,^/
             Operation<Void> original
     ) {
         AutoHudRenderer.startRender(context, tickCounter);
         original.call(instance, context, tickCounter);
         AutoHudRenderer.endRender();
-    }*///?}
+    }
+    *///?}
 
 
     // Hotbar
@@ -177,7 +177,7 @@ public abstract class InGameHudMixin {
     )
     private void autoHud$wrapExperienceBar(InGameHud instance, DrawContext context, int x, Operation<Void> original) {
         //? if <=1.20.1
-        /^if (!autoHud$shouldRenderExperienceLevel(true)) return;^/
+        if (!autoHud$shouldRenderExperienceLevel(true)) return;
         ComponentRenderer.EXPERIENCE_BAR.wrap(context, () -> original.call(instance, context, x));
     }
 
@@ -385,7 +385,7 @@ public abstract class InGameHudMixin {
         ComponentRenderer.SCOREBOARD.wrap(context, () -> original.call(instance, context, objective));
     }
     @ModifyArg(
-            //? if <1.20.5 {
+            //? if <1.20.3 {
             method = "renderScoreboardSidebar",
             //?} else if <1.21.2 {
             /*method = "method_55440",
@@ -402,7 +402,7 @@ public abstract class InGameHudMixin {
         return color;
     }
     @ModifyArg(
-            //? if <1.20.5 {
+            //? if <1.20.3 {
             method = "renderScoreboardSidebar",
             //?} else if <1.21.2 {
             /*method = "method_55440",
@@ -428,7 +428,7 @@ public abstract class InGameHudMixin {
             ),
             at = @At(
                     value = "INVOKE",
-                    //? if <1.20.5 {
+                    //? if <1.20.3 {
                     target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V"
                     //?} else if <1.21.2 {
                     /*target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V"
@@ -442,7 +442,7 @@ public abstract class InGameHudMixin {
             /*Function<Identifier, RenderLayer> renderLayers,*/
             Identifier texture,
             int x, int y,
-            //? if <1.20.5
+            //? if <1.20.3
             int u, int v,
             int width, int height,
             Operation<Void> original
@@ -454,7 +454,7 @@ public abstract class InGameHudMixin {
                     //? if >=1.21.2
                     /*renderLayerFunction,*/
                     texture, x, y,
-                    //? if <1.20.5
+                    //? if <1.20.3
                     u, v,
                     width, height
             );
@@ -463,7 +463,7 @@ public abstract class InGameHudMixin {
                     //? if >=1.21.2
                     /*renderLayers,*/
                     texture, x, y,
-                    //? if <1.20.5
+                    //? if <1.20.3
                     u, v,
                     width, height
             );
@@ -482,7 +482,7 @@ public abstract class InGameHudMixin {
             method = "renderStatusEffectOverlay",
             at = @At(
                     value = "INVOKE",
-                    //? if <1.20.5 {
+                    //? if <1.20.3 {
                     target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V"
                     //?} else if <1.21.2 {
                     /*target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V"
@@ -496,7 +496,7 @@ public abstract class InGameHudMixin {
             /*Function<Identifier, RenderLayer> renderLayer,*/
             Identifier texture,
             int x, int y,
-            //? if <1.20.5
+            //? if <1.20.3
             int u, int v,
             int width, int height,
             Operation<Void> original,
@@ -509,7 +509,7 @@ public abstract class InGameHudMixin {
                         /*renderLayer,*/
                         texture,
                         x, y,
-                        //? if <1.20.5
+                        //? if <1.20.3
                         u, v,
                         width, height
                 )

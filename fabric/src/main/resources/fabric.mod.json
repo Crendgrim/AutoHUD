@@ -28,6 +28,7 @@
   },
   "mixins": [
     "autohud-common.mixins.json",
+    "autohud-common-compat.mixins.json",
     "autohud-fabric.mixins.json",
     "autohud-fabric-compat.mixins.json"
   ],

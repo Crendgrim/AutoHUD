@@ -6,7 +6,8 @@
   "client": [
     "gui.ChatHudMixin",
     "gui.ForgeGuiMixin",
-    "gui.InGameHudMixin"
+    "gui.InGameHudMixin",
+    "gui.StatusEffectTimerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

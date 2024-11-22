@@ -25,6 +25,11 @@ for (it in stonecutter.tree.branches) {
     }
 }
 
+stonecutter registerChiseled tasks.register("chiseledPublishToMavenLocal", stonecutter.chiseled) {
+    group = "project"
+    ofTask("publishToMavenLocal")
+}
+
 // Runs active versions for each loader
 for (it in stonecutter.tree.nodes) {
     if (it.metadata != stonecutter.current || it.branch.id.isEmpty()) continue
@@ -38,6 +43,7 @@ for (it in stonecutter.tree.nodes) {
 
 allprojects {
     repositories {
+        mavenLocal()
         maven("https://maven.isxander.dev/releases")
         maven("https://maven.terraformersmc.com/")
         maven {
@@ -71,10 +77,6 @@ allprojects {
             }
         }
 
-        flatDir {
-            dirs("${rootProject.projectDir}/lib")
-        }
-
     }
 }
 
@@ -88,19 +90,22 @@ stonecutter parameters {
         "environmentz",
         "farmers_delight_refabricated",
         "hotbarslotcycling",
+        "legendary_survival_overhaul",
         "onebar",
         "quark",
         "raised",
         "statuseffectbars"
-    ).map {
-        it to
+    ).map { modName ->
+        modName to
                 if (node == null)
                     // :neoforge:1.20.1 is not defined, so we would not be able to switch back to 1.20.1 without
                     // defining any constants used in the neoforge source set. Just set them all to unsupported.
                     "[UNSUPPORTED]"
+                else if (node!!.sibling("") == null || node!!.prop("loom.platform") == null)
+                    node!!.mod.dep(modName)
                 else
                     // For e.g. :fabric:1.20.1, use the property of :1.20.1
-                    (node!!.sibling("") ?: node!!).property("deps.$it").toString()
+                    node!!.sibling("")!!.mod.dep(node!!.prop("loom.platform")!!, modName)
     }.forEach { (mod, version) ->
         val modIsPresent = !version.startsWith("[");
         const(mod, modIsPresent)

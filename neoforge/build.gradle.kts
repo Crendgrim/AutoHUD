@@ -4,6 +4,7 @@ plugins {
     id("dev.architectury.loom")
     id("architectury-plugin")
     id("com.github.johnrengelman.shadow")
+    id("maven-publish")
 }
 
 val loader = prop("loom.platform")!!
@@ -57,15 +58,15 @@ dependencies {
         "hotbarslotcycling" to "fuzs.hotbarslotcycling:hotbarslotcycling-neoforge:{}",
         "raised" to "maven.modrinth:raised:NeoForge-${common.mod.dep("raised_artifact")}-{}",
     ).map { (modName, url) ->
-        common.mod.dep(modName) to url.replace("{}", common.mod.dep(modName))
+        common.mod.dep("neoforge", modName) to url.replace("{}", common.mod.dep("neoforge", modName))
     }.filterNot { (version, _) ->
         version.startsWith("[")
     }.forEach { (_, url) ->
         modCompileOnly(url)
     }
 
-    modImplementation(name="libbamboo", group="mod.crend.libbamboo", version="neoforge-${common.mod.dep("libbamboo")}")
-    include(name="libbamboo", group="mod.crend.libbamboo", version="neoforge-${common.mod.dep("libbamboo")}")
+    modImplementation(name="libbamboo", group="mod.crend", version="${common.mod.dep("libbamboo")}-neoforge")
+    include(name="libbamboo", group="mod.crend", version="${common.mod.dep("libbamboo")}-neoforge")
 
     commonBundle(project(common.path, "namedElements")) { isTransitive = false }
     shadowBundle(project(common.path, "transformProductionNeoForge")) { isTransitive = false }
@@ -107,11 +108,19 @@ tasks.remapJar {
 tasks.shadowJar {
     configurations = listOf(shadowBundle)
     archiveClassifier = "dev-shadow"
-    exclude("fabric.mod.json", "architectury.common.json")
+    exclude(
+        "fabric.mod.json",
+        "architectury.common.json",
+        if (stonecutter.eval(minecraft, "<=1.20.4")) "META-INF/neoforge.mods.toml" else "META-INF/mods.toml"
+    )
 }
 
 tasks.processResources {
-    properties(listOf("META-INF/neoforge.mods.toml", "pack.mcmeta"),
+    properties(
+        listOf(
+            if (stonecutter.eval(minecraft, "<=1.20.4")) "META-INF/mods.toml" else "META-INF/neoforge.mods.toml",
+            "pack.mcmeta"
+        ),
         "id" to mod.id,
         "name" to mod.name,
         "version" to mod.version,
@@ -130,4 +139,16 @@ tasks.register<Copy>("buildAndCollect") {
     from(tasks.remapJar.get().archiveFile, tasks.remapSourcesJar.get().archiveFile)
     into(rootProject.layout.buildDirectory.file("libs/${mod.version}/$loader"))
     dependsOn("build")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = mod.prop("group")
+            artifactId = mod.prop("id")
+            version = "${mod.version}+${minecraft}-${loader}"
+
+            from(components["java"])
+        }
+    }
 }

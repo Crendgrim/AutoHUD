@@ -1,3 +1,4 @@
+//? if <1.20.5 {
 package mod.crend.autohud.forge;
 
 import mod.crend.autohud.render.ComponentRenderer;
@@ -66,3 +67,4 @@ public class AutoHudGui extends ForgeGui {
 		);
 	}
 }
+//?}

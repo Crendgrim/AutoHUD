@@ -1,6 +1,6 @@
 package mod.crend.autohud.forge.mixin.gui;
 
-//? if <1.21 {
+//? if <1.20.5 {
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Components;
 import mod.crend.autohud.render.AutoHudRenderer;
@@ -63,6 +63,7 @@ public class ForgeGuiMixin {
 //?} else {
 
 /*import mod.crend.libbamboo.VersionUtils;
+import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(VersionUtils.class)
 public class ForgeGuiMixin {

@@ -27,8 +27,10 @@ public class AutoHud {
     public static boolean targetCrosshair = true;
     public static boolean targetChat = true;
 
-    public static void init() {
+    public static void loadConfig() {
         config = new ConfigHandler();
+    }
+    public static void init() {
         if (config.dynamicOnLoad()) {
             Hud.enableDynamic();
         }

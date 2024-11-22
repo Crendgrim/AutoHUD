@@ -27,8 +27,8 @@ public class HotbarSlotCyclingCompat implements AutoHudApi {
 	}
 
 //? if hotbarslotcycling {
-/*
-	public static Component HOTBAR_SLOT_CYCLING_COMPONENT = Component.builder("hotbarslotcycling")
+
+	/*public static Component HOTBAR_SLOT_CYCLING_COMPONENT = Component.builder("hotbarslotcycling")
 			.isTargeted(() -> AutoHud.targetHotbar)
 			.config(AutoHud.config.hotbar())
 			.inMainHud()

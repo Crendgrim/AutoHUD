@@ -5,6 +5,7 @@ plugins {
     id("dev.architectury.loom")
     id("architectury-plugin")
     id("com.github.johnrengelman.shadow")
+    id("maven-publish")
 }
 
 val loader = prop("loom.platform")!!
@@ -55,10 +56,10 @@ dependencies {
         modImplementation(fabricApi.module(it, common.mod.dep("fabric_api")))
     }
 
-    modImplementation(name="libbamboo", group="mod.crend.libbamboo", version="fabric-${common.mod.dep("libbamboo")}")
-    include(name="libbamboo", group="mod.crend.libbamboo", version="fabric-${common.mod.dep("libbamboo")}")
+    modImplementation(name="libbamboo", group="mod.crend", version="${common.mod.dep("libbamboo")}-fabric")
+    include(name="libbamboo", group="mod.crend", version="${common.mod.dep("libbamboo")}-fabric")
 
-    modImplementation("com.terraformersmc:modmenu:${common.mod.dep("modmenu")}")
+    modCompileOnly("com.terraformersmc:modmenu:${common.mod.dep("modmenu")}")
 
     mapOf(
         "appleskin" to "squeek.appleskin:appleskin-fabric:${common.mod.dep("appleskin_artifact")}-{}",
@@ -72,7 +73,7 @@ dependencies {
         "raised" to "maven.modrinth:raised:Fabric-${common.mod.dep("raised_artifact")}-{}",
         "statuseffectbars" to "maven.modrinth:status-effect-bars:{}"
     ).map { (modName, url) ->
-        common.mod.dep(modName) to url.replace("{}", common.mod.dep(modName))
+        common.mod.dep(modName) to url.replace("{}", common.mod.dep("fabric", modName))
     }.filterNot { (version, _) ->
         version.startsWith("[")
     }.forEach { (_, url) ->
@@ -141,4 +142,16 @@ tasks.register<Copy>("buildAndCollect") {
     from(tasks.remapJar.get().archiveFile, tasks.remapSourcesJar.get().archiveFile)
     into(rootProject.layout.buildDirectory.file("libs/${mod.version}/$loader"))
     dependsOn("build")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = mod.prop("group")
+            artifactId = mod.prop("id")
+            version = "${mod.version}+${minecraft}-${loader}"
+
+            from(components["java"])
+        }
+    }
 }

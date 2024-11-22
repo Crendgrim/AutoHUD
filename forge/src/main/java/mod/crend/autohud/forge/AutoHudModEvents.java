@@ -3,15 +3,20 @@ package mod.crend.autohud.forge;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.ModKeyBindings;
 import mod.crend.autohud.api.AutoHudApi;
-import mod.crend.autohud.compat.HotbarSlotCyclingCompat;
-import mod.crend.autohud.config.ConfigHandler;
+//? if hotbarslotcycling
+/*import mod.crend.autohud.compat.HotbarSlotCyclingCompat;*/
+//? if coldsweat
 import mod.crend.autohud.forge.compat.ColdSweatCompat;
+//? if quark
 import mod.crend.autohud.forge.compat.QuarkCompat;
+//? if legendary_survival_overhaul
 import mod.crend.autohud.forge.compat.legendarysurvivaloverhaul.LSOCompat;
-import mod.crend.autohud.render.AutoHudRenderer;
-import mod.crend.libbamboo.forge.ConfigScreen;
 import net.minecraftforge.api.distmarker.Dist;
+//? if <1.20.5 {
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import mod.crend.autohud.render.AutoHudRenderer;
+//?}
+import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -29,24 +34,34 @@ public class AutoHudModEvents {
 	@SubscribeEvent
 	static void onClientSetup(FMLClientSetupEvent event) {
 		AutoHud.init();
-		ConfigScreen.register(ConfigHandler.CONFIG_STORE);
+		//? if <1.20.5
 		MinecraftForge.EVENT_BUS.register(new AutoHudGui());
 		ModList modList = ModList.get();
-		if (modList.isLoaded("hotbarslotcycling")) {
+		//? if hotbarslotcycling {
+		/*if (modList.isLoaded("hotbarslotcycling")) {
 			AutoHud.addApi(new HotbarSlotCyclingCompat());
 		}
+		*///?}
+		//? if raised {
 		if (modList.isLoaded("raised")) {
 			AutoHudForge.raisedCompat = true;
 		}
+		//?}
+		//? if legendary_survival_overhaul {
 		if (modList.isLoaded("legendarysurvivaloverhaul")) {
 			AutoHud.addApi(new LSOCompat());
 		}
+		//?}
+		//? if quark {
 		if (modList.isLoaded("quark")) {
 			AutoHud.addApi(new QuarkCompat());
 		}
+		//?}
+		//? if coldsweat {
 		if (modList.isLoaded("cold_sweat")) {
 			AutoHud.addApi(new ColdSweatCompat());
 		}
+		//?}
 		// Delay initialising the client tick event, see that method.
 		MinecraftForge.EVENT_BUS.addListener(AutoHudForge::onClientTick);
 	}
@@ -63,9 +78,11 @@ public class AutoHudModEvents {
 		ModKeyBindings.ALL.forEach(event::register);
 	}
 
+	//? if <1.20.5 {
 	@SubscribeEvent
 	static void onRegisterOverlaysEvent(RegisterGuiOverlaysEvent event) {
 		event.registerAboveAll(NEW_CHAT_MESSAGE_INDICATOR, (forgeGui, context, f, i, j) -> AutoHudRenderer.renderChatMessageIndicator(context, f));
 	}
+	//?}
 
 }

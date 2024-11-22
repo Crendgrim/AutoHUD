@@ -16,6 +16,7 @@ public class AutoHudFabric implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        AutoHud.loadConfig();
         AutoHud.init();
 
         ModKeyBindings.ALL.forEach(KeyBindingHelper::registerKeyBinding);

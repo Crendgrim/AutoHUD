@@ -30,7 +30,10 @@ public class InGameHudMixin {
 
 	// Hotbar items
 	@WrapOperation(
-			method = "renderHotbarVanilla",
+			//? if <1.20.5 {
+			method = "renderHotbar",
+			//?} else
+			/*method = "renderHotbarVanilla",*/
 			at = @At(
 					value = "INVOKE",
 					//? if <1.21 {
@@ -132,8 +135,10 @@ public class InGameHudMixin {
 	}
 
 	@WrapOperation(
-			//? if <1.21.2 {
-			method = "lambda$renderEffects$10",
+			//? if <1.20.5 {
+			method = {"m_279741_", "method_18620"},
+			//?} else if <1.21.2 {
+			//method = "lambda$renderEffects$10",
 			//?} else
 			/*method = "lambda$renderEffects$11",*/
 			at = @At(

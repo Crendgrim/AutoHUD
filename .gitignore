@@ -6,6 +6,7 @@ gradlew
 build/
 out/
 classes/
+.kotlin
 
 # eclipse
 

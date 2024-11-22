@@ -1,3 +1,4 @@
+//? if legendary_survival_overhaul {
 package mod.crend.autohud.forge.compat.legendarysurvivaloverhaul;
 
 import mod.crend.autohud.component.state.ComponentState;
@@ -48,3 +49,4 @@ public class TemperatureState extends ComponentState {
 		};
 	}
 }
+//?}

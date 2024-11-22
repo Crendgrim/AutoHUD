@@ -1,6 +1,8 @@
 package mod.crend.autohud.forge.mixin.gui;
 
 import mod.crend.autohud.component.Components;
+import mod.crend.autohud.render.ComponentRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.gui.hud.MessageIndicator;
 import net.minecraft.network.message.MessageSignatureData;

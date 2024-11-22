@@ -1,7 +1,7 @@
 package mod.crend.autohud.neoforge.compat;
 
 //? if coldsweat {
-import com.momosoftworks.coldsweat.ColdSweat;
+/*import com.momosoftworks.coldsweat.ColdSweat;
 import com.momosoftworks.coldsweat.api.util.Temperature;
 import com.momosoftworks.coldsweat.client.gui.Overlays;
 import com.momosoftworks.coldsweat.common.capability.handler.EntityTempManager;
@@ -13,7 +13,7 @@ import mod.crend.autohud.config.ConfigHandler;
 import mod.crend.autohud.neoforge.AutoHudGui;
 import mod.crend.autohud.render.ComponentRenderer;
 import net.minecraft.client.network.ClientPlayerEntity;
-//?}
+*///?}
 import mod.crend.autohud.api.AutoHudApi;
 
 public class ColdSweatCompat implements AutoHudApi {
@@ -23,7 +23,7 @@ public class ColdSweatCompat implements AutoHudApi {
 	}
 
 //? if coldsweat {
-	public static Component BODY_TEMP_GAUGE = Component.builder(ColdSweat.MOD_ID, "body_temp")
+	/*public static Component BODY_TEMP_GAUGE = Component.builder(ColdSweat.MOD_ID, "body_temp")
 			.inMainHud()
 			.config(ConfigHandler.DummyBooleanComponent)
 			.state(player -> new ValueComponentState<>(ColdSweatCompat.BODY_TEMP_GAUGE, () -> Overlays.BODY_TEMP, true))
@@ -76,5 +76,5 @@ public class ColdSweatCompat implements AutoHudApi {
 		AutoHudGui.COMPONENT_RENDERERS.put(WORLD_TEMP_GAUGE.identifier, WORLD_TEMP_RENDERER);
 		AutoHudGui.COMPONENT_RENDERERS.put(VAGUE_TEMP_GAUGE.identifier, VAGUE_TEMP_RENDERER);
 	}
-//?}
+*///?}
 }

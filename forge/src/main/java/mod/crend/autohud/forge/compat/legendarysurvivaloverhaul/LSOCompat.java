@@ -1,3 +1,4 @@
+//? if legendary_survival_overhaul {
 package mod.crend.autohud.forge.compat.legendarysurvivaloverhaul;
 
 import mod.crend.autohud.api.AutoHudApi;
@@ -21,3 +22,4 @@ public class LSOCompat implements AutoHudApi {
 		AutoHudGui.COMPONENT_RENDERERS.put(LSOComponents.TEMPERATURE.identifier, LSOComponentRenderer.TEMPERATURE);
 	}
 }
+//?}

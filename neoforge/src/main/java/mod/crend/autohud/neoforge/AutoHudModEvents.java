@@ -7,23 +7,32 @@ import mod.crend.autohud.config.ConfigHandler;
 import mod.crend.autohud.compat.HotbarSlotCyclingCompat;
 import mod.crend.autohud.neoforge.compat.ColdSweatCompat;
 import mod.crend.autohud.render.AutoHudRenderer;
+import mod.crend.libbamboo.VersionUtils;
 import mod.crend.libbamboo.neoforge.ConfigScreen;
 import net.minecraft.util.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModList;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
-import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
+//? if <1.20.5 {
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.RegisterGuiOverlaysEvent;
+//?} else {
+/*import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+*///?}
 
-@EventBusSubscriber(modid = AutoHud.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+//? if <1.20.5 {
+@Mod.EventBusSubscriber(modid = AutoHud.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+//?} else
+/*@EventBusSubscriber(modid = AutoHud.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)*/
 public class AutoHudModEvents {
 	public static final String REGISTER_API = "register_api";
-	public static final Identifier NEW_CHAT_MESSAGE_INDICATOR = Identifier.of(AutoHud.MOD_ID, "new_chat_message_indicator");
+	public static final Identifier NEW_CHAT_MESSAGE_INDICATOR = VersionUtils.getIdentifier(AutoHud.MOD_ID, "new_chat_message_indicator");
 
 	@SubscribeEvent
 	static void onClientSetup(FMLClientSetupEvent event) {
@@ -56,8 +65,13 @@ public class AutoHudModEvents {
 	}
 
 	@SubscribeEvent
-	static void onRegisterOverlaysEvent(RegisterGuiLayersEvent event) {
-		event.registerAboveAll(NEW_CHAT_MESSAGE_INDICATOR, AutoHudRenderer::renderChatMessageIndicator);
+	static void onRegisterOverlaysEvent(/*? if <1.20.5 {*/RegisterGuiOverlaysEvent/*?} else {*//*RegisterGuiLayersEvent*//*?}*/ event) {
+		event.registerAboveAll(NEW_CHAT_MESSAGE_INDICATOR,
+				//? if <1.20.5 {
+				(neoforgeGui, context, f, i, j) -> AutoHudRenderer.renderChatMessageIndicator(context, f)
+				//?} else
+				/*AutoHudRenderer::renderChatMessageIndicator*/
+		);
 	}
 
 }

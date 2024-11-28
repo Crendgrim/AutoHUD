@@ -49,6 +49,8 @@
   "autohud.option.statusEffects.onChange": "Показывать статус активных эффектов",
   "autohud.option.hidePersistentStatusEffects": "Прятать статус постоянных эффектов",
   "autohud.option.hidePersistentStatusEffects.description": "Всегда прятать статус постоянных эффектов (например, от надетого черепашьего панциря)",
+  "autohud.option.showHiddenStatusEffects": "Show hidden",
+  "autohud.option.showHiddenStatusEffects.description": "By default, status effects without particles only show in the inventory screen. Toggle this on to also show them in the top right.",
   "autohud.group.scoreboard": "Таблица результатов",
   "autohud.option.scoreboard.scoreboard.active": "Спрятать",
   "autohud.option.scoreboard.scoreboard.onChange": "Показывать когда меняется заголовок",

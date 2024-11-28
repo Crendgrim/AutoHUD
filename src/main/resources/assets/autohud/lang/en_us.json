@@ -99,6 +99,8 @@
   "autohud.option.statusEffectTimer.description": "Show remaining time of status effects on their icon",
   "autohud.option.hidePersistentStatusEffects": "Hide persistent",
   "autohud.option.hidePersistentStatusEffects.description": "Always hide the status effect symbol for unchanging status effects, such as when wearing a turtle master helmet",
+  "autohud.option.showHiddenStatusEffects": "Show hidden",
+  "autohud.option.showHiddenStatusEffects.description": "By default, status effects without particles only show in the inventory screen. Toggle this on to also show them in the top right.",
   "autohud.group.scoreboard": "Scoreboard",
   "autohud.option.scoreboard.scoreboard.active": "Hide",
   "autohud.option.scoreboard.scoreboard.active.description": "Hide the scoreboard",

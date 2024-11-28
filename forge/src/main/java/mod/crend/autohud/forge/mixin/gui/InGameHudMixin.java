@@ -3,6 +3,7 @@ package mod.crend.autohud.forge.mixin.gui;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Hud;
 import mod.crend.autohud.render.AutoHudRenderer;
 import mod.crend.autohud.render.ComponentRenderer;
@@ -442,7 +443,7 @@ public abstract class InGameHudMixin {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;shouldShowIcon()Z")
 	)
 	private boolean autoHud$shouldShowIcon(StatusEffectInstance instance, Operation<Boolean> original, DrawContext context) {
-		return original.call(instance) && Hud.shouldShowIcon(instance);
+		return (original.call(instance) || AutoHud.config.showHiddenStatusEffects()) && Hud.shouldShowIcon(instance);
 	}
 	@WrapOperation(
 			method = "renderStatusEffectOverlay",

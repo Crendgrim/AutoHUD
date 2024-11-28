@@ -99,6 +99,8 @@
   "autohud.option.statusEffectTimer.description": "Mostra il tempo rimanente degli effetti di stato sulla loro icona",
   "autohud.option.hidePersistentStatusEffects": "Nascondi persistenti",
   "autohud.option.hidePersistentStatusEffects.description": "Nascondi sempre il simbolo dell'effetto di stato per gli effetti di stato invariabili, come quando si indossa un casco da maestro tartaruga",
+  "autohud.option.showHiddenStatusEffects": "Show hidden",
+  "autohud.option.showHiddenStatusEffects.description": "By default, status effects without particles only show in the inventory screen. Toggle this on to also show them in the top right.",
   "autohud.group.scoreboard": "Tabellone",
   "autohud.option.scoreboard.scoreboard.active": "Nascondi",
   "autohud.option.scoreboard.scoreboard.active.description": "Nascondi il tabellone",

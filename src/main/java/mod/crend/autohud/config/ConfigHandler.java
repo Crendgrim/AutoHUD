@@ -169,6 +169,7 @@ public class ConfigHandler {
     public IComponent tooltip() { return tooltip; }
     public BooleanComponent statusEffects() { return statusEffects; }
     public boolean hidePersistentStatusEffects() { return CONFIG_STORE.config().hidePersistentStatusEffects; }
+    public boolean showHiddenStatusEffects() { return CONFIG_STORE.config().showHiddenStatusEffects; }
     public BooleanComponent scoreboard() { return scoreboard; }
     public BooleanFadeOnlyComponent crosshair() { return crosshair; }
     public boolean shouldRevealScoreboardOnTitleChange() { return CONFIG_STORE.config().scoreboard.scoreboard.onChange; }

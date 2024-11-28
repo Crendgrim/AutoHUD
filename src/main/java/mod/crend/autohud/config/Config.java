@@ -137,6 +137,8 @@ public class Config implements Cloneable {
     @SerialEntry public BooleanComponent statusEffects = new BooleanComponent();
     @Category(name = "components", group = "statusEffects")
     @SerialEntry public boolean hidePersistentStatusEffects = true;
+    @Category(name = "components", group = "statusEffects")
+    @SerialEntry public boolean showHiddenStatusEffects = false;
 
     @Category(name = "components")
     @SerialEntry public HotbarComponents hotbar = new HotbarComponents();

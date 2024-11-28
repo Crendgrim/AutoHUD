@@ -154,7 +154,7 @@ public class State {
                 var effects = player.getActiveStatusEffects();
                 for (var effect : effects.keySet()) {
                     StatusEffectInstance effectInstance = effects.get(effect);
-                    if (effectInstance.shouldShowIcon()) {
+                    if (effectInstance.shouldShowIcon() || AutoHud.config.showHiddenStatusEffects()) {
                         if (effectInstance.getDuration() < 5) {
                             Component.get(effect).hide();
                         } else if (!previousStatusEffects.containsKey(effect)) {

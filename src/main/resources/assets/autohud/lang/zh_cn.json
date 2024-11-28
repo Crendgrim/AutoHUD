@@ -49,6 +49,8 @@
   "autohud.option.statusEffects.onChange": "显示当前的状态效果",
   "autohud.option.hidePersistentStatusEffects": "隐藏持续的状态效果",
   "autohud.option.hidePersistentStatusEffects.description": "对于不变的状态效果总是隐藏状态效果符号，例如戴着海龟壳时。",
+  "autohud.option.showHiddenStatusEffects": "Show hidden",
+  "autohud.option.showHiddenStatusEffects.description": "By default, status effects without particles only show in the inventory screen. Toggle this on to also show them in the top right.",
   "autohud.option.statusEffectTimer": "在其图标上显示状态效果的剩余时间",
   "autohud.option.statusEffectTimer.description": "Show remaining time of status effects on their icon",
   "autohud.group.scoreboard": "计分板",

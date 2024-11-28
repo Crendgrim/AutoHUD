@@ -172,7 +172,7 @@ public class InGameHudMixin {
 
 	@WrapOperation(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target="Lnet/minecraft/entity/effect/StatusEffectInstance;shouldShowIcon()Z"))
 	private boolean autoHud$shouldShowIconProxy(StatusEffectInstance instance, Operation<Boolean> original) {
-		return original.call(instance) && Hud.shouldShowIcon(instance);
+		return (original.call(instance) || AutoHud.config.showHiddenStatusEffects()) && Hud.shouldShowIcon(instance);
 	}
 
 }

@@ -9,7 +9,6 @@ import net.minecraft.scoreboard.*;
 import net.minecraft.text.Text;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
@@ -47,12 +46,13 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
     }
 
     private static ScoreboardObjective createObjective() {
+        if (MinecraftClient.getInstance().world == null || MinecraftClient.getInstance().player == null) return null;
         Scoreboard scoreboard = MinecraftClient.getInstance().world.getScoreboard();
 
         //? if <1.20.3 {
         Team playerTeam = scoreboard.getPlayerTeam(MinecraftClient.getInstance().player.getEntityName());
         //?} else {
-        /*Team playerTeam = scoreboard.getTeam(MinecraftClient.getInstance().player.getNameForScoreboard());
+        /*Team playerTeam = MinecraftClient.getInstance().player.getScoreboardTeam();
         *///?}
         if (playerTeam != null && playerTeam.getColor().isColor()) {
             //? if <1.20.2 {
@@ -97,6 +97,7 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
     //? if <1.20.3 {
     private void addPlayerScoreAndTeam(ScoreboardPlayerScore playerScore) {
         String playerName = playerScore.getPlayerName();
+        if (playerScore.getObjective() == null) return;
         Team playerTeam = playerScore.getObjective().getScoreboard().getPlayerTeam(playerScore.getPlayerName());
         int score = playerScore.getScore();
     //?} else {
@@ -201,14 +202,14 @@ public class ScoreboardComponentState extends ValueComponentState<ScoreboardObje
         if (this.cachedPlayerScores.isEmpty()) return;
 
         boolean revealComponent = false;
-        Iterator<Map.Entry<String, Pair<String, Integer>>> scores = this.cachedPlayerScores.entrySet().iterator();
 
-        while (scores.hasNext()) {
-            Pair<String, Integer> cachedPair = scores.next().getValue();
-            if (Objects.equals(cachedPair.left(), team.getName())) {
-                cachedPair.left(null); revealComponent = true;
-            }
-        }
+		for (Map.Entry<String, Pair<String, Integer>> stringPairEntry : this.cachedPlayerScores.entrySet()) {
+			Pair<String, Integer> cachedPair = stringPairEntry.getValue();
+			if (Objects.equals(cachedPair.left(), team.getName())) {
+				cachedPair.left(null);
+				revealComponent = true;
+			}
+		}
 
         // Remove the cached team after we remove all of the players associated with the
         // team

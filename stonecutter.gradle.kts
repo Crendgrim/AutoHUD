@@ -3,10 +3,10 @@ plugins {
     id("dev.architectury.loom") version "1.7-SNAPSHOT" apply false
     id("architectury-plugin") version "3.4-SNAPSHOT" apply false
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
+    id("me.modmuss50.mod-publish-plugin") version "0.8.1" apply false
 }
 stonecutter active "1.20.1" /* [SC] DO NOT EDIT */
 stonecutter.automaticPlatformConstants = true
-stonecutter.debug = true
 
 // Builds every version into `build/libs/{mod.version}/{loader}`
 stonecutter registerChiseled tasks.register("chiseledBuild", stonecutter.chiseled) {
@@ -28,6 +28,11 @@ for (it in stonecutter.tree.branches) {
 stonecutter registerChiseled tasks.register("chiseledPublishToMavenLocal", stonecutter.chiseled) {
     group = "project"
     ofTask("publishToMavenLocal")
+}
+
+stonecutter registerChiseled tasks.register("chiseledPublish", stonecutter.chiseled) {
+    group = "project"
+    ofTask("publishMods")
 }
 
 // Runs active versions for each loader

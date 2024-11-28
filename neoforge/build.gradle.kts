@@ -5,6 +5,7 @@ plugins {
     id("architectury-plugin")
     id("com.github.johnrengelman.shadow")
     id("maven-publish")
+    id("me.modmuss50.mod-publish-plugin")
 }
 
 val loader = prop("loom.platform")!!
@@ -16,7 +17,7 @@ val common: Project = requireNotNull(stonecutter.node.sibling("")) {
 version = "${mod.version}+$minecraft"
 group = "${mod.group}.$loader"
 base {
-    archivesName.set("${mod.id}-$loader")
+    archivesName.set(mod.id)
 }
 architectury {
     platformSetupLoomIde()
@@ -101,7 +102,7 @@ tasks.jar {
 tasks.remapJar {
     injectAccessWidener = true
     input = tasks.shadowJar.get().archiveFile
-    archiveClassifier = null
+    archiveClassifier = loader
     dependsOn(tasks.shadowJar)
 }
 
@@ -148,7 +149,44 @@ publishing {
             artifactId = mod.prop("id")
             version = "${mod.version}+${minecraft}-${loader}"
 
-            from(components["java"])
+            artifact(tasks.remapJar.get().archiveFile)
+            artifact(tasks.remapSourcesJar.get().archiveFile) {
+                classifier = "sources"
+            }
         }
+    }
+}
+
+publishMods {
+    displayName = "[NeoForge ${common.mod.prop("mc_title")}] ${mod.name} ${mod.version}"
+
+    val modrinthToken = providers.gradleProperty("MODRINTH_TOKEN").orNull
+    val curseforgeToken = providers.gradleProperty("CURSEFORGE_TOKEN").orNull
+    dryRun = modrinthToken == null || curseforgeToken == null
+
+    file = tasks.remapJar.get().archiveFile
+    version = "${mod.version}+$minecraft-$loader"
+    changelog = mod.prop("changelog")
+    type = STABLE
+    modLoaders.add(loader)
+
+    val supportedVersions = common.mod.prop("mc_targets").split(" ")
+
+    modrinth {
+        projectId = property("publish.modrinth").toString()
+        accessToken = modrinthToken
+        minecraftVersions.addAll(supportedVersions)
+
+        optional("yacl")
+    }
+    curseforge {
+        projectId = property("publish.curseforge").toString()
+        projectSlug = property("publish.curseforge_slug").toString()
+        accessToken = curseforgeToken
+        minecraftVersions.addAll(supportedVersions)
+        clientRequired = true
+        serverRequired = false
+
+        optional("yacl")
     }
 }

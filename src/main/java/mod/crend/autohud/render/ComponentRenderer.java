@@ -145,7 +145,7 @@ public class ComponentRenderer {
 	}
 	public void wrap(DrawContext context, Runnable customRenderCall, Runnable originalRenderCall) {
 		if (isActive()) {
-			if (doRender.get()) {
+			if (doRender()) {
 				this.beginRender.accept(context);
 				customRenderCall.run();
 				this.endRender.accept(context);

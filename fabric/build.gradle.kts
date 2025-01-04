@@ -56,11 +56,13 @@ dependencies {
     ).forEach {
         modImplementation(fabricApi.module(it, common.mod.dep("fabric_api")))
     }
+    modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:${common.mod.dep("fabric_api")}")
 
     modImplementation(name="libbamboo", group="mod.crend", version="${common.mod.dep("libbamboo")}-fabric")
     include(name="libbamboo", group="mod.crend", version="${common.mod.dep("libbamboo")}-fabric")
 
-    modCompileOnly("com.terraformersmc:modmenu:${common.mod.dep("modmenu")}")
+    modImplementation("com.terraformersmc:modmenu:${common.mod.dep("modmenu")}")
+    modRuntimeOnly("dev.isxander:yet-another-config-lib:${common.mod.dep("yacl")}-fabric")
 
     mapOf(
         "appleskin" to "squeek.appleskin:appleskin-fabric:${common.mod.dep("appleskin_artifact")}-{}",

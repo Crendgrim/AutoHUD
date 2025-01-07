@@ -32,8 +32,11 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
 import java.util.function.Function;
 *///?}
-//? if >=1.20.5
-/*import net.minecraft.client.gui.LayeredDrawer;*/
+//? if >=1.20.5 {
+/*import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.LayeredDrawer;
+import org.spongepowered.asm.mixin.Final;
+*///?}
 
 @Mixin(value = InGameHud.class, priority = 800)
 public abstract class InGameHudMixin {
@@ -51,7 +54,9 @@ public abstract class InGameHudMixin {
         AutoHudRenderer.endRender();
     }
     //?} else {
-    /*@WrapOperation(
+    /*@Shadow @Final protected MinecraftClient client;
+
+    @WrapOperation(
             method = "render",
             at = @At(
                     value = "INVOKE",
@@ -187,6 +192,9 @@ public abstract class InGameHudMixin {
             at = @At("RETURN")
     )
     private boolean autoHud$shouldRenderExperienceLevel(boolean original) {
+        if (!client.interactionManager.hasExperienceBar()) {
+            return false;
+        }
         if (AutoHud.targetExperienceBar) {
             if (AutoHud.config.revealExperienceTextWithHotbar() && Components.Hotbar.shouldRender()) {
                 return true;

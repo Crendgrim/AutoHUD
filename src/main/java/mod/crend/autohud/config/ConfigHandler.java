@@ -1,6 +1,9 @@
 package mod.crend.autohud.config;
 
 import mod.crend.libbamboo.opt.ConfigStore;
+import mod.crend.libbamboo.type.ItemOrTag;
+
+import java.util.List;
 
 public class ConfigHandler {
 
@@ -172,6 +175,7 @@ public class ConfigHandler {
     public boolean showHiddenStatusEffects() { return CONFIG_STORE.config().showHiddenStatusEffects; }
     public BooleanComponent scoreboard() { return scoreboard; }
     public BooleanFadeOnlyComponent crosshair() { return crosshair; }
+    public List<ItemOrTag> crosshairAlwaysVisible() { return CONFIG_STORE.config().crosshairAlwaysVisible; }
     public boolean shouldRevealScoreboardOnTitleChange() { return CONFIG_STORE.config().scoreboard.scoreboard.onChange; }
     public boolean shouldRevealScoreboardOnScoreChange() { return CONFIG_STORE.config().scoreboard.onScoreChange; }
     public boolean shouldRevealScoreboardOnTeamChange() { return CONFIG_STORE.config().scoreboard.onTeamChange; }

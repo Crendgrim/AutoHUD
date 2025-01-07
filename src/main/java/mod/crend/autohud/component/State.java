@@ -1,6 +1,7 @@
 package mod.crend.autohud.component;
 
 import mod.crend.autohud.AutoHud;
+import mod.crend.libbamboo.type.ItemOrTag;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 
@@ -48,8 +49,18 @@ public class State {
     }
 
     static boolean shouldShowCrosshair() {
-        HitResult hitResult = MinecraftClient.getInstance().crosshairTarget;
-        return (hitResult != null && hitResult.getType() != HitResult.Type.MISS);
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.crosshairTarget != null && client.crosshairTarget.getType() != HitResult.Type.MISS) {
+            return true;
+        }
+        if (client.player != null) {
+            for (ItemOrTag itemOrTag : AutoHud.config.crosshairAlwaysVisible()) {
+                if (itemOrTag.matches(client.player.getMainHandStack().getItem()) || itemOrTag.matches(client.player.getOffHandStack().getItem())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     static boolean isFood(ItemStack itemStack) {

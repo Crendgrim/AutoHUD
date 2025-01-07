@@ -3,6 +3,10 @@ package mod.crend.autohud.config;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import mod.crend.autohud.AutoHud;
 import mod.crend.libbamboo.auto.annotation.*;
+import mod.crend.libbamboo.type.ItemOrTag;
+import net.minecraft.item.Items;
+
+import java.util.List;
 
 @AutoYaclConfig(modid = AutoHud.MOD_ID, filename = "autohud.json5")
 public class Config implements Cloneable {
@@ -146,14 +150,16 @@ public class Config implements Cloneable {
     @SerialEntry public ScoreboardComponents scoreboard = new ScoreboardComponents();
 
     @Category(name = "components")
-    @SerialEntry public BooleanComponent crosshair = new BooleanComponent();
-
-    @Category(name = "components")
     @SerialEntry public ChatComponent chat = new ChatComponent();
     @Category(name = "components", group = "various")
     @SerialEntry public SimpleComponent actionBar = new SimpleComponent();
     @Category(name = "components", group = "various")
     @SerialEntry public SimpleComponent bossBar = new SimpleComponent();
+
+    @Category(name = "components")
+    @SerialEntry public BooleanComponent crosshair = new BooleanComponent();
+    @Category(name = "components")
+    @SerialEntry public List<ItemOrTag> crosshairAlwaysVisible = List.of(new ItemOrTag(Items.BOW), new ItemOrTag(Items.CROSSBOW), new ItemOrTag(Items.TRIDENT));
 
     @Category(name = "advanced")
     @Label(key = "autohud.option.advanced.label")

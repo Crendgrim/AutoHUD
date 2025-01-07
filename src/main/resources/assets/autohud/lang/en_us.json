@@ -115,6 +115,8 @@
   "autohud.option.crosshair.active.description": "Hide the crosshair. By default in \"fade\" mode, it is only made mostly transparent. Go to advanced settings to configure this.",
   "autohud.option.crosshair.onChange": "Reveal when targeting",
   "autohud.option.crosshair.onChange.description": "Reveal when any block or entity is targeted. If DynamicCrosshair is installed, that mod's settings are used.",
+  "autohud.option.crosshairAlwaysVisible": "Always show crosshair with",
+  "autohud.option.crosshairAlwaysVisible.description": "Always show the crosshair when any of these items are held. If DynamicCrosshair is installed, this setting has no effect.",
   "autohud.group.chat": "Chat",
   "autohud.option.chat.chat.active": "Hide chat",
   "autohud.option.chat.chat.active.description": "Hides the chat, even when new messages are received. Chat will be shown again when the chat input bar is focused.",

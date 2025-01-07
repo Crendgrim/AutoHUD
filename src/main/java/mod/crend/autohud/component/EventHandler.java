@@ -89,9 +89,9 @@ public class EventHandler {
 			Components.ExperienceBar.updateState();
 		});
 		HotbarEvent.MAIN_HAND_CHANGE.register(stack -> {
-			Components.Health.state.updateNextTick();
-			Components.Hunger.state.updateNextTick();
-			Components.Armor.state.updateNextTick();
+			Components.Health.updateStateNextTick();
+			Components.Hunger.updateStateNextTick();
+			Components.Armor.updateStateNextTick();
 		});
 		HotbarEvent.SELECTED_SLOT_CHANGE.register(() -> {
 			if (AutoHud.config.isHotbarOnSlotChange()) {

@@ -56,17 +56,8 @@ public class Component {
         statusEffectComponents.values().forEach(Component::hide);
     }
     public static void tickAll() {
-        components.forEach(c -> {
-            if (c.state != null) {
-                c.state.tick();
-                c.tick();
-            }
-        });
+        components.forEach(Component::tick);
         statusEffectComponents.values().forEach(Component::tick);
-        if (Components.ChatIndicator.state != null) {
-            Components.ChatIndicator.state.tick();
-            Components.ChatIndicator.tick();
-        }
     }
 
     private Component(
@@ -451,12 +442,20 @@ public class Component {
             state.update();
         }
     }
+    public void updateStateNextTick() {
+        if (state != null) {
+            state.updateNextTick();
+        }
+    }
 
     public boolean isMoreVisibleThan(Component other) {
         return this.offset < other.offset;
     }
 
     public void tick() {
+        if (state != null) {
+            state.tick();
+        }
         if (visibleTime == 0) { // hide component
             if (!fullyHidden()) {
                 if (state == null || !state.scheduledUpdate()) { // component is not yet fully hidden, animate unless update scheduled

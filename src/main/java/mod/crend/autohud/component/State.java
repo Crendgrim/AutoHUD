@@ -85,6 +85,10 @@ public class State {
         if (isFood(itemStack)) {
 
             //? if <1.20.5 {
+            // In Forge 1.20.1, food components are handled differently. Ignore them.
+            if (itemStack.getItem().getFoodComponent() == null) {
+                return false;
+            }
             var statusEffects = itemStack.getItem().getFoodComponent().getStatusEffects();
             for (var effect : statusEffects) {
                 if (isHealEffect(effect.getFirst())) {

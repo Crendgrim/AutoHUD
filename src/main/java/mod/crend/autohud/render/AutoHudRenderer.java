@@ -60,7 +60,9 @@ public class AutoHudRenderer {
 	}
 
 	public static void renderChatMessageIndicator(DrawContext context, /*? if <1.21 {*/float/*?} else {*//*RenderTickCounter*//*?}*/ ignored) {
-		ComponentRenderer.CHAT_MESSAGE_INDICATOR.wrap(context, ChatMessageIndicator::render);
+		if (Components.ChatIndicator.config.active()) {
+			ComponentRenderer.CHAT_MESSAGE_INDICATOR.wrap(context, ChatMessageIndicator::render);
+		}
 	}
 
 	public static void endRender() {

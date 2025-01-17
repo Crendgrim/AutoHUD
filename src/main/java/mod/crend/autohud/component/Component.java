@@ -58,6 +58,7 @@ public class Component {
     public static void tickAll() {
         components.forEach(Component::tick);
         statusEffectComponents.values().forEach(Component::tick);
+        Components.ChatIndicator.tick();
     }
 
     private Component(

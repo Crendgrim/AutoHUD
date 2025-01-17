@@ -156,6 +156,7 @@ public class Components {
 			.isTargeted(TARGET_CHAT)
 			.config(AutoHud.config.chatIndicator())
 			.state(player -> new ComponentState(Components.ChatIndicator))
+			.register(false)
 			.build();
 
 

@@ -88,7 +88,46 @@ public class EventHandler {
 			Components.ExperienceLevel.updateState();
 			Components.ExperienceBar.updateState();
 		});
-		HotbarEvent.MAIN_HAND_CHANGE.register(stack -> {
+		HotbarEvent.MAIN_HAND_CHANGE.register((stack, type) -> {
+			switch (type) {
+				case ITEM -> {
+					if (Components.Hotbar.config.onChange()) {
+						Components.Hotbar.revealCombined();
+					}
+				}
+				case STACK_COUNT -> {
+					if (AutoHud.config.isHotbarOnStackSizeChange()) {
+						Components.Hotbar.revealCombined();
+					}
+				}
+				case DAMAGE -> {
+					if (AutoHud.config.isHotbarOnDamageChange()) {
+						Components.Hotbar.revealCombined();
+					}
+				}
+			}
+			Components.Health.updateStateNextTick();
+			Components.Hunger.updateStateNextTick();
+			Components.Armor.updateStateNextTick();
+		});
+		HotbarEvent.OFF_HAND_CHANGE.register((stack, type) -> {
+			switch (type) {
+				case ITEM -> {
+					if (Components.Hotbar.config.onChange()) {
+						Components.Hotbar.revealCombined();
+					}
+				}
+				case STACK_COUNT -> {
+					if (AutoHud.config.isHotbarOnStackSizeChange()) {
+						Components.Hotbar.revealCombined();
+					}
+				}
+				case DAMAGE -> {
+					if (AutoHud.config.isHotbarOnDamageChange()) {
+						Components.Hotbar.revealCombined();
+					}
+				}
+			}
 			Components.Health.updateStateNextTick();
 			Components.Hunger.updateStateNextTick();
 			Components.Armor.updateStateNextTick();

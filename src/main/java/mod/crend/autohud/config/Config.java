@@ -170,6 +170,10 @@ public class Config implements Cloneable {
     public static class HotbarComponents {
         @SerialEntry public BooleanComponent hotbar = new BooleanComponent();
         @EnableIf(field = "hotbar.active", value = EnableIf.BooleanPredicate.class)
+        @SerialEntry public boolean onDamageChange = false;
+        @EnableIf(field = "hotbar.active", value = EnableIf.BooleanPredicate.class)
+        @SerialEntry public boolean onStackSizeChange = true;
+        @EnableIf(field = "hotbar.active", value = EnableIf.BooleanPredicate.class)
         @SerialEntry public boolean onSlotChange = true;
         @EnableIf(field = "hotbar.active", value = EnableIf.BooleanPredicate.class)
         @SerialEntry public boolean onLowDurability = true;

@@ -121,7 +121,7 @@ public class Components {
 			.config(AutoHud.config.hotbar())
 			.stackComponents(ExperienceBar)
 			.inMainHud()
-			.state(player -> new ItemStackComponentState(Components.Hotbar, player::getMainHandStack, true))
+			.state(player -> new ComponentState(Components.Hotbar))
 			.build();
 
 	public static Component Tooltip = Component.builder("tooltip")

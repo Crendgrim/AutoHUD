@@ -162,6 +162,8 @@ public class ConfigHandler {
     public BooleanComponent mountJumpBar() { return mountJumpBar; }
     public PolicyComponent mountHealth() { return mountHealth; }
     public BooleanComponent hotbar() { return hotbar; }
+    public boolean isHotbarOnDamageChange() { return CONFIG_STORE.config().hotbar.onDamageChange; }
+    public boolean isHotbarOnStackSizeChange() { return CONFIG_STORE.config().hotbar.onStackSizeChange; }
     public boolean isHotbarOnSlotChange() { return CONFIG_STORE.config().hotbar.onSlotChange; }
     public boolean isHotbarOnLowDurability() { return CONFIG_STORE.config().hotbar.onLowDurability; }
     public int getHotbarDurabilityPercentage() { return CONFIG_STORE.config().hotbar.durabilityPercentage; }

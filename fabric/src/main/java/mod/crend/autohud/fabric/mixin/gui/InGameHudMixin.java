@@ -294,7 +294,7 @@ public abstract class InGameHudMixin {
         );
     }
 
-    @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;getProfiler()Lnet/minecraft/util/profiler/Profiler;", ordinal = 2))
+    @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", ordinal = 1, shift = At.Shift.AFTER))
     private void autoHud$preHungerBar(final DrawContext context, final CallbackInfo ci) {
         ComponentRenderer.HUNGER.beginRender(context);
     }

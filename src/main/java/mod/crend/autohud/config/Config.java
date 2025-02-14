@@ -88,6 +88,8 @@ public class Config implements Cloneable {
         @Translation(key = "autohud.option.advanced.maximumFade")
         @FloatingPointRange(min = 0.0, max = 1.0, interval = 0.1)
         @SerialEntry public double maximumFade = -1d;
+        @Translation(key = "autohud.option.advanced.renderWhenHidden")
+        @SerialEntry public boolean renderWhenHidden = false;
     }
     public static class AdvancedFadeOnlyComponent {
         AdvancedFadeOnlyComponent() { }

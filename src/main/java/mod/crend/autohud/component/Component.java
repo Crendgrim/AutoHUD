@@ -334,7 +334,7 @@ public class Component {
         if (AutoHud.config.animationFade()) {
             return !fullyHidden() || config.maximumFade() > 0;
         }
-        return !fullyHidden();
+        return !fullyHidden() || config.renderWhenHidden();
     }
 
     // This method is used to ensure that linked components start their hide animation at the same time

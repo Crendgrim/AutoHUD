@@ -53,6 +53,7 @@ public class ConfigHandler {
         public double speedMultiplier() { return (values.speedMultiplier < 0 ? defaultValues.speedMultiplier : values.speedMultiplier); }
         public int distance() { return (values.distance < 0 ? defaultValues.distance : values.distance); }
         public double maximumFade() { return (values.maximumFade < 0 ? Math.min(defaultValues.maximumFade, 1.0d) : Math.min(values.maximumFade, 1.0d)); }
+        public boolean renderWhenHidden() { return values.renderWhenHidden; }
     }
     public abstract static class IFadeOnlyComponent extends IComponent {
         IFadeOnlyComponent(Config.IComponent config, Config.AdvancedFadeOnlyComponent values, Config.DefaultValues defaultValues) {

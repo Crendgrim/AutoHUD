@@ -147,6 +147,8 @@
   "autohud.option.advanced.distance.description": "Controls how many pixels this element moves out by. Set to -1 to use default.",
   "autohud.option.advanced.maximumFade": "Fade-out limit",
   "autohud.option.advanced.maximumFade.description": "Controls how far the opacity of this element can be reduced. Set to -1 to use default.",
+  "autohud.option.advanced.renderWhenHidden": "Render when hidden",
+  "autohud.option.advanced.renderWhenHidden.description": "Render this element even if it is in its fully hidden state",
   "autohud.group.health": "Health",
   "autohud.group.armor": "Armor",
   "autohud.group.hunger": "Hunger",

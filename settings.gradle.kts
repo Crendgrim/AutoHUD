@@ -14,7 +14,7 @@ plugins {
     id("dev.kikugie.stonecutter") version "0.5-beta.5"
 }
 
-var fabricVersions = linkedSetOf(   "1.20.1", "1.20.4", "1.20.6", "1.21.1", "1.21.3")
+var fabricVersions = linkedSetOf(   "1.20.1", "1.20.4", "1.20.6", "1.21.1", "1.21.3", "1.21.5-rc1")
 var forgeVersions = linkedSetOf(    "1.20.1", "1.20.4", "1.20.6", "1.21.1", "1.21.3")
 var neoforgeVersions = linkedSetOf(           "1.20.4", "1.20.6", "1.21.1", "1.21.3")
 

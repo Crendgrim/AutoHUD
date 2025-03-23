@@ -1,5 +1,6 @@
 package mod.crend.autohud.compat.mixin.appleskin;
 
+//? if appleskin {
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Components;
 import mod.crend.autohud.render.AutoHudRenderer;
@@ -40,3 +41,12 @@ public class HUDOverlayHandlerMixin {
 	}
 	//?}
 }
+//?} else {
+
+/*import mod.crend.libbamboo.VersionUtils;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(value = VersionUtils.class, remap = false)
+public class HUDOverlayHandlerMixin {
+}
+*///?}

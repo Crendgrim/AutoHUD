@@ -70,6 +70,7 @@ public interface AutoHudRenderLayer {
 		@Override
 		public void doPreRender(Component component, DrawContext context, float minAlpha) {
 			AutoHudRenderer.alpha = Math.max(component.getAlpha(AutoHudRenderer.tickDelta), minAlpha);
+			//? if <=1.21.4
 			RenderSystem.enableBlend();
 			float[] color = RenderSystem.getShaderColor();
 			RenderSystem.setShaderColor(color[0], color[1], color[2], color[3] * AutoHudRenderer.alpha);

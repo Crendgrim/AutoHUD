@@ -55,7 +55,13 @@ public class AutoHudRenderer {
 
 	public static void startRender(DrawContext context, /*? if <1.21 {*/float/*?} else {*//*RenderTickCounter*//*?}*/ renderTickCounter) {
 		inRender = true;
-		tickDelta = renderTickCounter/*? if >=1.21 {*//*.getTickDelta(true)*//*?}*/;
+		tickDelta = renderTickCounter
+				/*? if >1.21.4 {*/
+						/*.getTickProgress(true)
+				*//*?} else if >=1.21 {*/
+						/*.getTickDelta(true)*/
+				/*?}*/
+		;
 		active.clear();
 	}
 
@@ -71,6 +77,7 @@ public class AutoHudRenderer {
 		}
 		inRender = false;
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+		//? if <=1.21.4
 		RenderSystem.defaultBlendFunc();
 	}
 }

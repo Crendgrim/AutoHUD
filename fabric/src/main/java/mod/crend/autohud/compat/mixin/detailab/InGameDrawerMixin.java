@@ -1,5 +1,6 @@
 package mod.crend.autohud.compat.mixin.detailab;
 
+//? if detailab {
 import com.redlimerl.detailab.render.InGameDrawer;
 import mod.crend.autohud.render.AutoHudRenderer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,3 +24,12 @@ public class InGameDrawerMixin {
 		return (AutoHudRenderer.inRender ? AutoHudRenderer.alpha * alpha : alpha);
 	}
 }
+//?} else {
+
+/*import mod.crend.libbamboo.VersionUtils;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(value = VersionUtils.class, remap = false)
+public class InGameDrawerMixin {
+}
+*///?}

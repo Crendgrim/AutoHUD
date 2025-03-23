@@ -138,8 +138,8 @@ public class InGameHudMixin {
 			//? if <1.20.5 {
 			method = {"m_279741_", "method_18620"},
 			//?} else if <1.21.2 {
-			//method = "lambda$renderEffects$10",
-			//?} else
+			/*method = "lambda$renderEffects$10",
+			*///?} else
 			/*method = "lambda$renderEffects$11",*/
 			at = @At(
 					value = "INVOKE",

@@ -35,7 +35,7 @@ public class DehydrationCompat implements AutoHudApi {
                             20,
                             () -> player.hasStatusEffect(EffectInit.THIRST)
                                     || (
-                                            AutoHud.config.revealHungerWhenHoldingFoodItem()
+                                            AutoHud.config.revealBarsWhenHoldingConsumableItem()
                                             && thirstManager.isNotFull()
                                             && (itemStillsThirst(player.getMainHandStack()) || itemStillsThirst(player.getOffHandStack()))
                                     )

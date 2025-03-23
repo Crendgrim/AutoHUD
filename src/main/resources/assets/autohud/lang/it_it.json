@@ -51,7 +51,7 @@
   "autohud.option.health.policy.description": "Sempre: sempre visibile\nDisabilitato: non rivelare automaticamente\nCambiando: rivela quando la salute cambia\nAumentando: rivela quando si guarisce\nDiminuisce: rivela quando si subisce danno\nNon Completa: rivela quando non è al massimo\nBassa: rivela quando la salute è bassa",
   "autohud.option.hunger.policy": "Rivela la fame quando",
   "autohud.option.hunger.policy.description": "Sempre: sempre visibile\nDisabilitato: non rivelare automaticamente\nCambiando: rivela quando la fame cambia\nAumentando: rivela quando si mangia\nDiminuisce: rivela quando aumenta la fame\nNon Completa: rivela quando non è al massimo della barra della fame\nBassa: rivela quando la barra della fame è bassa",
-  "autohud.option.revealHungerWhenHoldingFoodItem": "Reveal hunger bar when holding a food item in your hand and the player is not at full hunger.",
+  "autohud.option.revealBarsWhenHoldingConsumableItem": "Reveal hunger bar when holding a food item in your hand and the player is not at full hunger.",
   "autohud.option.air.policy": "Rivela l'aria quando",
   "autohud.option.air.policy.description": "Sempre: sempre visibile\nDisabilitato: non rivelare automaticamente\nCambiando: rivela quando l'aria cambia\nAumentando: rivela quando si guadagna aria\nDiminuisce: rivela quando si perde aria\nNon Completa: rivela quando non è al massimo della salute\nBassa: rivela quando la salute è bassa",
   "autohud.option.armor.policy": "Rivela l'armatura quando",

@@ -1,13 +1,15 @@
 package mod.crend.autohud.config;
 
+import com.google.gson.JsonObject;
 import mod.crend.libbamboo.opt.ConfigStore;
+import mod.crend.libbamboo.opt.ConfigUpdater;
 import mod.crend.libbamboo.type.ItemOrTag;
 
 import java.util.List;
 
 public class ConfigHandler {
 
-    public static final ConfigStore<Config> CONFIG_STORE = new ConfigStore<>(Config.class);
+    public static final ConfigStore<Config> CONFIG_STORE = new ConfigStore<>(Config.class, new AutoHudConfigUpdater());
 
     public ConfigHandler() {
         init();
@@ -156,7 +158,7 @@ public class ConfigHandler {
     public PolicyComponent health() { return health; }
     public PolicyComponent armor() { return armor; }
     public PolicyComponent hunger() { return hunger; }
-    public boolean revealHungerWhenHoldingFoodItem() { return CONFIG_STORE.config().revealHungerWhenHoldingFoodItem; }
+    public boolean revealBarsWhenHoldingConsumableItem() { return CONFIG_STORE.config().revealBarsWhenHoldingConsumableItem; }
     public PolicyComponent air() { return air; }
     public BooleanComponent experience() { return experience; }
     public BooleanComponent experienceBar() { return experienceBar; }
@@ -220,5 +222,18 @@ public class ConfigHandler {
         };
         actionBar = new SimpleComponent(CONFIG_STORE.config().actionBar, CONFIG_STORE.config().advanced.actionBar, CONFIG_STORE.config().defaultValues);
         bossBar = new SimpleComponent(CONFIG_STORE.config().bossBar, CONFIG_STORE.config().advanced.bossBar, CONFIG_STORE.config().defaultValues);
+    }
+
+    private static class AutoHudConfigUpdater implements ConfigUpdater {
+        @Override
+        public boolean updateConfigFile(JsonObject json) {
+            if (json.has("revealHungerWhenHoldingFoodItem")) {
+                boolean oldValue = json.get("revealHungerWhenHoldingFoodItem").getAsBoolean();
+                json.remove("revealHungerWhenHoldingFoodItem");
+                json.addProperty("revealBarsWhenHoldingConsumableItem", oldValue);
+                return true;
+            }
+            return false;
+        }
     }
 }

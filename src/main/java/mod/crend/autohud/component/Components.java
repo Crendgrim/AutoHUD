@@ -57,9 +57,10 @@ public class Components {
 			.stackComponents(Armor)
 			.inMainHud()
 			.state(player -> new EnhancedPolicyComponentState(Components.Health,
-						() -> Math.round(player.getHealth()),
-						() -> Math.round(player.getMaxHealth()),
-						State::canHeal
+					() -> Math.round(player.getHealth()),
+					() -> Math.round(player.getMaxHealth()),
+					() -> AutoHud.config.revealBarsWhenHoldingConsumableItem()
+							&& State.canHeal()
 			))
 			.build();
 
@@ -78,7 +79,7 @@ public class Components {
 			.state(player -> new EnhancedPolicyComponentState(Components.Hunger,
 					() -> player.getHungerManager().getFoodLevel(),
 					20,
-					() -> AutoHud.config.revealHungerWhenHoldingFoodItem()
+					() -> AutoHud.config.revealBarsWhenHoldingConsumableItem()
 							&& player.getHungerManager().getFoodLevel() < 20
 							&& State.isFood(player.getMainHandStack())
 			))

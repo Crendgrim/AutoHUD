@@ -51,7 +51,7 @@
   "autohud.option.health.policy.description": "總是：始終可見\n停用：不自動顯示\n變化時：生命值變化時顯示\n增加時：生命值增加時顯示\n減少時：生命值減少時顯示\n未滿時：生命值未滿時顯示\n偏低時：生命值偏低時顯示",
   "autohud.option.hunger.policy": "顯示飢餓值時機",
   "autohud.option.hunger.policy.description": "總是：始終可見\n停用：不自動顯示\n變化時：飢餓值變化時顯示\n增加時：飢餓值增加時顯示\n減少時：飢餓值減少時顯示\n未滿時：飢餓值未滿時顯示\n偏低時：飢餓值偏低時顯示",
-  "autohud.option.revealHungerWhenHoldingFoodItem": "Reveal hunger bar when holding a food item in your hand and the player is not at full hunger.",
+  "autohud.option.revealBarsWhenHoldingConsumableItem": "Reveal hunger bar when holding a food item in your hand and the player is not at full hunger.",
   "autohud.option.air.policy": "顯示氧氣值時機",
   "autohud.option.air.policy.description": "總是：始終可見\n停用：不自動顯示\n變化時：氧氣值變化時顯示\n增加時：氧氣值增加時顯示\n減少時：氧氣值減少時顯示\n未滿時：氧氣值未滿時顯示\n偏低時：氧氣值偏低時顯示",
   "autohud.option.armor.policy": "顯示盔甲值時機",

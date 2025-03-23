@@ -101,7 +101,7 @@
   "autohud.option.animationSpeeds.fadeOut.description": "Animation speed while fading out. Set to 0 to use above speed value.",
   "autohud.option.health.policy.description": "Always: always visible\nDisabled: do not automatically reveal\nChanging: reveal when health changes\nIncreasing: reveal when healing\nDecreasing: reveal when hurting\nNot Full: reveal when not at full health\nLow: reveal when at low health",
   "autohud.option.hunger.policy.description": "Always: always visible\nDisabled: do not automatically reveal\nChanging: reveal when hunger changes\nIncreasing: reveal when eating\nDecreasing: reveal when gaining hunger\nNot Full: reveal when not at full food bar\nLow: reveal when at low food bar",
-  "autohud.option.revealHungerWhenHoldingFoodItem": "Reveal hunger bar when holding a food item in your hand and the player is not at full hunger.",
+  "autohud.option.revealBarsWhenHoldingConsumableItem": "Reveal hunger bar when holding a food item in your hand and the player is not at full hunger.",
   "autohud.option.air.policy.description": "Always: always visible\nDisabled: do not automatically reveal\nChanging: reveal when air changes\nIncreasing: reveal when gaining air\nDecreasing: reveal when losing air\nNot Full: reveal when not at full health\nLow: reveal when at low health",
   "autohud.option.armor.policy.description": "Always: always visible\nDisabled: do not automatically reveal\nChanging: reveal when armor changes\nIncreasing: reveal when adding armor\nDecreasing: reveal when removing armor\nNot Full: reveal when not at full armor bar\nLow: reveal when armor bar is low",
   "autohud.option.experience.active.description": "Dynamically hide the experience bar. If disabled, the experience bar is always visible.",

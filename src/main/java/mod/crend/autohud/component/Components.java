@@ -42,7 +42,8 @@ public class Components {
 							/*{
 								ItemStack mainHandStack = player.getMainHandStack();
 								EquippableComponent equipment = mainHandStack.get(DataComponentTypes.EQUIPPABLE);
-								return equipment != null
+								return AutoHud.config.revealBarsWhenHoldingConsumableItem()
+									&& equipment != null
 									&& equipment.slot().isArmorSlot()
 									&& player.canEquip(mainHandStack, equipment.slot());
 							}

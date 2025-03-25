@@ -457,8 +457,10 @@ public abstract class InGameHudMixin {
             Operation<Void> original
     ) {
         ComponentRenderer.CROSSHAIR.wrap(context, () -> {
-            //? if >=1.21.2
-            /*Function<Identifier, RenderLayer> renderLayerFunction = RenderLayer::getGuiTextured;*/
+            //? if >1.21.4 {
+            /*Function<Identifier, RenderLayer> renderLayerFunction = RenderLayer::getCrosshair;
+            *///?} else if >=1.21.2
+            //Function<Identifier, RenderLayer> renderLayerFunction = RenderLayer::getGuiTextured;
             original.call(context,
                     //? if >=1.21.2
                     /*renderLayerFunction,*/

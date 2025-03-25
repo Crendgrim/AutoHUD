@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Components;
+import mod.crend.libbamboo.render.CustomFramebufferRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -17,12 +18,15 @@ import java.util.function.Supplier;
 
 //? if <=1.21.4 {
 import com.mojang.blaze3d.platform.GlStateManager;
-import mod.crend.libbamboo.render.CustomFramebufferRenderer;
 //?}
 
 public class ComponentRenderer {
 
-	public static ComponentRenderer HOTBAR = of(Components.Hotbar);
+	public static ComponentRenderer HOTBAR = builder(Components.Hotbar)
+			.fade()
+			.move()
+			.doRender(() -> Components.Hotbar.shouldRender() || AutoHudRenderer.shouldRenderHotbarItems())
+			.build();
 	public static ComponentRenderer TOOLTIP = of(Components.Tooltip);
 	public static ComponentRenderer HOTBAR_ITEMS = builder(Components.Hotbar)
 			.fade()
@@ -262,7 +266,6 @@ public class ComponentRenderer {
 					doRender,
 					customFramebuffer ? context -> {
 						beginRender.accept(context);
-						//? if <=1.21.4
 						CustomFramebufferRenderer.init();
 					} : beginRender,
 					customFramebuffer ? getCustomFramebufferEndRender() : endRender
@@ -274,25 +277,21 @@ public class ComponentRenderer {
 				if (containedInMovedComponent) {
 					return context -> {
 						endRender.accept(context);
-						AutoHudRenderLayer.FADE_MODE_WITH_REVERSE_TRANSLATION.wrap(component, context, 0.0f, () -> {
-							//? if <=1.21.4
-							CustomFramebufferRenderer.draw(context);
-						});
+						AutoHudRenderLayer.FADE_MODE_WITH_REVERSE_TRANSLATION.wrap(component, context, maximumFade.get(), () ->
+							CustomFramebufferRenderer.draw(context)
+						);
 					};
 				}
 				return context -> {
 					endRender.accept(context);
-					//? if <=1.21.4 {
 					AutoHudRenderLayer.FADE_MODE.wrap(component, context, maximumFade.get(), () ->
 							CustomFramebufferRenderer.draw(context)
 					);
-					//?}
 				};
 			}
 			return context -> {
 				endRender.accept(context);
-				//? if <=1.12.4
-				//CustomFramebufferRenderer.draw(context);
+				CustomFramebufferRenderer.draw(context);
 			};
 		}
 	}

@@ -1,9 +1,10 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "mod.crend.autohud.compat.mixin",
+  "package": "mod.crend.autohud.forge.compat.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "cold_sweat.OverlaysMixin"
   ],
   "injectors": {
     "defaultRequire": 0

@@ -13,6 +13,7 @@ import mod.crend.autohud.component.state.ValueComponentState;
 import mod.crend.autohud.config.ConfigHandler;
 //? if <1.20.5
 import mod.crend.autohud.forge.AutoHudGui;
+import mod.crend.autohud.forge.compat.mixin.cold_sweat.OverlaysMixin;
 import mod.crend.autohud.render.ComponentRenderer;
 import net.minecraft.client.network.ClientPlayerEntity;
 
@@ -25,7 +26,7 @@ public class ColdSweatCompat implements AutoHudApi {
 	public static Component BODY_TEMP_GAUGE = Component.builder(ColdSweat.MOD_ID, "body_temp")
 			.inMainHud()
 			.config(ConfigHandler.DummyBooleanComponent)
-			.state(player -> new ValueComponentState<>(ColdSweatCompat.BODY_TEMP_GAUGE, () -> Overlays.BODY_TEMP, true))
+			.state(player -> new ValueComponentState<>(ColdSweatCompat.BODY_TEMP_GAUGE, OverlaysMixin::getBODY_TEMP, true))
 			.build();
 	public static Component WORLD_TEMP_GAUGE = Component.builder(ColdSweat.MOD_ID, "world_temp")
 			.inMainHud()

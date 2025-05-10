@@ -7,11 +7,12 @@ pluginManagement {
         maven("https://maven.minecraftforge.net")
         maven("https://maven.neoforged.net/releases/")
         maven("https://maven.kikugie.dev/snapshots")
+        maven("https://maven.cassian.cc")
     }
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.5-beta.5"
+    id("dev.kikugie.stonecutter") version "0.7-alpha.14"
 }
 
 var fabricVersions = linkedSetOf(   "1.20.1", "1.21.1", "1.21.3", "1.21.5")

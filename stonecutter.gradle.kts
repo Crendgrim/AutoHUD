@@ -1,48 +1,20 @@
 plugins {
     id("dev.kikugie.stonecutter")
-    id("dev.architectury.loom") version "1.9-SNAPSHOT" apply false
+    id("dev.architectury.loom") version "1.10.9999" apply false
     id("architectury-plugin") version "3.4-SNAPSHOT" apply false
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     id("me.modmuss50.mod-publish-plugin") version "0.8.1" apply false
 }
-stonecutter active "1.20.1" /* [SC] DO NOT EDIT */
-stonecutter.automaticPlatformConstants = true
-
-// Builds every version into `build/libs/{mod.version}/{loader}`
-stonecutter registerChiseled tasks.register("chiseledBuild", stonecutter.chiseled) {
-    group = "project"
-    ofTask("buildAndCollect")
-}
-
-// Builds loader-specific versions into `build/libs/{mod.version}/{loader}`
-for (it in stonecutter.tree.branches) {
-    if (it.id.isEmpty()) continue
-    val loader = it.id.upperCaseFirst()
-    stonecutter registerChiseled tasks.register("chiseledBuild$loader", stonecutter.chiseled) {
-        group = "project"
-        versions { branch, _ -> branch == it.id }
-        ofTask("buildAndCollect")
-    }
-}
-
-stonecutter registerChiseled tasks.register("chiseledPublishToMavenLocal", stonecutter.chiseled) {
-    group = "project"
-    ofTask("publishToMavenLocal")
-}
-
-stonecutter registerChiseled tasks.register("chiseledPublish", stonecutter.chiseled) {
-    group = "project"
-    ofTask("publishMods")
-}
+stonecutter active file("active.stonecutter")
 
 // Runs active versions for each loader
 for (it in stonecutter.tree.nodes) {
-    if (it.metadata != stonecutter.current || it.branch.id.isEmpty()) continue
+    if (!it.metadata.isActive ||  it.branch.id.isEmpty()) continue
     val types = listOf("Client", "Server")
     val loader = it.branch.id.upperCaseFirst()
-    for (type in types) it.tasks.register("runActive$type$loader") {
+    for (type in types) tasks.register("runActive$type$loader") {
         group = "project"
-        dependsOn("run$type")
+        dependsOn("${it.hierarchy}:run$type")
     }
 }
 
@@ -86,6 +58,9 @@ allprojects {
 }
 
 stonecutter parameters {
+    constants {
+        match(branch.id, "fabric", "neoforge", "forge")
+    }
     listOf(
         "appleskin",
         "armorchroma",
@@ -102,18 +77,14 @@ stonecutter parameters {
         "statuseffectbars"
     ).map { modName ->
         modName to
-                if (node == null)
-                    // :neoforge:1.20.1 is not defined, so we would not be able to switch back to 1.20.1 without
-                    // defining any constants used in the neoforge source set. Just set them all to unsupported.
-                    "[UNSUPPORTED]"
-                else if (node!!.sibling("") == null || node!!.prop("loom.platform") == null)
-                    node!!.mod.dep(modName)
+                if (node.sibling("") == null || node.project.prop("loom.platform") == null)
+                    node.project.mod.dep(modName)
                 else
                     // For e.g. :fabric:1.20.1, use the property of :1.20.1
-                    node!!.sibling("")!!.mod.dep(node!!.prop("loom.platform")!!, modName)
+                    node.sibling("")!!.project.mod.dep(node.project.prop("loom.platform")!!, modName)
     }.forEach { (mod, version) ->
         val modIsPresent = !version.startsWith("[");
-        const(mod, modIsPresent)
-        dependency(mod, if (modIsPresent) version else "0")
+        constants[mod] = modIsPresent
+        dependencies[mod] = parse(if (modIsPresent) version.split("+")[0] else "0")
     }
 }

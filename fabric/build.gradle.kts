@@ -2,6 +2,7 @@
 
 
 plugins {
+    id("dev.kikugie.stonecutter")
     id("dev.architectury.loom")
     id("architectury-plugin")
     id("com.github.johnrengelman.shadow")
@@ -11,7 +12,7 @@ plugins {
 
 val loader = prop("loom.platform")!!
 val minecraft: String = stonecutter.current.version
-val common: Project = requireNotNull(stonecutter.node.sibling("")) {
+val common: Project = requireNotNull(stonecutter.node.sibling("")?.project) {
     "No common project for $project"
 }
 

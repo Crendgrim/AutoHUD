@@ -154,12 +154,12 @@ public class EventHandler {
 
 		InteractionEvent.USING_ITEM_TICK.register(player -> {
 			if (AutoHud.config.onUsingItem()) {
-				Component.revealAll(1);
+				Component.revealAll();
 			}
 		});
 		InteractionEvent.MINING_TICK.register(player -> {
 			if (AutoHud.config.onMining()) {
-				Component.revealAll(1);
+				Component.revealAll();
 			}
 		});
 		InteractionEvent.ATTACK.register((player, hitResult) -> {

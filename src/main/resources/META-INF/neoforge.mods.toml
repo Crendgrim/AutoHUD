@@ -1,0 +1,22 @@
+modLoader = "javafml"
+loaderVersion = "*"
+issueTrackerURL = "https://github.com/Crendgrim/AutoHUD/issues"
+license = "LGPL-3.0"
+
+[[mods]]
+modId = "${id}"
+version = "${version}"
+displayName = "${name}"
+authors = "Crendgrim"
+description = '''
+ Dynamic HUD that hides interface elements while they are not needed.
+'''
+logoFile = "autohud.png"
+logoBlur = false
+displayTest = "IGNORE_ALL_VERSION"
+
+[[mixins]]
+config = "autohud.mixins.json"
+
+[[mixins]]
+config = "autohud-compat.mixins.json"

@@ -14,7 +14,7 @@ public class ModKeyBindings {
 	public static final KeyBinding TOGGLE_HUD = new KeyBinding(
 			"key.autohud.toggle-hud",
 			InputUtil.Type.KEYSYM,
-			GLFW.GLFW_KEY_G,
+			GLFW.GLFW_KEY_H,
 			CATEGORY
 	);
 

@@ -35,6 +35,7 @@ public class AutoHudRenderer {
 	 * Modifies the given color to set its alpha value
 	 */
 	public static int modifyArgb(int argb) {
+		//if (!inRender) return argb;
 		int oldAlpha = argb >> 24;
 		if ((oldAlpha & 0xFC) == 0) {
 			oldAlpha = 0xFF;
@@ -45,11 +46,13 @@ public class AutoHudRenderer {
 		return Math.round(alpha * 0xFF) << 24;
 	}
 
+	//? if <=1.21.5 {
 	public static void injectTransparency() {
 		if (inRender) {
 			RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
 		}
 	}
+	//?}
 
 	public static List<Component> active = new ArrayList<>();
 
@@ -59,8 +62,8 @@ public class AutoHudRenderer {
 				/*? if >1.21.4 {*/
 						/*.getTickProgress(true)
 				*//*?} else if >=1.21 {*/
-						/*.getTickDelta(true)*/
-				/*?}*/
+						/*.getTickDelta(true)
+				*//*?}*/
 		;
 		active.clear();
 	}
@@ -76,6 +79,7 @@ public class AutoHudRenderer {
 			System.err.println("Not cleaned up: " + component.identifier);
 		}
 		inRender = false;
+		//? if <=1.21.5
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		//? if <=1.21.4
 		RenderSystem.defaultBlendFunc();

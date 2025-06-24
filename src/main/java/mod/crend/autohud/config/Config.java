@@ -1,12 +1,16 @@
 package mod.crend.autohud.config;
 
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import mod.crend.autohud.AutoHud;
 import mod.crend.libbamboo.auto.annotation.*;
 import mod.crend.libbamboo.type.ItemOrTag;
 import net.minecraft.item.Items;
 
 import java.util.List;
+//? if yacl {
+import dev.isxander.yacl3.config.v2.api.SerialEntry;
+//?} else {
+/*import mod.crend.libbamboo.opt.yacl.SerialEntry;
+*///?}
 
 @AutoYaclConfig(modid = AutoHud.MOD_ID, filename = "autohud.json5")
 public class Config implements Cloneable {

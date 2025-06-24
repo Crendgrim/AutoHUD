@@ -5,7 +5,9 @@ import mod.crend.autohud.component.EventHandler;
 import mod.crend.autohud.component.Hud;
 import mod.crend.autohud.config.ConfigHandler;
 import mod.crend.libbamboo.PlatformUtils;
+import mod.crend.libbamboo.VersionUtils;
 import mod.crend.libbamboo.event.GameEvent;
+import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,8 @@ import java.util.List;
 public class AutoHud {
 
     public static final String MOD_ID = "autohud";
+    public static final Identifier CHAT_INDICATOR = VersionUtils.getIdentifier(MOD_ID, "chat_indicator");
+    public static final String REGISTER_API = "register_api";
 
     public static ConfigHandler config;
     public static final List<AutoHudApi> apis = new ArrayList<>();

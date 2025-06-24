@@ -7,27 +7,27 @@ pluginManagement {
         maven("https://maven.minecraftforge.net")
         maven("https://maven.neoforged.net/releases/")
         maven("https://maven.kikugie.dev/snapshots")
-        maven("https://maven.cassian.cc")
     }
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.7-alpha.14"
+    id("dev.kikugie.stonecutter") version "0.7-beta.4"
 }
-
-var fabricVersions = linkedSetOf(   "1.20.1", "1.21.1", "1.21.3", "1.21.5")
-var forgeVersions = linkedSetOf(    "1.20.1", "1.21.1", "1.21.3")
-var neoforgeVersions = linkedSetOf(           "1.21.1", "1.21.3")
 
 stonecutter {
     centralScript = "build.gradle.kts"
     kotlinController = true
     create(rootProject) {
-        // Root `src/` functions as the 'common' project
-        versions(fabricVersions + forgeVersions + neoforgeVersions)
-        branch("fabric") { versions(fabricVersions) }
-        branch("forge") { versions(forgeVersions) }
-        branch("neoforge") { versions(neoforgeVersions) }
+        fun mc(version: String, vararg loaders: String) {
+            for (it in loaders) {
+                vers("$version-$it", version)
+            }
+        }
+        mc("1.20.1", "fabric", "forge")
+        mc("1.21.1", "fabric", "forge", "neoforge")
+        mc("1.21.3", "fabric", "forge", "neoforge")
+        mc("1.21.5", "fabric")
+        mc("1.21.6", "fabric")
     }
 }
 

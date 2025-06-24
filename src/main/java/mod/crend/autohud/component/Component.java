@@ -9,13 +9,14 @@ import mod.crend.libbamboo.VersionUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.StatusEffectSpriteManager;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.util.Identifier;
 //? if <1.21.2
 import net.minecraft.item.Equipment;
 //? if >=1.20.5
 /*import net.minecraft.registry.entry.RegistryEntry;*/
+//? if <=1.21.5
+import net.minecraft.client.texture.StatusEffectSpriteManager;
 
 import java.util.*;
 import java.util.function.Function;
@@ -172,6 +173,7 @@ public class Component {
     public static Collection<Component> getStatusEffectComponents() {
         return statusEffectComponents.values();
     }
+    //? if <=1.21.5 {
     public static Component findBySprite(Sprite sprite) {
         StatusEffectSpriteManager statusEffectSpriteManager = MinecraftClient.getInstance().getStatusEffectSpriteManager();
         for (var effect : statusEffectComponents.keySet()) {
@@ -181,6 +183,7 @@ public class Component {
         }
         return null;
     }
+    //?}
 
     public final ConfigHandler.IComponent config;
     public ComponentState state = null;

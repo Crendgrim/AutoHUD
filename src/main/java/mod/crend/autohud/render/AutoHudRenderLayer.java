@@ -48,16 +48,19 @@ public interface AutoHudRenderLayer {
 		@Override
 		public void doPreRender(Component component, DrawContext context, float ignored) {
 			AutoHudRenderer.active.add(component);
-			context.getMatrices().push();
+			context.getMatrices()./*? if <=1.21.5 {*/push/*?} else {*//*pushMatrix*//*?}*/();
 			if (component.isHidden()) {
+				//? if <=1.21.5 {
 				context.getMatrices().translate(component.getOffsetX(AutoHudRenderer.tickDelta), component.getOffsetY(AutoHudRenderer.tickDelta), 0);
+				//?} else
+				/*context.getMatrices().translate((float) component.getOffsetX(AutoHudRenderer.tickDelta), (float) component.getOffsetY(AutoHudRenderer.tickDelta));*/
 			}
 		}
 
 		@Override
 		public void doPostRender(Component component, DrawContext context) {
 			AutoHudRenderer.active.remove(component);
-			context.getMatrices().pop();
+			context.getMatrices()./*? if <=1.21.5 {*/pop/*?} else {*//*popMatrix*//*?}*/();
 		}
 	}
 
@@ -72,15 +75,18 @@ public interface AutoHudRenderLayer {
 			AutoHudRenderer.alpha = Math.max(component.getAlpha(AutoHudRenderer.tickDelta), minAlpha);
 			//? if <=1.21.4
 			RenderSystem.enableBlend();
+			//? if <=1.21.5 {
 			float[] color = RenderSystem.getShaderColor();
 			RenderSystem.setShaderColor(color[0], color[1], color[2], color[3] * AutoHudRenderer.alpha);
+			//?}
 		}
 
 		@Override
 		public void doPostRender(Component component, DrawContext context) {
-			//? if >=1.21.2
+			//? if >=1.21.2 && <=1.21.5
 			/*context.draw();*/
 			AutoHudRenderer.alpha = 1.0f;
+			//? if <=1.21.5
 			RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, AutoHudRenderer.alpha);
 		}
 	}
@@ -93,15 +99,18 @@ public interface AutoHudRenderLayer {
 
 		@Override
 		public void doPreRender(Component component, DrawContext context, float minAlpha) {
-			context.getMatrices().push();
+			context.getMatrices()./*? if <=1.21.5 {*/push/*?} else {*//*pushMatrix*//*?}*/();
 			if (component.isHidden()) {
+				//? if <=1.21.5 {
 				context.getMatrices().translate(-component.getOffsetX(AutoHudRenderer.tickDelta), -component.getOffsetY(AutoHudRenderer.tickDelta), 0);
+				//?} else
+				/*context.getMatrices().translate((float) -component.getOffsetX(AutoHudRenderer.tickDelta), (float) -component.getOffsetY(AutoHudRenderer.tickDelta));*/
 			}
 		}
 
 		@Override
 		public void doPostRender(Component component, DrawContext context) {
-			context.getMatrices().pop();
+			context.getMatrices()./*? if <=1.21.5 {*/pop/*?} else {*//*popMatrix*//*?}*/();
 		}
 	}
 
@@ -113,13 +122,16 @@ public interface AutoHudRenderLayer {
 
 		@Override
 		public void doPreRender(Component component, DrawContext context, float minAlpha) {
-			context.getMatrices().push();
+			context.getMatrices()./*? if <=1.21.5 {*/push/*?} else {*//*pushMatrix*//*?}*/();
+			//? if <=1.21.5 {
 			context.getMatrices().translate(AutoHudRenderer.globalOffsetX, AutoHudRenderer.globalOffsetY, 0);
+			//?} else
+			/*context.getMatrices().translate(AutoHudRenderer.globalOffsetX, AutoHudRenderer.globalOffsetY);*/
 		}
 
 		@Override
 		public void doPostRender(Component component, DrawContext context) {
-			context.getMatrices().pop();
+			context.getMatrices()./*? if <=1.21.5 {*/pop/*?} else {*//*popMatrix*//*?}*/();
 		}
 	}
 

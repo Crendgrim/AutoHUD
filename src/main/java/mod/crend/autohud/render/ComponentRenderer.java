@@ -4,8 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.component.Components;
-import mod.crend.libbamboo.render.CustomFramebufferRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.util.Identifier;
@@ -19,6 +19,8 @@ import java.util.function.Supplier;
 //? if <=1.21.4 {
 import com.mojang.blaze3d.platform.GlStateManager;
 //?}
+//? if <=1.21.5
+import mod.crend.libbamboo.render.CustomFramebufferRenderer;
 
 public class ComponentRenderer {
 
@@ -96,9 +98,11 @@ public class ComponentRenderer {
 	public static ComponentRenderer getForStatusEffect(StatusEffectInstance instance) {
 		return statusEffectComponents.get(Component.get(instance.getEffectType()).identifier);
 	}
+	//? if <=1.21.5 {
 	public static ComponentRenderer getForStatusEffect(Sprite sprite) {
 		return statusEffectComponents.get(Objects.requireNonNull(Component.findBySprite(sprite)).identifier);
 	}
+	//?}
 
 	public static Builder builder(Component component) {
 		return new Builder(component);
@@ -266,6 +270,8 @@ public class ComponentRenderer {
 					doRender,
 					customFramebuffer ? context -> {
 						beginRender.accept(context);
+						//RenderWrapper.create(context);
+						//? if <=1.21.5
 						CustomFramebufferRenderer.init();
 					} : beginRender,
 					customFramebuffer ? getCustomFramebufferEndRender() : endRender
@@ -277,20 +283,31 @@ public class ComponentRenderer {
 				if (containedInMovedComponent) {
 					return context -> {
 						endRender.accept(context);
+						//? if <=1.21.5 {
 						AutoHudRenderLayer.FADE_MODE_WITH_REVERSE_TRANSLATION.wrap(component, context, maximumFade.get(), () ->
 							CustomFramebufferRenderer.draw(context)
 						);
+						//?}
+						/*AutoHudRenderLayer.FADE_MODE_WITH_REVERSE_TRANSLATION.wrap(component, context, maximumFade.get(), () ->
+								RenderWrapper.cleanup()
+						);
+						 */
 					};
 				}
 				return context -> {
 					endRender.accept(context);
+					//? if <=1.21.5 {
 					AutoHudRenderLayer.FADE_MODE.wrap(component, context, maximumFade.get(), () ->
 							CustomFramebufferRenderer.draw(context)
 					);
+					//?}
+					//AutoHudRenderLayer.FADE_MODE.wrap(component, context, maximumFade.get(), () -> RenderWrapper.cleanup());
 				};
 			}
 			return context -> {
 				endRender.accept(context);
+				//RenderWrapper.cleanup();
+				//? if <=1.21.5
 				CustomFramebufferRenderer.draw(context);
 			};
 		}

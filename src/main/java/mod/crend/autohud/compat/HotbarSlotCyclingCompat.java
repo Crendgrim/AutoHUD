@@ -1,9 +1,9 @@
-package mod.crend.autohud.compat;
+//? if hotbarslotcycling {
+/*package mod.crend.autohud.compat;
 
 import mod.crend.autohud.api.AutoHudApi;
 
-//? if hotbarslotcycling {
-/*import fuzs.hotbarslotcycling.api.v1.client.CyclingSlotsRenderer;
+import fuzs.hotbarslotcycling.api.v1.client.CyclingSlotsRenderer;
 import fuzs.hotbarslotcycling.api.v1.client.HotbarCyclingProvider;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.api.AutoHudApi;
@@ -18,7 +18,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-*///?}
 
 public class HotbarSlotCyclingCompat implements AutoHudApi {
 	@Override
@@ -26,9 +25,7 @@ public class HotbarSlotCyclingCompat implements AutoHudApi {
 		return "hotbarslotcycling";
 	}
 
-//? if hotbarslotcycling {
-
-	/*public static Component HOTBAR_SLOT_CYCLING_COMPONENT = Component.builder("hotbarslotcycling")
+	public static Component HOTBAR_SLOT_CYCLING_COMPONENT = Component.builder("hotbarslotcycling")
 			.isTargeted(() -> AutoHud.targetHotbar)
 			.config(AutoHud.config.hotbar())
 			.inMainHud()
@@ -119,5 +116,5 @@ public class HotbarSlotCyclingCompat implements AutoHudApi {
 			parent.renderItemInSlot(context, posX, posY, partialTick, font, player, stack);
 		}
 	}
-*///?}
 }
+*///?}

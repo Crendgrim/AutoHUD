@@ -38,6 +38,7 @@ public class HUDOverlayHandlerMixin {
 
 	//? if <1.21.2 {
 	@ModifyVariable(method = "enableAlpha", at=@At("HEAD"), argsOnly = true)
+	/*? if forge || neoforge {*//*private static*//*?}*/
 	float autoHud$modifyAlpha(float alpha) {
 		return AutoHudRenderer.inRender ? AutoHudRenderer.alpha * alpha : alpha;
 	}

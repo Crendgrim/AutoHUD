@@ -4,19 +4,6 @@
   "package": "mod.crend.autohud.compat.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "appleskin.HUDOverlayHandlerMixin",
-    "armor_hud.ArmorHudMixin",
-    "armorchroma.GuiArmorMixin",
-    "dehydration.DehydrationMixin",
-    "dehydration.ThirstManagerMixin",
-    "detailab.ArmorBarRendererMixin",
-    "detailab.InGameDrawerMixin",
-    "environmentz.TemperatureHudRenderingMixin",
-    "farmersdelight.ComfortHealthOverlayMixin",
-    "farmersdelight.HUDOverlaysMixin",
-    "farmersdelight.NourishmentHungerOverlayMixin",
-    "onebar.OneBarElementsMixin",
-    "statuseffectbars.StatusEffectBarRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 0

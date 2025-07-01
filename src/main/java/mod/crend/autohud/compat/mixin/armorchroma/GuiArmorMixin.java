@@ -3,12 +3,14 @@ package mod.crend.autohud.compat.mixin.armorchroma;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import mod.crend.autohud.render.ComponentRenderer;
 import net.minecraft.client.gui.DrawContext;
 import nukeduck.armorchroma.GuiArmor;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(value = GuiArmor.class, remap = false)
+@MixinEnvironment(value = "compat", type = MixinEnvironment.Env.CLIENT)
 public class GuiArmorMixin {
 
 	@WrapMethod(method = "draw")

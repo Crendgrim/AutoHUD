@@ -1,5 +1,6 @@
 package mod.crend.autohud.compat.mixin.armor_hud;
 
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import mod.crend.autohud.render.ComponentRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -10,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = InGameHud.class, priority = 1200, remap = false)
+@MixinEnvironment(value = "compat", type = MixinEnvironment.Env.CLIENT)
 public class ArmorHudMixin {
 	@Dynamic("added by BerdinskiyBears Armor Hud")
 	@Inject(method="drawSlots1", at=@At("HEAD"))

@@ -1,6 +1,7 @@
 package mod.crend.autohud.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.render.ComponentRenderer;
 import mod.crend.libbamboo.PlatformUtils;
@@ -39,6 +40,7 @@ import java.util.List;
 //? if fabric
 @Environment(EnvType.CLIENT)
 @Mixin(value = InGameHud.class, priority = 500)
+@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 public abstract class StatusEffectTimerMixin {
     @Shadow @Final
     private MinecraftClient client;

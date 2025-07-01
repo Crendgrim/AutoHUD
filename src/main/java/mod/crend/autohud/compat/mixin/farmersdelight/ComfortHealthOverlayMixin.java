@@ -3,6 +3,7 @@ package mod.crend.autohud.compat.mixin.farmersdelight;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import mod.crend.autohud.render.ComponentRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -11,6 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import vectorwing.farmersdelight.client.gui.ComfortHealthOverlay;
 
 @Mixin(value = ComfortHealthOverlay.class, remap = false)
+@MixinEnvironment(value = "compat", type = MixinEnvironment.Env.CLIENT)
 public class ComfortHealthOverlayMixin {
 	@WrapMethod(
 			method = "drawComfortOverlay"

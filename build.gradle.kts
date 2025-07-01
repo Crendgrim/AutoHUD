@@ -1,6 +1,10 @@
 @file:Suppress("UnstableApiUsage")
 
 plugins {
+    kotlin("jvm") version "2.1.21"
+    id("com.google.devtools.ksp") version "2.1.21-2.0.2"
+    id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.6"
+    id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.6"
     id("dev.kikugie.stonecutter")
     id("dev.architectury.loom")
     id("com.github.johnrengelman.shadow")
@@ -194,8 +198,23 @@ tasks.processResources {
         "version" to mod.version,
         "minecraft" to mod.prop("mc_dep")
     )
+}
 
-    filterVersionedMixins(layout.buildDirectory.get())
+tasks.processTestResources {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+fletchingTable {
+    mixins.create("main") {
+        default = "${mod.id}.mixins.json"
+        configs.put("compat", "${mod.id}-compat.mixins.json")
+    }
+    fabric {
+        applyMixinConfig = false
+    }
+    neoforge {
+        applyMixinConfig = false
+    }
 }
 
 tasks.register<Copy>("buildAndCollect") {

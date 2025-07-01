@@ -4,6 +4,7 @@ package mod.crend.autohud.compat.mixin.onebar;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import io.github.madis0.OneBarElements;
 import mod.crend.autohud.compat.OneBarCompat;
 import mod.crend.autohud.render.AutoHudRenderer;
@@ -17,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(value = OneBarElements.class, remap = false)
+@MixinEnvironment(value = "compat", type = MixinEnvironment.Env.CLIENT)
 public abstract class OneBarElementsMixin {
 	@Shadow
 	@Final

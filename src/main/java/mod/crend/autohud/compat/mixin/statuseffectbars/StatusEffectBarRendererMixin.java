@@ -1,6 +1,7 @@
 //? if statuseffectbars {
 package mod.crend.autohud.compat.mixin.statuseffectbars;
 
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import io.github.a5b84.statuseffectbars.StatusEffectBarRenderer;
 import mod.crend.autohud.component.Component;
 import mod.crend.autohud.render.AutoHudRenderer;
@@ -12,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(value = StatusEffectBarRenderer.class, remap = false)
+@MixinEnvironment(value = "compat", type = MixinEnvironment.Env.CLIENT)
 public class StatusEffectBarRendererMixin {
 	@ModifyVariable(
 			method = "render",

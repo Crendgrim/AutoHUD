@@ -1,6 +1,7 @@
 //? if appleskin {
 package mod.crend.autohud.compat.mixin.appleskin;
 
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Components;
 import mod.crend.autohud.render.AutoHudRenderer;
@@ -16,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import squeek.appleskin.client.HUDOverlayHandler;
 
 @Mixin(value = HUDOverlayHandler.class, remap = false)
+@MixinEnvironment(value = "compat", type = MixinEnvironment.Env.CLIENT)
 public class HUDOverlayHandlerMixin {
 
 	@Inject(

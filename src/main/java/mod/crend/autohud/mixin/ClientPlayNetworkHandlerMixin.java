@@ -1,5 +1,6 @@
 package mod.crend.autohud.mixin;
 
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import mod.crend.autohud.component.ScoreboardHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -10,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
+@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 public class ClientPlayNetworkHandlerMixin {
     @Inject(method="onTeam", at=@At(value="INVOKE", target = "java/util/Optional.ifPresent(Ljava/util/function/Consumer;)V", shift=At.Shift.AFTER))
     private void autoHud$onTeamUpdate(TeamS2CPacket packet, CallbackInfo ci) {

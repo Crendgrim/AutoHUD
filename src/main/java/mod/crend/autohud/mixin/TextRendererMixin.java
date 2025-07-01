@@ -2,12 +2,14 @@
 /*package mod.crend.autohud.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import mod.crend.autohud.render.AutoHudRenderer;
 import net.minecraft.client.font.TextRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(TextRenderer.Drawer.class)
+@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 public class TextRendererMixin {
 	@ModifyReturnValue(method = "getRenderColor", at=@At("RETURN"))
 	private int autoHud$tweakTransparency(int argb) {

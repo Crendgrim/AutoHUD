@@ -1,6 +1,7 @@
 //? if >=1.21.6 {
 /*package mod.crend.autohud.mixin;
 
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import com.google.common.collect.ImmutableMap;
 import com.llamalad7.mixinextras.sugar.Local;
 import mod.crend.autohud.render.AutoHudRenderer;
@@ -19,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 
 @Mixin(GuiRenderer.class)
+@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 public class GuiRendererMixin {
 	/^
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/util/List;iterator()Ljava/util/Iterator;"))

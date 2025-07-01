@@ -2,12 +2,14 @@
 package mod.crend.autohud.compat.mixin.detailab;
 
 import com.redlimerl.detailab.render.InGameDrawer;
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import mod.crend.autohud.render.AutoHudRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(value = InGameDrawer.class, remap = false)
+@MixinEnvironment(value = "compat", type = MixinEnvironment.Env.CLIENT)
 public class InGameDrawerMixin {
 	@ModifyArg(
 			//? if <1.21 {

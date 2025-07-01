@@ -3,6 +3,7 @@ package mod.crend.autohud.compat.mixin.environmentz;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import mod.crend.autohud.compat.EnvironmentZCompat;
 import mod.crend.autohud.render.AutoHudRenderer;
 import net.environmentz.temperature.TemperatureHudRendering;
@@ -16,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = TemperatureHudRendering.class, remap = false)
+@MixinEnvironment(value = "compat", type = MixinEnvironment.Env.CLIENT)
 public class TemperatureHudRenderingMixin {
 	@WrapMethod(method = "renderPlayerTemperatureIcon")
 	private static void autoHud$wrapTemperatureIcon(DrawContext context, MinecraftClient client, PlayerEntity playerEntity, boolean heat, int xValue, int yValue, int extra, int intensity, int scaledWidth, int scaledHeight, Operation<Void> original) {

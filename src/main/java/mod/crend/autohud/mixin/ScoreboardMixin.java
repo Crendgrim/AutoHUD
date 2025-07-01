@@ -1,5 +1,6 @@
 package mod.crend.autohud.mixin;
 
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import mod.crend.autohud.component.ScoreboardHelper;
 import net.minecraft.scoreboard.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -9,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Scoreboard.class)
+@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 public class ScoreboardMixin {
     @Inject(method="updateExistingObjective", at=@At("HEAD"))
     public void autoHud$onObjectiveUpdate(ScoreboardObjective objective, CallbackInfo ci) {

@@ -4,17 +4,6 @@
   "package": "mod.crend.autohud.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "ChatHudMixin",
-    "ClientPlayNetworkHandlerMixin",
-    "DrawContextAccessor",
-    "DrawContextMixin",
-    "ForgeGuiMixin",
-    "GuiRendererMixin",
-    "InGameHudMixin",
-    "ScoreboardMixin",
-    "StatusEffectTimerMixin",
-    "TeamMixinAccessor",
-    "TextRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

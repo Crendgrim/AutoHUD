@@ -1,6 +1,7 @@
 //? if >=1.21.6 {
 /*package mod.crend.autohud.mixin;
 
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import mod.crend.autohud.render.AutoHudRenderer;
 import net.minecraft.client.gui.DrawContext;
 import org.spongepowered.asm.mixin.Mixin;
@@ -8,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(DrawContext.class)
+@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 public class DrawContextMixin {
 
 	@ModifyArg(

@@ -1,5 +1,6 @@
 package mod.crend.autohud.mixin;
 
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import mod.crend.autohud.component.state.ScoreboardComponentState;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.text.Text;
@@ -13,6 +14,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
  * is primarily used in {@link ScoreboardComponentState}.
  */
 @Mixin(Team.class)
+@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 public interface TeamMixinAccessor {
     @Accessor("displayName")
     void autohud$setDisplayName(Text displayName);

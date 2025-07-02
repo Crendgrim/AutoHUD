@@ -19,8 +19,8 @@ public class Config implements Cloneable {
     @SerialEntry public boolean dynamicOnLoad = true;
     @NumericRange(min = 10, max = 200, interval = 10)
     @SerialEntry public int ticksRevealed = 40;
-    @SerialEntry
-    public boolean animationMove = true;
+    @SerialEntry public boolean animationMove = true;
+    @Disable
     @SerialEntry public boolean animationFade = true;
     @FloatingPointRange(min = 1, max = 4.0, interval = 0.25)
     @SerialEntry public double animationSpeed = 2.0;

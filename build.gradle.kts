@@ -132,7 +132,7 @@ dependencies {
     modDependency("fabric_api", "net.fabricmc.fabric-api:fabric-api:{}", DependencyLevel.Implementation)
     modDependency("modmenu", "com.terraformersmc:modmenu:{}", DependencyLevel.Implementation)
     modDependency("libbamboo", "mod.crend:libbamboo:{}", DependencyLevel.Include)
-    modDependency("yacl", "dev.isxander:yet-another-config-lib:{}", DependencyLevel.CompileOnly)
+    modDependency("yacl", "dev.isxander:yet-another-config-lib:{}", DependencyLevel.Implementation)
 
     modDependency("appleskin", "squeek.appleskin:appleskin-${loader}:{}", DependencyLevel.CompileOnly)
     modDependency("armorchroma", "maven.modrinth:armor-chroma-for-fabric:{}", DependencyLevel.CompileOnly)
@@ -243,7 +243,7 @@ if (mod.publish("current")) {
         file = tasks.remapJar.get().archiveFile
         version = "${mod.version}+$minecraft-$loader"
         changelog = mod.prop("changelog")
-        type = STABLE
+        type = if (mod.publish("beta")) BETA else STABLE
         modLoaders.add(loader.toString())
 
         val supportedVersions = mod.prop("mc_targets").split(" ")

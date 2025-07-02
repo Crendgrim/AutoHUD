@@ -16,11 +16,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ArmorBarRendererMixin {
 	@Inject(method = "render", at = @At("HEAD"))
 	void autoHud$preRender(DrawContext context, PlayerEntity player, CallbackInfo ci) {
-		ComponentRenderer.ARMOR_FADE.beginRender(context);
+		//? if <1.21 {
+		ComponentRenderer.ARMOR.beginRender(context);
+		//?} else
+		/*ComponentRenderer.ARMOR_FADE.beginRender(context);*/
 	}
 	@Inject(method = "render", at = @At("TAIL"))
 	void autoHud$postRender(DrawContext context, PlayerEntity player, CallbackInfo ci) {
-		ComponentRenderer.ARMOR_FADE.endRender(context);
+		//? if <1.21 {
+		ComponentRenderer.ARMOR.endRender(context);
+		//?} else
+		/*ComponentRenderer.ARMOR_FADE.endRender(context);*/
 	}
 }
 //?}

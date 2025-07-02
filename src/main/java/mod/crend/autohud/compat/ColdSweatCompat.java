@@ -64,6 +64,8 @@ public class ColdSweatCompat implements AutoHudApi {
 				TemperatureState.PLAYER_MIN_TEMP = cap.getTrait(Temperature.Trait.FREEZING_POINT);
 			}
 		});
+		BODY_TEMP_GAUGE.synchronizeFrom(VAGUE_TEMP_GAUGE);
+		VAGUE_TEMP_GAUGE.synchronizeFrom(BODY_TEMP_GAUGE);
 	}
 
 	public static ComponentRenderer BODY_TEMP_RENDERER = ComponentRenderer.of(BODY_TEMP_GAUGE);

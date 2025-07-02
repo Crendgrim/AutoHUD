@@ -17,6 +17,7 @@ public class AutoHudRenderer {
 	public static float alpha = 1.0f;
 	public static float globalOffsetX = 0;
 	public static float globalOffsetY = 0;
+	public static boolean foodIsRenderedWithMountHealth = false;
 
 
 	public static boolean shouldRenderHotbarItems() {

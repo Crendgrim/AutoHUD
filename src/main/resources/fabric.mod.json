@@ -19,12 +19,6 @@
   "icon": "autohud.png",
   "environment": "client",
   "entrypoints": {
-    "client": [
-      "mod.crend.autohud.AutoHudMod"
-    ],
-    "modmenu": [
-      "mod.crend.autohud.compat.ModMenuIntegration"
-    ]
   },
   "mixins": [
     "autohud.mixins.json",

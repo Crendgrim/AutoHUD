@@ -7,6 +7,7 @@ import mod.crend.autohud.render.AutoHudRenderer;
 import net.minecraft.client.MinecraftClient;
 
 //? if fabric {
+import dev.kikugie.fletching_table.annotation.fabric.Entrypoint;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -55,20 +56,10 @@ import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.common.NeoForge;
 *///?}
 
-//? if hotbarslotcycling
-/*import mod.crend.autohud.compat.HotbarSlotCyclingCompat;*/
-//? if raised
-import mod.crend.autohud.compat.RaisedCompat;
-//? if coldsweat
-/*import mod.crend.autohud.compat.ColdSweatCompat;*/
-//? if quark
-/*import mod.crend.autohud.compat.QuarkCompat;*/
-//? if legendary_survival_overhaul
-/*import mod.crend.autohud.compat.legendarysurvivaloverhaul.LSOCompat;*/
-
-
-//? if forge || neoforge
+//? if forge || neoforge {
 /*@Mod(AutoHud.MOD_ID)*/
+//?} else
+@Entrypoint
 public class AutoHudMod /*? if fabric {*/implements ClientModInitializer/*?}*/ {
 
     //? if fabric {
@@ -91,22 +82,10 @@ public class AutoHudMod /*? if fabric {*/implements ClientModInitializer/*?}*/ {
         AutoHudGui.register();
         *///?}
 
+        AutoHudCompat.registerCompatibilityProviders();
         FabricLoader.getInstance().getEntrypointContainers(AutoHud.MOD_ID, AutoHudApi.class).forEach(entrypoint -> {
             AutoHud.addApi(entrypoint.getEntrypoint());
         });
-
-        //? if raised {
-        if (FabricLoader.getInstance().isModLoaded("raised")) {
-            ClientTickEvents.END_CLIENT_TICK.register(RaisedCompat::tick);
-        }
-        //?}
-
-        //? if hotbarslotcycling {
-        /*if (FabricLoader.getInstance().isModLoaded("hotbarslotcycling")) {
-            AutoHud.addApi(new HotbarSlotCyclingCompat());
-        }
-        *///?}
-
     }
     //?}
 
@@ -151,7 +130,7 @@ public class AutoHudMod /*? if fabric {*/implements ClientModInitializer/*?}*/ {
     *///?}
 
     //? if forge || neoforge {
-    /*static boolean raisedCompat = false;
+    /*
     //? if forge {
     /^@Mod.EventBusSubscriber(modid = AutoHud.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     ^///?} else {
@@ -166,32 +145,6 @@ public class AutoHudMod /*? if fabric {*/implements ClientModInitializer/*?}*/ {
             /^MinecraftForge.EVENT_BUS.register(new AutoHudGui());^/
             //? if neoforge
             /^NeoForge.EVENT_BUS.register(new AutoHudGui());^/
-            ModList modList = ModList.get();
-            //? if hotbarslotcycling {
-            /^if (modList.isLoaded("hotbarslotcycling")) {
-                AutoHud.addApi(new HotbarSlotCyclingCompat());
-            }
-            ^///?}
-            //? if raised {
-            if (modList.isLoaded("raised")) {
-                AutoHudMod.raisedCompat = true;
-            }
-            //?}
-            //? if legendary_survival_overhaul {
-            /^if (modList.isLoaded("legendarysurvivaloverhaul")) {
-                AutoHud.addApi(new LSOCompat());
-            }
-            ^///?}
-            //? if quark {
-            /^if (modList.isLoaded("quark")) {
-                AutoHud.addApi(new QuarkCompat());
-            }
-            ^///?}
-            //? if coldsweat {
-            /^if (modList.isLoaded("cold_sweat")) {
-                AutoHud.addApi(new ColdSweatCompat());
-            }
-            ^///?}
             //? if neoforge {
             /^ConfigScreen.register(() -> ConfigHandler.CONFIG_STORE);
             NeoForge.EVENT_BUS.addListener(ModBus::onClientTick);
@@ -199,6 +152,7 @@ public class AutoHudMod /*? if fabric {*/implements ClientModInitializer/*?}*/ {
             MinecraftForge.EVENT_BUS.addListener(ModBus::onClientTick);
             //?} else
             /^TickEvent.ClientTickEvent.Post.BUS.addListener(ModBus::onClientTick);^/
+            AutoHudCompat.registerCompatibilityProviders();
         }
 
         @SubscribeEvent
@@ -236,12 +190,6 @@ public class AutoHudMod /*? if fabric {*/implements ClientModInitializer/*?}*/ {
             //? if forge && <1.21.6
             /^if (event.phase == TickEvent.Phase.START) return;^/
             ModKeyBindings.clientTick(MinecraftClient.getInstance());
-
-            //? if raised {
-            if (raisedCompat) {
-                RaisedCompat.tick();
-            }
-            //?}
         }
 
     }

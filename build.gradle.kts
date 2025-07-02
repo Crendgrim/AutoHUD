@@ -3,8 +3,8 @@
 plugins {
     kotlin("jvm") version "2.1.21"
     id("com.google.devtools.ksp") version "2.1.21-2.0.2"
-    id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.6"
-    id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.6"
+    id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.7"
+    id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.7"
     id("dev.kikugie.stonecutter")
     id("dev.architectury.loom")
     id("com.github.johnrengelman.shadow")
@@ -34,7 +34,8 @@ fun modDependency(modId: String, url: String, level: DependencyLevel) {
     }
 
     if (isPresent) {
-        val resolvedUrl = url.replace("{}", deps[modId])
+        val artifact = findProperty("deps.${modId}_artifact")?.toString() ?: deps[modId]
+        val resolvedUrl = url.replace("{}", artifact)
         dependencies {
             when (level) {
                 DependencyLevel.Include -> {
@@ -132,19 +133,27 @@ dependencies {
     modDependency("modmenu", "com.terraformersmc:modmenu:{}", DependencyLevel.Implementation)
     modDependency("libbamboo", "mod.crend:libbamboo:{}", DependencyLevel.Include)
     modDependency("yacl", "dev.isxander:yet-another-config-lib:{}", DependencyLevel.CompileOnly)
-    modDependency("appleskin", "squeek.appleskin:appleskin-${loader}:${mod.dep("appleskin_artifact")}-{}", DependencyLevel.CompileOnly)
+
+    modDependency("appleskin", "squeek.appleskin:appleskin-${loader}:{}", DependencyLevel.CompileOnly)
     modDependency("armorchroma", "maven.modrinth:armor-chroma-for-fabric:{}", DependencyLevel.CompileOnly)
-    modDependency("coldsweat", "maven.modrinth:cold-sweat:${mod.dep("coldsweat_artifact")}", DependencyLevel.CompileOnly)
+    modDependency("coldsweat", "maven.modrinth:cold-sweat:{}", DependencyLevel.CompileOnly)
     modDependency("detailab", "maven.modrinth:detail-armor-bar:{}", DependencyLevel.CompileOnly)
     modDependency("dehydration", "maven.modrinth:dehydration:{}", DependencyLevel.CompileOnly)
+    modDependency("drg_flares", "curse.maven:drg-flares-{}", DependencyLevel.CompileOnly)
     modDependency("environmentz", "maven.modrinth:environmentz:{}", DependencyLevel.CompileOnly)
     modDependency("farmers_delight_refabricated", "maven.modrinth:farmers-delight-refabricated:{}", DependencyLevel.CompileOnly)
+    modDependency("feathers", "maven.modrinth:feathers:{}", DependencyLevel.CompileOnly)
     modDependency("hotbarslotcycling", "fuzs.hotbarslotcycling:hotbarslotcycling-${loader}:{}", DependencyLevel.CompileOnly)
+    modDependency("inventorio", "maven.modrinth:inventorio:{}", DependencyLevel.CompileOnly)
     modDependency("legendary_survival_overhaul", "curse.maven:legendary-survival-overhaul-840254:{}", DependencyLevel.CompileOnly)
     modDependency("onebar", "maven.modrinth:onebar:{}", DependencyLevel.CompileOnly)
+    modDependency("overflowing_bars", "maven.modrinth:overflowing-bars:{}", DependencyLevel.CompileOnly)
     modDependency("quark", "maven.modrinth:quark:{}", DependencyLevel.CompileOnly)
-    modDependency("raised", "maven.modrinth:raised:${mod.dep("raised_artifact")}-{}", DependencyLevel.CompileOnly)
+    modDependency("raised", "maven.modrinth:raised:{}", DependencyLevel.CompileOnly)
+    modDependency("stamina", "maven.modrinth:insane-stamina:{}", DependencyLevel.CompileOnly)
+    modDependency("simplyskills", "maven.modrinth:simply-skills:{}", DependencyLevel.CompileOnly)
     modDependency("statuseffectbars", "maven.modrinth:status-effect-bars:{}", DependencyLevel.CompileOnly)
+    modDependency("thirstwastaken", "maven.modrinth:thirst-was-taken:{}", DependencyLevel.CompileOnly)
 }
 
 loom {
@@ -200,10 +209,6 @@ tasks.processResources {
     )
 }
 
-tasks.processTestResources {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
 fletchingTable {
     mixins.create("main") {
         default = "${mod.id}.mixins.json"
@@ -211,6 +216,8 @@ fletchingTable {
     }
     fabric {
         applyMixinConfig = false
+        entrypointMappings.put("modmenu", "com.terraformersmc.modmenu.api.ModMenuApi")
+        entrypointMappings.put("autohud", "mod.crend.autohud.api.AutoHudApi")
     }
     neoforge {
         applyMixinConfig = false

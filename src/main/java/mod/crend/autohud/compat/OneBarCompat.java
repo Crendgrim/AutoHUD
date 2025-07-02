@@ -23,11 +23,6 @@ public class OneBarCompat implements AutoHudApi {
 			.build();
 	public static final ComponentRenderer ONE_BAR_WRAPPER = ComponentRenderer.of(OneBarComponent);
 
-	static {
-		// Fake this API being inserted via entry point
-		AutoHud.addApi(new OneBarCompat());
-	}
-
 	@Override
 	public void init() {
 		// Disable vanilla elements that are handled by OneBar

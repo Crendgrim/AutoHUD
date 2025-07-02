@@ -21,11 +21,6 @@ public class MicroDurabilityCompat implements AutoHudApi {
             .state(player -> new ComponentState(MicroDurabilityCompat.MicroDurabilityComponent))
             .build();
 
-    static {
-        // Fake this API being inserted via entry point
-        AutoHud.addApi(new MicroDurabilityCompat());
-    }
-
     @Override
     public void init() {
         Components.ExperienceBar.addStackComponent(MicroDurabilityComponent);

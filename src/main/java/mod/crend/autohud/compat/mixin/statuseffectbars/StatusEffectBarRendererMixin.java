@@ -23,10 +23,10 @@ public class StatusEffectBarRendererMixin {
 	private static int autoHud$renderWithOffset(
 			int y,
 			DrawContext context,
-			//? if >=1.21 {
+			//? if >=1.21.2 {
 			/*RenderTickCounter renderTickCounter,
 			*///?} else if >=1.20.5
-			/*/^¹float tickDelta,¹^/*/
+			/*float tickDelta,*/
 			StatusEffectInstance effect
 	) {
 		if (AutoHudRenderer.inRender) {

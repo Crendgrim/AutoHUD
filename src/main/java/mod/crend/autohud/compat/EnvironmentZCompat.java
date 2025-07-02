@@ -1,6 +1,6 @@
+//? if environmentz {
 package mod.crend.autohud.compat;
 
-//? if environmentz {
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.api.AutoHudApi;
 import mod.crend.autohud.component.Component;
@@ -34,11 +34,6 @@ public class EnvironmentZCompat implements AutoHudApi {
 			.build();
 	public static ComponentRenderer TEMPERATURE_WRAPPER = ComponentRenderer.of(Temperature);
 	public static ComponentRenderer THERMOMETER_WRAPPER = ComponentRenderer.of(Thermometer);
-
-	static {
-		// Fake this API being inserted via entry point
-		AutoHud.addApi(new EnvironmentZCompat());
-	}
 
 	static int temperatureState() {
 		TemperatureManager temperatureManager = ((TemperatureManagerAccess) MinecraftClient.getInstance().player).getTemperatureManager();

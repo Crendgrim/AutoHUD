@@ -7,6 +7,7 @@ import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Hud;
 import mod.crend.autohud.render.AutoHudRenderer;
 import mod.crend.autohud.render.ComponentRenderer;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.BossBarHud;
 import net.minecraft.client.gui.hud.ChatHud;
@@ -181,7 +182,7 @@ public abstract class InGameHudMixin {
 
     @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;getProfiler()Lnet/minecraft/util/profiler/Profiler;", ordinal = 3))
     private void autoHud$preAirBar(final DrawContext context, final CallbackInfo ci) {
-        if (getHeartCount(getRiddenEntity()) == 0) {
+        if (getHeartCount(getRiddenEntity()) == 0 || AutoHudRenderer.foodIsRenderedWithMountHealth) {
             ComponentRenderer.HUNGER.endRender(context);
         }
         ComponentRenderer.AIR.beginRender(context);

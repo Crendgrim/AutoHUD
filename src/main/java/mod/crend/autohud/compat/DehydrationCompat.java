@@ -1,6 +1,5 @@
-package mod.crend.autohud.compat;
-
 //? if dehydration {
+package mod.crend.autohud.compat;
 
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.api.AutoHudApi;
@@ -45,10 +44,6 @@ public class DehydrationCompat implements AutoHudApi {
             })
             .build();
     public static ComponentRenderer THIRST_WRAPPER = ComponentRenderer.of(Thirst);
-    static {
-        // Fake this API being inserted via entry point
-        AutoHud.addApi(new DehydrationCompat());
-    }
 
     @Override
     public void init() {

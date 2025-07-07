@@ -1,5 +1,6 @@
 package mod.crend.autohud.mixin;
 
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.render.AutoHudRenderer;
 import mod.crend.autohud.render.ComponentRenderer;
@@ -11,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ForgeGui.class)
+@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 public class ForgeGuiMixin {
 
 	@Inject(method = "render", at = @At("HEAD"))

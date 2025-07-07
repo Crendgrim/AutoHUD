@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Components;
 import mod.crend.autohud.component.Hud;
@@ -33,6 +34,7 @@ import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = InGameHud.class, priority = 800)
+@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 public abstract class InGameHudMixin {
 
     @Shadow @Final public MinecraftClient client;

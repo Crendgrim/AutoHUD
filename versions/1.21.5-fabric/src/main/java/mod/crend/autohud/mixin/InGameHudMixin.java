@@ -3,6 +3,7 @@ package mod.crend.autohud.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Hud;
 import mod.crend.autohud.render.AutoHudRenderer;
@@ -36,6 +37,7 @@ import net.minecraft.client.render.RenderTickCounter;
 import java.util.function.Function;
 
 @Mixin(value = InGameHud.class, priority = 800)
+@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 public abstract class InGameHudMixin {
 
     @Shadow @Final public MinecraftClient client;

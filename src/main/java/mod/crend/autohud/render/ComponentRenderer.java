@@ -30,6 +30,7 @@ public class ComponentRenderer {
 			.doRender(() -> Components.Hotbar.shouldRender() || AutoHudRenderer.shouldRenderHotbarItems())
 			.build();
 	public static ComponentRenderer TOOLTIP = of(Components.Tooltip);
+	//? if <1.21.6 {
 	public static ComponentRenderer HOTBAR_ITEMS = builder(Components.Hotbar)
 			.fade()
 			.isActive(() -> Components.Hotbar.isActive() && AutoHud.config.animationFade())
@@ -39,10 +40,12 @@ public class ComponentRenderer {
 			// We need to reset the renderer because otherwise the first item gets drawn with double alpha
 			.beginRender(context -> AutoHudRenderLayer.FADE_MODE.postRender(Components.Hotbar, context))
 			.build();
+	//?}
 	public static ComponentRenderer EXPERIENCE_BAR = of(Components.ExperienceBar);
 	public static ComponentRenderer EXPERIENCE_LEVEL = of(Components.ExperienceLevel);
 	// For Forge, don't cancel the render event for the bar if the level has to be rendered.
-	public static ComponentRenderer EXPERIENCE_BAR_FORGE = builder(Components.ExperienceBar)
+	//? if forge {
+	/*public static ComponentRenderer EXPERIENCE_BAR_FORGE = builder(Components.ExperienceBar)
 			.move()
 			.fade()
 			.doRender(() -> Components.ExperienceBar.shouldRender() || Components.ExperienceLevel.shouldRender())
@@ -59,6 +62,7 @@ public class ComponentRenderer {
 				AutoHudRenderLayer.MOVE_MODE.preRender(Components.ExperienceBar, context);
 			})
 			.build();
+	*///?}
 
 	public static ComponentRenderer ARMOR = of(Components.Armor);
 	public static ComponentRenderer ARMOR_FADE = builder(Components.Armor)
@@ -84,6 +88,10 @@ public class ComponentRenderer {
 				RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.ONE_MINUS_DST_COLOR, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
 			})
 			//?}
+			//? if >=1.21.6 {
+			/*.beginRender(context -> AutoHudRenderLayer.FADE_MODE.preRender(Components.Crosshair, context))
+			.endRender(context -> AutoHudRenderLayer.FADE_MODE.postRender(Components.Crosshair, context))
+			*///?}
 			.build();
 	public static ComponentRenderer CHAT = of(Components.Chat);
 	public static ComponentRenderer BOSS_BAR = of(Components.BossBar);

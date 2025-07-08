@@ -3,7 +3,9 @@
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.DestFactor;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import mod.crend.autohud.render.AutoHudRenderer;
@@ -37,7 +39,7 @@ public class DrawContextMixin {
 	)
 	private void autoHud$quadWithTransparency(RenderPipeline pipeline, GpuTextureView texture, int x1, int y1, int x2, int y2, float u1, float u2, float v1, float v2, int color, Operation<Void> original) {
 		if (AutoHudRenderer.inRender) {
-			if (pipeline.getLocation().equals(RenderPipelines.CROSSHAIR.getLocation()))
+			if (pipeline.getBlendFunction().isPresent() && pipeline.getBlendFunction().get().destAlpha() == DestFactor.ZERO)
 				color = ColorHelper.scaleRgb(color, AutoHudRenderer.alpha);
 			else
 				color = ColorHelper.withAlpha(Math.round(ColorHelper.getAlpha(color) * AutoHudRenderer.alpha), color);

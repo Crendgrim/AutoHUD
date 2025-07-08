@@ -3,8 +3,8 @@
 plugins {
     kotlin("jvm") version "2.1.21"
     id("com.google.devtools.ksp") version "2.1.21-2.0.2"
-    id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.7"
-    id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.7"
+    id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.9"
+    id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.9"
     id("dev.kikugie.stonecutter")
     id("dev.architectury.loom")
     id("com.github.johnrengelman.shadow")

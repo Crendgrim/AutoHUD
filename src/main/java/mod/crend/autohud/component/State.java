@@ -155,6 +155,12 @@ public class State {
             }
         }
 
+        //? if >=1.21.6 {
+        /*Components.InfoBar.synchronizeFrom(Components.ExperienceBar);
+        Components.InfoBar.synchronizeFrom(Components.MountJumpBar);
+        Components.InfoBar.synchronizeFrom(Components.LocatorBar);
+        *///?}
+
         if (AutoHud.config.revealExperienceTextWithHotbar()) {
             Components.ExperienceLevel.synchronizeFrom(Components.ExperienceBar, Components.Hotbar);
         }

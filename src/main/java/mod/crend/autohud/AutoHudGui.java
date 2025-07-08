@@ -39,7 +39,7 @@ public class AutoHudGui /^? if forge {^//^extends ForgeGui^//^?}^/ {
 		COMPONENT_RENDERERS.put(VanillaHudElements.AIR_BAR, ComponentRenderer.AIR);
 		COMPONENT_RENDERERS.put(VanillaHudElements.MOUNT_HEALTH, ComponentRenderer.MOUNT_HEALTH);
 		// TODO other bars
-		COMPONENT_RENDERERS.put(VanillaHudElements.INFO_BAR, ComponentRenderer.EXPERIENCE_BAR);
+		COMPONENT_RENDERERS.put(VanillaHudElements.INFO_BAR, ComponentRenderer.INFO_BAR);
 		COMPONENT_RENDERERS.put(VanillaHudElements.EXPERIENCE_LEVEL, ComponentRenderer.EXPERIENCE_LEVEL);
 
 		COMPONENT_RENDERERS.put(VanillaHudElements.CROSSHAIR, ComponentRenderer.CROSSHAIR);

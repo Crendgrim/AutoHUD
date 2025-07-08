@@ -16,6 +16,9 @@ import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.item.ItemStack;
 *///?}
 
+//? if >=1.21.6
+/*import mod.crend.autohud.component.state.WaypointComponentState;*/
+
 import java.util.function.Supplier;
 
 public class Components {
@@ -101,6 +104,16 @@ public class Components {
 			.state(player -> new ComponentState(Components.MountJumpBar))
 			.build();
 
+	//? if >=1.21.6 {
+	/*public static Component LocatorBar = Component.builder("locator_bar")
+			.isTargeted(TARGET_STATUS_BARS)
+			.config(AutoHud.config.locatorBar())
+			.inMainHud()
+			.state(player -> new WaypointComponentState(Components.LocatorBar))
+			.build();
+	public static Component InfoBar = Component.builder("info_bar")
+			.build();
+	*///?}
 
 	public static Component ExperienceLevel = Component.builder("experience_level")
 			.isTargeted(TARGET_EXPERIENCE_BAR)

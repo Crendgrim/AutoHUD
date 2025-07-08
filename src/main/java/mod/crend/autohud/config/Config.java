@@ -138,6 +138,14 @@ public class Config implements Cloneable {
     @SerialEntry public BooleanComponent experienceBar = new BooleanComponent();
     @Category(name = "components", group = "statusBars")
     @SerialEntry public boolean revealExperienceTextOnTargetingEnchantingBlock = true;
+    //? >=1.21.6 {
+    /*@Category(name = "components", group = "statusBars")
+    @SerialEntry public BooleanComponent locatorBar = new BooleanComponent();
+    @Category(name = "components", group = "statusBars")
+    @NumericRange(max = 128)
+    @EnableIf(field = "locatorBar.active", value = EnableIf.BooleanPredicate.class)
+    @SerialEntry public int revealLocatorBarWhenNearby = 32;
+    *///?}
     @Category(name = "components", group = "statusBars")
     @SerialEntry public BooleanComponent mountJumpBar = new BooleanComponent();
     @Category(name = "components", group = "statusBars")
@@ -225,6 +233,10 @@ public class Config implements Cloneable {
         @SerialEntry public AdvancedComponent air = new AdvancedComponent();
         @Translation(key = "autohud.group.experience")
         @SerialEntry public AdvancedComponent experience = new AdvancedComponent();
+        //? if >=1.21.6 {
+        /*@Translation(key = "autohud.group.locatorBar")
+        @SerialEntry public AdvancedComponent locatorBar = new AdvancedComponent();
+        *///?}
         @Translation(key = "autohud.group.mountJumpBar")
         @SerialEntry public AdvancedComponent mountJumpBar = new AdvancedComponent();
         @Translation(key = "autohud.group.mountHealth")

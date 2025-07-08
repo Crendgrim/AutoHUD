@@ -43,6 +43,8 @@ public class ComponentRenderer {
 	//?}
 	public static ComponentRenderer EXPERIENCE_BAR = of(Components.ExperienceBar);
 	public static ComponentRenderer EXPERIENCE_LEVEL = of(Components.ExperienceLevel);
+	//? if >=1.21.6
+	/*public static ComponentRenderer INFO_BAR = of(Components.InfoBar);*/
 	// For Forge, don't cancel the render event for the bar if the level has to be rendered.
 	//? if forge {
 	/*public static ComponentRenderer EXPERIENCE_BAR_FORGE = builder(Components.ExperienceBar)

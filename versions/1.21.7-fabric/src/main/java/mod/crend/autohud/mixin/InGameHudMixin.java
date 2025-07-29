@@ -6,6 +6,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import mod.crend.autohud.AutoHud;
+import mod.crend.autohud.compat.ItemGuiElementRenderStateAccessor;
 import mod.crend.autohud.component.Components;
 import mod.crend.autohud.component.Hud;
 import mod.crend.autohud.render.AutoHudRenderer;
@@ -37,6 +38,17 @@ public abstract class InGameHudMixin {
     @Inject(method = "render", at = @At("TAIL"))
     private void autoHud$endRender(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         AutoHudRenderer.endRender();
+    }
+
+    // Hotbar
+    @WrapOperation(
+            method = "renderMainHud",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
+    )
+    private void autoHud$wrapHotbar(InGameHud instance, DrawContext context, RenderTickCounter tickCounter, Operation<Void> original) {
+        ItemGuiElementRenderStateAccessor.STATE_HOLDER.set(true);
+        original.call(instance, context, tickCounter);
+        ItemGuiElementRenderStateAccessor.STATE_HOLDER.set(false);
     }
 
     // Info bar

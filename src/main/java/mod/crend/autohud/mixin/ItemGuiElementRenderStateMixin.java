@@ -19,6 +19,5 @@ public class ItemGuiElementRenderStateMixin implements ItemGuiElementRenderState
         return autohud$isHudItem;
     }
 
-
 }
 *///?}

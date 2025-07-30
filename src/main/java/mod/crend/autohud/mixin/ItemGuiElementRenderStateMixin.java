@@ -2,7 +2,7 @@
 /*package mod.crend.autohud.mixin;
 
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
-import mod.crend.autohud.compat.ItemGuiElementRenderStateAccessor;
+import mod.crend.autohud.render.ItemGuiElementRenderStateAccessor;
 import net.minecraft.client.gui.render.state.ItemGuiElementRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

@@ -1,5 +1,5 @@
 //? if >=1.21.6 {
-/*package mod.crend.autohud.compat;
+/*package mod.crend.autohud.render;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

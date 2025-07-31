@@ -4,15 +4,18 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import mod.crend.autohud.AutoHud;
 import mod.crend.autohud.component.Components;
 import mod.crend.autohud.component.Hud;
 import mod.crend.autohud.render.AutoHudRenderer;
 import mod.crend.autohud.render.ComponentRenderer;
+import mod.crend.autohud.render.ItemGuiElementRenderStateAccessor;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.hud.bar.Bar;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.entity.JumpingMount;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.util.Identifier;
@@ -22,9 +25,6 @@ import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.client.render.RenderTickCounter;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 
 @Mixin(value = InGameHud.class, priority = 800)
 @MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
@@ -37,6 +37,17 @@ public abstract class InGameHudMixin {
     @Inject(method = "render", at = @At("TAIL"))
     private void autoHud$endRender(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         AutoHudRenderer.endRender();
+    }
+
+    // Hotbar
+    @WrapOperation(
+            method = "renderMainHud",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
+    )
+    private void autoHud$wrapHotbar(InGameHud instance, DrawContext context, RenderTickCounter tickCounter, Operation<Void> original) {
+        ItemGuiElementRenderStateAccessor.STATE_HOLDER.set(true);
+        original.call(instance, context, tickCounter);
+        ItemGuiElementRenderStateAccessor.STATE_HOLDER.set(false);
     }
 
     // Info bar
